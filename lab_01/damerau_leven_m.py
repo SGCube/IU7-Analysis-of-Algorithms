@@ -1,15 +1,17 @@
 # Damerau-Levenshtein string distance (by matrix)
 
 
-def str_distance(s1, s2):
+def str_distance(s1, s2, to_print=False):
     s1_len = len(s1)
     s2_len = len(s2)
 
     # initialization of first two rows
     prev2_row = [0] * (s2_len + 1)
     prev_row = [i for i in range(s2_len + 1)]
-    print(prev_row)
     current_row = [0] * (s2_len + 1)
+
+    if to_print:
+        print(prev_row)
 
     for i in range(1, s1_len + 1):          # row loop
         # current row fill
@@ -26,7 +28,9 @@ def str_distance(s1, s2):
                     current_row[j] = min(current_row[j],
                                          prev2_row[j - 2] + 1)
 
-        print(current_row)
+        if to_print:
+            print(current_row)
+
         # row switching
         prev2_row = prev_row
         prev_row = current_row

@@ -1,14 +1,16 @@
 # Levenshtein string distance
 
 
-def str_distance(s1, s2):
+def str_distance(s1, s2, to_print=False):
     s1_len = len(s1)
     s2_len = len(s2)
 
     # initialization of first two rows
     prev_row = [i for i in range(s2_len + 1)]   # first row - [0, 1, ..., n]
-    print(prev_row)
     current_row = [0] * (s2_len + 1)
+
+    if to_print:
+        print(prev_row)
 
     for i in range(1, s1_len + 1):          # row loop
         # current row fill
@@ -19,7 +21,9 @@ def str_distance(s1, s2):
                                  prev_row[j] + 1,                # vertical
                                  prev_row[j - 1] + match_fault)  # diagonal
 
-        print(current_row)
+        if to_print:
+            print(current_row)
+
         # row switching
         prev_row = current_row
         current_row = [0] * (s2_len + 1)

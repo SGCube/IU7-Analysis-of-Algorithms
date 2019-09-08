@@ -9,9 +9,9 @@ if __name__ == "__main__":
     s2 = input("Введите вторую строку: ")
 
     print("\nЛевенштейн:")
-    print(str(lev.str_distance(s1, s2)))
+    print(str(lev.str_distance(s1, s2, True)))
     print("\nДамерау-Левенштейн (матричный):")
-    print(str(dam_m.str_distance(s1, s2)))
+    print(str(dam_m.str_distance(s1, s2, True)))
     print("\nДамерау-Левенштейн (рекурсивный): " +
           str(dam_r.str_distance(s1, s2)))
 
