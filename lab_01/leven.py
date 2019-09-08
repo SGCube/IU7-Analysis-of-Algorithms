@@ -32,4 +32,4 @@ def str_distance(s1, s2, to_print=False):
 
 
 if __name__ == "__main__":
-    print(str_distance("error", "horror"))
+    print(str_distance("error", "horror", True))

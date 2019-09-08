@@ -1,7 +1,7 @@
 # Damerau-Levenshtein string distance (recursive)
 
 
-def str_distance(s1, s2):
+def str_distance(s1, s2, to_print=False):
     s1_len = len(s1)
     s2_len = len(s2)
 
@@ -11,6 +11,9 @@ def str_distance(s1, s2):
         return s1_len
 
     match_fault = int(s1[-1] != s2[-1])
+
+    if to_print:
+        print(s1, s2, sep="<>")
 
     if s1_len > 1 and s2_len > 1:
         if s1[-1] == s2[-2] and s1[-2] == s2[-1]:
@@ -25,4 +28,4 @@ def str_distance(s1, s2):
 
 
 if __name__ == "__main__":
-    print(str_distance("saking", "asking"))
+    print(str_distance("университте", "университет", True))

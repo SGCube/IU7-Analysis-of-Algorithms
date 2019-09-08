@@ -40,4 +40,4 @@ def str_distance(s1, s2, to_print=False):
 
 
 if __name__ == "__main__":
-    print(str_distance("mispselling", "misspelling"))
+    print(str_distance("mispselling", "misspelling", True))
