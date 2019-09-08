@@ -10,11 +10,19 @@ def str_distance(s1, s2):
     if s2_len == 0:
         return s1_len
 
-    match_fault = int(s1[s1_len - 1] != s2[s2_len - 1])
-    return min(str_distance(s1[:s1_len - 1], s2[:s2_len]) + 1,
-               str_distance(s1[:s1_len], s2[:s2_len - 1]) + 1,
-               str_distance(s1[:s1_len - 1], s2[:s2_len - 1]) + match_fault)
+    match_fault = int(s1[-1] != s2[-1])
+
+    if s1_len > 1 and s2_len > 1:
+        if s1[-1] == s2[-2] and s1[-2] == s2[-1]:
+            return min(str_distance(s1[:-1], s2) + 1,
+                       str_distance(s1, s2[:-1]) + 1,
+                       str_distance(s1[:-1], s2[:-1]) + match_fault,
+                       str_distance(s1[:-2], s2[:-2]) + 1)
+
+    return min(str_distance(s1[:-1], s2) + 1,
+               str_distance(s1, s2[:-1]) + 1,
+               str_distance(s1[:-1], s2[:-1]) + match_fault)
 
 
 if __name__ == "__main__":
-    print(str_distance("occasion", "accasion"))
+    print(str_distance("saking", "asking"))
