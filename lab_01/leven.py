@@ -6,7 +6,7 @@ def str_distance(s1, s2):
     s2_len = len(s2)
 
     # initialization of first two rows
-    prev_row = [i for i in range(s2_len + 1)]
+    prev_row = [i for i in range(s2_len + 1)]   # first row - [0, 1, ..., n]
     print(prev_row)
     current_row = [0] * (s2_len + 1)
 
@@ -24,7 +24,7 @@ def str_distance(s1, s2):
         prev_row = current_row
         current_row = [0] * (s2_len + 1)
 
-    return prev_row[-1]
+    return prev_row[-1]     # value in bottom right corner of table
 
 
 if __name__ == "__main__":
