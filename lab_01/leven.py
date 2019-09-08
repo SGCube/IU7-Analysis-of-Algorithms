@@ -1,7 +1,7 @@
-# Levenshtein distance calculation functions
+# Levenshtein string distance
 
 
-def levenshtein_matrix(s1, s2):
+def str_distance(s1, s2):
     s1_len = len(s1)
     s2_len = len(s2)
 
@@ -10,23 +10,22 @@ def levenshtein_matrix(s1, s2):
     print(prev_row)
     current_row = [0] * (s2_len + 1)
 
-    for i in range(1, s1_len + 1):                      # row loop
+    for i in range(1, s1_len + 1):          # row loop
         # current row fill
         current_row[0] = i
         for j in range(1, s2_len + 1):                  # column loop
-            match_fault = int(s1[i - 1] != s2[j - 1])   # symbol match
-            current_row[j] = min(current_row[j - 1] + 1,        # horizontal
-                                 prev_row[j] + 1,               # vertical
-                                 prev_row[j - 1] + match_fault) # diagonal
+            match_fault = int(s1[i - 1] != s2[j - 1])            # symbol match
+            current_row[j] = min(current_row[j - 1] + 1,         # horizontal
+                                 prev_row[j] + 1,                # vertical
+                                 prev_row[j - 1] + match_fault)  # diagonal
 
         print(current_row)
         # row switching
-        prev_row = current_row.copy()
-        current_row.clear()
+        prev_row = current_row
         current_row = [0] * (s2_len + 1)
 
     return prev_row[-1]
 
 
 if __name__ == "__main__":
-    print(levenshtein_matrix("error", "horror"))
+    print(str_distance("error", "horror"))
