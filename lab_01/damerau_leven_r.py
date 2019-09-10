@@ -12,16 +12,15 @@ def str_distance(s1, s2):
 
     match_fault = int(s1[-1] != s2[-1])
 
+    result = min(str_distance(s1[:-1], s2) + 1,
+                 str_distance(s1, s2[:-1]) + 1,
+                 str_distance(s1[:-1], s2[:-1]) + match_fault)
+
     if s1_len > 1 and s2_len > 1:
         if s1[-1] == s2[-2] and s1[-2] == s2[-1]:
-            return min(str_distance(s1[:-1], s2) + 1,
-                       str_distance(s1, s2[:-1]) + 1,
-                       str_distance(s1[:-1], s2[:-1]) + match_fault,
-                       str_distance(s1[:-2], s2[:-2]) + 1)
+            result = min(result, str_distance(s1[:-2], s2[:-2]) + 1)
 
-    return min(str_distance(s1[:-1], s2) + 1,
-               str_distance(s1, s2[:-1]) + 1,
-               str_distance(s1[:-1], s2[:-1]) + match_fault)
+    return result
 
 
 if __name__ == "__main__":
