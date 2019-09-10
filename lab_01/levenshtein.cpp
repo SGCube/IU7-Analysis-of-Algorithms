@@ -95,7 +95,28 @@ int dam_leven_m(const std::string &s1, const std::string &s2, bool toPrint)
 }
 
 // Damerau-Levenshtein distance (recursive algorythm)
-int dam_level_r(std::string *s1, std::string *s2)
+int dam_level_r(std::string &s1, std::string &s2)
 {
-	return 0;
+	size_t s1_len = s1.length(), s2_len = s2.length();
+
+	if (s1_len == 0)
+		return s2_len;
+	if (s2_len == 0)
+		return s1_len;
+
+	bool match_fault = s1[-1] != s2[-1];
+
+	int result = std::min(dam_level_r(s1.substr(0, s1_len - 1), s2) + 1,
+						  dam_level_r(s1, s2.substr(0, s2_len - 1)) + 1,
+						  dam_level_r(s1.substr(0, s1_len - 1),
+									  s2.substr(0, s2_len - 1)) +
+						  int(match_fault));
+
+	if (s1_len > 2 && s2_len > 2 &&
+			s1[s1_len - 1] == s2[s2_len - 2] &&
+			s1[s1_len - 2] == s2[s2_len - 1])
+		result = std::min(result, dam_level_r(s1.substr(0, s1_len - 2),
+											  s2.substr(0, s2_len - 2)) + 1);
+
+	return result;
 }
