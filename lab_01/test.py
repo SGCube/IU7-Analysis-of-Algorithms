@@ -1,9 +1,13 @@
 # Testing system
 from os import listdir
+
 import leven as lev
 import damerau_leven_r as dam_r
 import damerau_leven_m as dam_m
 
+# 0 - Levenshtein (matrix)
+# 1 - Damerau-Levenshtein (matrix)
+# 2 - Damerau-Levnshtein (recursive)
 
 def test():
     # load all test files
