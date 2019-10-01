@@ -1,10 +1,10 @@
 # Report
-.log
-.toc
-.aux
-.synctex.gz
-.graphml
-.rsf
+*.log
+*.toc
+*.aux
+*.synctex.gz
+*.graphml
+*.rsf
 
 .DS_Store
 .idea/
