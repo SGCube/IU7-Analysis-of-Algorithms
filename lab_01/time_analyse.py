@@ -17,6 +17,10 @@ def time_analyse():
 
     max_length_to_measure = 10
 
+    file_lev = open("time_leven.txt", "w")
+    file_dam_m = open("time_dam_m.txt", "w")
+    file_dam_r = open("time_dam_r.txt", "w")
+
     for current_length in range(1, max_length_to_measure + 1):
         # Test amount definition
         measure_amount = 1000
@@ -63,6 +67,14 @@ def time_analyse():
         print("Даверау-Левенштейн (матричный): ", results[1])
         print("Дамерау-Левенштейн (рекурсивный): ", results[2])
         print()
+
+        file_lev.write("(%d,%d) " % (current_length, results[0]))
+        file_dam_m.write("(%d,%d) " % (current_length, results[1]))
+        file_dam_r.write("(%d,%d) " % (current_length, results[2]))
+
+    file_lev.close()
+    file_dam_m.close()
+    file_dam_r.close()
 
 
 if __name__ == "__main__":
