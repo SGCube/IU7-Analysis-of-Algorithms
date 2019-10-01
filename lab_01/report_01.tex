@@ -1,65 +1,13 @@
-﻿\documentclass[12pt]{report}
+\documentclass[12pt]{report}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english,russian]{babel}
 \usepackage{listings}
+\usepackage{graphicx}
 
 \usepackage{tikz}
-\usepackage{flowchart}
-\usetikzlibrary{graphs}
-\usetikzlibrary{arrows}
-
-\usepackage{pgf}
-\makeatletter
-\pgfkeys{/pgf/.cd,
-cycleshape w/.initial=2mm
-}
-\pgfdeclareshape{cyclebegshape}
-{
-\inheritsavedanchors[from=rectangle]
-\inheritanchorborder[from=rectangle]
-\inheritanchor[from=rectangle]{center}
-\inheritanchor[from=rectangle]{north}
-\inheritanchor[from=rectangle]{west}
-\inheritanchor[from=rectangle]{east}
-\inheritanchor[from=rectangle]{south}
-\backgroundpath
-{
-\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
-\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-\pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/cycleshape w}}
-\pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@yb}}{\pgfpoint{0ex}{-\pgfutil@tempdima}}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@yb}}{\pgfpoint{\pgfutil@tempdima}{0ex}}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@yb}}{\pgfpoint{-\pgfutil@tempdima}{0ex}}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@yb}}{\pgfpoint{0ex}{-\pgfutil@tempdima}}}
-\pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
-\pgfpathclose
-}
-}
-\pgfdeclareshape{cycleendshape}
-{
-\inheritsavedanchors[from=rectangle]
-\inheritanchorborder[from=rectangle]
-\inheritanchor[from=rectangle]{center}
-\inheritanchor[from=rectangle]{north}
-\inheritanchor[from=rectangle]{west}
-\inheritanchor[from=rectangle]{east}
-\inheritanchor[from=rectangle]{south}
-\backgroundpath
-{
-\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
-\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-\pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/cycleshape w}}
-\pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@ya}}{\pgfpoint{0ex}{\pgfutil@tempdima}}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@ya}}{\pgfpoint{-\pgfutil@tempdima}{0ex}}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@ya}}{\pgfpoint{\pgfutil@tempdima}{0ex}}}
-\pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@ya}}{\pgfpoint{0ex}{\pgfutil@tempdima}}}
-\pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
-\pgfpathclose
-}
-}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
 
 \renewcommand\contentsname{Оглавление}
 
@@ -98,7 +46,7 @@ escapeinside={\#*}{*)}   % если нужно добавить коммента
 
         \begin{center}
             \large
-            {\slГосударственное образовательное учреждение высшего профессионального образования\\
+            {\sl Государственное образовательное учреждение высшего профессионального образования\\
             {\bf«Московский государственный технический университет имени Н. Э. Баумана»\\
 				(МГТУ им. Н.Э. Баумана)}}
 				\noindent\rule{\textwidth}{2pt}
@@ -110,13 +58,13 @@ escapeinside={\#*}{*)}   % если нужно добавить коммента
 
 				{\scshape\large Лабораторная работа №1 \par}
 				\vspace{0.5cm}	
-				{\scshape\large по курсу "Анализ алгоритмов" \par}
+				{\scshape\large по курсу «Анализ алгоритмов» \par}
 				\vspace{1.5cm}
 				{\huge\bfseries Расстояние Левенштейна и Дамерау-Левенштейна \par}
 				\vspace{2cm}
-				\large Выполнил: Сорокин Антон, гр. ИУ7-52Б\\
+				\large Выполнил: Сорокин А.П., гр. ИУ7-52Б\\
 				\vspace{0.5cm}
-				{\largeПреподаватели: Волкова Л.Л., Строганов Ю.В.}
+				{\large Преподаватели: Волкова Л.Л., Строганов Ю.В.}
 			
 				\vfill
 				\large \textit {Москва, 2019г.}
@@ -209,6 +157,28 @@ escapeinside={\#*}{*)}   % если нужно добавить коммента
 	\chapter{Конструкторская часть}
 
 	\section{Схемы алгоритмов}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\linewidth]{leven}
+		\caption{Алгоритм Левенштейна}
+		\label{fig:leven}
+	\end{figure}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\linewidth]{damleven}
+		\caption{Алгоритм Дамерау-Левенштейна (матричная реализация)}
+		\label{fig:damleven}
+	\end{figure}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\linewidth]{damleven_r}
+		\caption{Алгоритм Дамерау-Левенштейна (рекурсивная реализация)}
+		\label{fig:damlevenr}
+	\end{figure}
+	
+	
 
 	\section{Структуры данных}
 	
@@ -309,43 +279,74 @@ escapeinside={\#*}{*)}   % если нужно добавить коммента
 	    return result
 	\end{lstlisting}
 
+	\newpage
+
+	\section{Тесты}
+	Для проверки корректности работы были подготовлены следующие функциональные тесты:\\
+	\begin{table}
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		\bf{Строка 1} & \bf{Строка 2} & \bf{Ожидание} & \bf{Результат}\\\hline
+		<пустая> & <пустая> & 0 0 0 & 0 0 0\\\hline
+		<пустая> & а & 1 1 1 & 1 1 1\\\hline
+		а & <пустая> & 1 1 1 & 1 1 1\\\hline
+		а & а & 0 0 0 & 0 0 0\\\hline
+		а & б & 1 1 1 & 1 1 1\\\hline
+		азы & базы & 1 1 1 & 1 1 1\\\hline
+		компютер & компьютер & 1 1 1 & 1 1 1\\\hline
+		данны & данные & 1 1 1 & 1 1 1\\\hline
+		email.ru & mail.ru & 1 1 1 & 1 1 1\\\hline
+		programmmer & programmer & 1 1 1 & 1 1 1\\\hline
+		mail.rus & mail.ru & 1 1 1 & 1 1 1\\\hline
+		ашибка & ошибка & 1 1 1 & 1 1 1\\\hline
+		алгоритм & алгорифм & 1 1 1 & 1 1 1\\\hline
+		копия & копии & 1 1 1 & 1 1 1\\\hline
+		укрсовой & курсовой & 2 1 1 & 2 1 1\\\hline
+		аглоритм & алгоритм & 2 1 1 & 2 1 1\\\hline
+		унивре & универ & 2 1 1 & 2 1 1\\\hline
+		курс & курсовой & 4 4 4 & 4 4 4\\\hline
+		курсовой & курс & 4 4 4 & 4 4 4\\\hline
+		курсовой & курсовик & 2 2 2 & 2 2 2\\\hline
+		код & закодировать & 9 9 9 & 9 9 9\\\hline
+		закодировать & код & 9 9 9 & 9 9 9\\\hline
+		ccoders & recoding & 5 5 5 & 5 5 5\\\hline
+		header & subheader & 3 3 3 & 3 3 3\\\hline
+		subheader & header & 3 3 3 & 3 3 3\\\hline
+		subheader & overheader & 4 4 4 & 4 4 4\\\hline
+		\end{tabular}
+		\caption{Функциональные тесты}
+	\end{table}
+
 	\chapter{Экспериментальная часть}
 	\section{Примеры работы}
-	\section{Тесты}
-	\begin{tabular}{|c|c|c|c|}
-	\hline
-	Строка 1 & Строка 2 & Ожидание & Результат\\\hline
-	<пустая> & <пустая> & 0 0 0 & 0 0 0\\\hline
-	<пустая> & а & 1 1 1 & 1 1 1\\\hline
-	а & <пустая> & 1 1 1 & 1 1 1\\\hline
-	а & а & 0 0 0 & 0 0 0\\\hline
-	а & б & 1 1 1 & 1 1 1\\\hline
-	азы & базы & 1 1 1 & 1 1 1\\\hline
-	компютер & компьютер & 1 1 1 & 1 1 1\\\hline
-	данны & данные & 1 1 1 & 1 1 1\\\hline
-	email.ru & mail.ru & 1 1 1 & 1 1 1\\\hline
-	programmmer & programmer & 1 1 1 & 1 1 1\\\hline
-	mail.rus & mail.ru & 1 1 1 & 1 1 1\\\hline
-	ашибка & ошибка & 1 1 1 & 1 1 1\\\hline
-	алгоритм & алгорифм & 1 1 1 & 1 1 1\\\hline
-	копия & копии & 1 1 1 & 1 1 1\\\hline
-	укрсовой & курсовой & 2 1 1 & 2 1 1\\\hline
-	аглоритм & алгоритм & 2 1 1 & 2 1 1\\\hline
-	унивре & универ & 2 1 1 & 2 1 1\\\hline
-	курс & курсовой & 4 4 4 & 4 4 4\\\hline
-	курсовой & курс & 4 4 4 & 4 4 4\\\hline
-	курсовой & курсовик & 2 2 2 & 2 2 2\\\hline
-	код & закодировать & 9 9 9 & 9 9 9\\\hline
-	закодировать & код & 9 9 9 & 9 9 9\\\hline
-	ccoders & recoding & 5 5 5 & 5 5 5\\\hline
-	header & subheader & 3 3 3 & 3 3 3\\\hline
-	subheader & header & 3 3 3 & 3 3 3\\\hline
-	subheader & overheader & 4 4 4 & 4 4 4\\\hline
-	\end{tabular}
+	
    \section{Исследование времени выполнения}
+   \begin{tikzpicture}
+   \begin{axis}
+   \addplot coordinates {
+   	(1,2) (2,5) (3,9) (4,14) (5,1940) (6,3180) (7,38700) (8,51200) (9,64100) (10,71299) 
+   };
+	\addplot coordinates {
+		(1,2) (2,5) (3,9) (4,15) (5,2109) (6,6709) (7,42300) (8,55600) (9,69299) (10,78000) 
+	};
+   \end{axis}
+   \end{tikzpicture}
+   
+   \begin{tikzpicture}
+   \begin{axis}
+   \addplot coordinates {
+   (1,2) (2,5) (3,9) (4,15) (5,2109) (6,6709) (7,42300) (8,55600) (9,69299) (10,78000) 
+   };
+   \addplot coordinates {
+   	(1,2) (2,9) (3,45) (4,233) (5,119869) (6,667230) (7,37966999) (8,212703900) (9,1137897600) (10,6538969300) 
+   };
+   \end{axis}
+   \end{tikzpicture}
 
    \chapter*{Заключение}
 	\addcontentsline{toc}{chapter}{Заключение}
+	Алгоритмы нахождения расстояния Левенштейна и Дамерау-Левенштейна между строками были изучены и реализованы: были реализованы три варианта алгоритма для получения навыка динамического программирования.\\
+	Были исследованы затраты данных вариантов реализации по времени и памяти. Экспериментально было подтверждено, что рекурсивный вариант реализации алгоритма значительно проигрывает матричным вариантам при росте длины входных строк по обоим показателям.
 
 	\chapter*{Список литературы}
 	\addcontentsline{toc}{chapter}{Список литературы}
