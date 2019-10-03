@@ -9,6 +9,7 @@ import damerau_leven_m as dam_m
 # 1 - Damerau-Levenshtein (matrix)
 # 2 - Damerau-Levnshtein (recursive)
 
+
 def test():
     # load all test files
     file_list = listdir("tests/")
