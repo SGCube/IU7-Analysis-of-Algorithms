@@ -1,0 +1,3 @@
+mail.rus
+mail.ru
+1 1 1
