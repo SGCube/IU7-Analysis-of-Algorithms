@@ -9,6 +9,13 @@
 *.graphml
 *.rsf
 
+# Visual Studio / Visual Code
+**/.vscode/**
+**/build*/**
+**/.vs/**
+*.sln
+**/Debug/**
+
 .DS_Store
 .idea/
 
