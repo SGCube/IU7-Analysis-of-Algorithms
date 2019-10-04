@@ -97,8 +97,8 @@ bool Matrix::operator== (const Matrix &right)
         if (_rows != right._rows || _columns != right._columns)
             return false;
  
-        for (int i = 0; i < _rows; i++)
-            for (int j = 0; j < _columns; j++)
+        for (size_t i = 0; i < _rows; i++)
+            for (size_t j = 0; j < _columns; j++)
                 if (ptr[i][j] != right.ptr[i][j])
                     return false;
     }
@@ -117,12 +117,12 @@ const Matrix &Matrix::operator= (const Matrix &right)
             _columns = right._columns;
 
             ptr = new int*[_rows];
-            for (int i = 0; i < _rows; i++)
+            for (size_t i = 0; i < _rows; i++)
                 ptr[i] = new int[right._columns];
         }
  
-        for (int i = 0; i < _rows; i++)
-            for (int j = 0; j < _columns; j++)
+        for (size_t i = 0; i < _rows; i++)
+            for (size_t j = 0; j < _columns; j++)
                 ptr[i][j] = right.ptr[i][j];
     }
  
