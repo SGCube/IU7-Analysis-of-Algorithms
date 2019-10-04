@@ -1,3 +1,6 @@
+# Executables
+*.exe
+
 # Report
 *.log
 *.toc
