@@ -1,181 +1,130 @@
-#include "matrix.h"
+#include "matrix.hpp"
 #include <iostream>
 #include <cstdlib>
 
-template <typename T>
 Matrix::Matrix(size_t rows, size_t columns)
 {
     _rows = rows;
-    ptr = new Array[_rows];
+    _columns = columns;
+    ptr = new int*[_rows];
 
-    for (size_t i = 0; i < rows; i++)
-        ptr[i].setSize(columns);
-        for (size_t j = 0; j < ptr->getSize(); j++)
+    for (size_t i = 0; i < _rows; i++)
+    {
+        ptr[i] = new int[_columns];
+        for (size_t j = 0; j < _columns; j++)
             ptr[i][j] = 0;
+    }
 }
  
-Matrix::Matrix(  Matrix &matrixToCopy ) // конструктор копии
-    :size(matrixToCopy.size)              // инициализатор размера массива
+Matrix::~Matrix()
 {
-    ptr = new Array [size]; // выделить место в памяти для матрицы
- 
-    for (int ix = 0; ix < size; ix++) // перераспределяем выделенную память
-        ptr[ix].setSize(size); // количество столбцов
- 
-    for (int ix = 0; ix < size; ix++)
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            ptr[ix][jx] = matrixToCopy[ix][jx];// заполняем матрицу значениями матрицы matrixToCopy
+   delete [] ptr;
 }
  
-Matrix::~Matrix() // десструктор класса Matrix
+size_t Matrix::get_rows() const
 {
-   delete  [] ptr; // освободить память, удалив матрицу
+    return _rows;
 }
- 
-int Matrix::getSize() const // возвратить количество элементов матрицы
+
+size_t Matrix::get_columns() const
 {
-    return size;
+    return _columns;
 }
  
-Array *Matrix::getPtr() const
+int **Matrix::get_ptr() const
 {
     return ptr;
 }
  
-// перегруженный оператор вывода для класса Array (вывод элементов массива на экран)
-ostream &operator<< (ostream &output, const Matrix &obj)
+int *Matrix::operator[](size_t index)
 {
-    for (int ix = 0; ix < obj.size; ix++)
+    if (index < 0 || index >= _rows)
     {
-        for (int jx = 0; jx < obj.ptr->getSize(); jx++)
+        std::cerr << "\n Ошибка индекса: " << index << std::endl;
+        exit(1);
+    }
+    return ptr[index];
+}
+ 
+void Matrix::randomize(int min, int max)
+{
+    for (size_t i = 0; i < _rows; i++)
+        for (size_t j = 0; j < _columns; j++)
+            ptr[i][j] = rand() % (max - min + 1) + min;
+}
+
+std::istream& operator>>(std::istream& stream, Matrix& matrix)
+{
+   for (size_t i = 0; i < matrix.get_rows(); i++)
+        for (size_t j = 0; j < matrix.get_columns(); j++)
+            stream >> matrix[i][j];
+
+    return stream;
+}
+
+std::ostream& operator<<(std::ostream& stream, Matrix& matrix)
+{
+   for (size_t i = 0; i < matrix.get_rows(); i++)
+    {
+        for (size_t j = 0; j < matrix.get_columns(); j++)
+            stream << matrix[i][j] << ' ';
+        stream  << std::endl;
+    }
+
+    return stream;
+}
+ 
+Matrix Matrix::operator* (const Matrix &right)
+{
+    if (_columns != right._rows)
+    {
+        std::cout << "Matrices sizes are not matched!\n";
+        exit(1);
+    }
+ 
+    Matrix result(_rows, right._columns);
+    for (size_t i = 0; i < _rows; i++)
+        for (size_t j = 0; j < right._columns; j++)
+            for (size_t k = 0; k < _columns; k++)
+                result.ptr[i][j] += ptr[i][k] * right.ptr[k][j];
+    return result;
+}
+
+bool Matrix::operator== (const Matrix &right)
+{
+    if (&right != this)
+    {
+        if (_rows != right._rows || _columns != right._columns)
+            return false;
+ 
+        for (int i = 0; i < _rows; i++)
+            for (int j = 0; j < _columns; j++)
+                if (ptr[i][j] != right.ptr[i][j])
+                    return false;
+    }
+ 
+    return true;
+}
+ 
+const Matrix &Matrix::operator= (const Matrix &right)
+{
+    if (&right != this)
+    {
+        if (_rows != right._rows || _columns != right._columns)
         {
-            output << setw(5) // под каждое число выделяется 5 позиций
-                   << obj.ptr[ix][jx];
-        }
-        cout << std::endl;
-    }
- 
-    output << std::endl; // перенос маркера на новую строку
- 
-    return output; // позволяет множественный вывод, типа cout << x << y << z << ...
-}
- 
-// перегруженный оператор ввода, для заполнения матрицы с клавиатуры
-istream &operator>> (istream & input, Matrix &obj)
-{
-    for (int ix = 0; ix < obj.size; ix++)
-        for (int jx = 0; jx < obj.ptr->getSize(); jx++)
-            input >> obj.ptr[ix][jx]; // заполняем матрицу
- 
-    return input; // позволяет множественный ввод, типа cin >> x >> y >> z >> ...
-}
- 
-// перегруженный оператор взятия индекса
-Array &Matrix::operator[] (int subscript)
-{
-    if(subscript < 0 || subscript >= size)
-    {
-        std::cerr << "\n Ошибка индекса: " << subscript << std::endl;
-        exit(1); // завершить работу программы, неправильный индекс
-    }
-    return ptr[subscript]; // возврат ссылки на элемент массива
-}
- 
-void Matrix::setMatrix() // заполнение массива
-{
-    for (int ix = 0; ix < size; ix++)
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            cin >> ptr[ix][jx]; // ввод элементов матрицы с клавиатуры
-}
- 
-void Matrix::getMatrix() // вывод массива
-{
-    for (int ix = 0; ix < size; ix++)
-    {
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            cout << setw(5) << ptr[ix][jx]; // вывод элементов матрицы на экран
-        cout << std::endl;
-    }
- 
-    cout << std::endl; // новая строка
-}
- 
-int *Matrix::search(const int key) const // поиск по ключу
-{
-    for (int ix = 0; ix < size; ix++)
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            if ( key == ptr[ix][jx] ) // поиск по ключу
-                return (&ptr[ix][jx]);             // позиция искомого элемента
- 
-    return NULL;
-}
- 
-Matrix Matrix::operator+ (const Matrix &right)
-{
-    if (size != right.size || ptr->getSize() != right.getPtr()->getSize())
-    {
-        cout << "Массивы разного размера!\n";
-        exit(1); // завершить работу программы
-    }
- 
-    Matrix result(size, ptr->getSize());
-    for (int ix = 0; ix < size; ix++)
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            result.ptr[ix][jx] = ptr[ix][jx] + right.ptr[ix][jx];
- 
-    return result; // вернуть сумму
-}
- 
-Matrix Matrix::operator+= (const Matrix &right)
-{
-    if (size != right.size || ptr->getSize() != right.getPtr()->getSize())
-    {
-        cout << "Массивы разного размера!\n";
-        exit(1); // завершить работу программы
-    }
- 
-//    Matrix result(size, ptr->getSize());
-    for (int ix = 0; ix < size; ix++)
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            ptr[ix][jx] = ptr[ix][jx] + right.ptr[ix][jx];
- 
-    return *this; // вернуть сумму
-}
- 
-Matrix Matrix::operator- (const Matrix &right)
-{
-    if (size != right.size || ptr->getSize() != right.getPtr()->getSize())
-    {
-        cout << "Массивы разного размера!\n";
-        exit(1); // завершить работу программы
-    }
- 
-    Matrix result(size, ptr->getSize());
-    for (int ix = 0; ix < size; ix++)
-        for (int jx = 0; jx < ptr->getSize(); jx++)
-            result.ptr[ix][jx] = ptr[ix][jx] - right.ptr[ix][jx];
- 
-    return result; // вернуть сумму
-}
- 
-const Matrix &Matrix::operator= (const Matrix &right) // оператор присваивания
-{
-    if (&right != this) // чтобы не выполнялось самоприсваивание
-    {
-        if (size != right.size || ptr->getSize() != right.getPtr()->getSize())
-        {
-            delete [] ptr; // освободить пространство
-            size = right.size; // установить нужный размер матрицы
-            ptr = new Array [size]; // выделить память под копируемый массив
- 
-            for (int ix = 0; ix < size; ix++) // перераспределяем выделенную память
-                ptr[ix].setSize(right.getPtr()->getSize()); // количество столбцов
+            delete [] ptr;
+            _rows = right._rows;
+            _columns = right._columns;
+
+            ptr = new int*[_rows];
+            for (int i = 0; i < _rows; i++)
+                ptr[i] = new int[right._columns];
         }
  
-        for (int ix = 0; ix < size; ix++)
-            for (int jx = 0; jx < ptr->getSize(); jx++)
-                ptr[ix][jx] = right.ptr[ix][jx]; // скопировать массив
+        for (int i = 0; i < _rows; i++)
+            for (int j = 0; j < _columns; j++)
+                ptr[i][j] = right.ptr[i][j];
     }
  
-    return *this; // разрешает множественное присваивание, например x = t = e
+    return *this;
 }
