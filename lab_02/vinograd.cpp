@@ -53,7 +53,7 @@ Matrix multiply_vinograd_opt(Matrix A, Matrix B)
     for (size_t i = 0; i < M; i++)
     {
         MulH[i] = 0;
-        for (size_t k = 0; k < N; k += 2)
+        for (size_t k = 0; k < N_minus_1; k += 2)
             MulH[i] += A[i][k] * A[i][k + 1];
     }
 
@@ -61,7 +61,7 @@ Matrix multiply_vinograd_opt(Matrix A, Matrix B)
     for (size_t i = 0; i < Q; i++)
     {
         MulV[i] = 0;
-        for (size_t k = 0; k < N; k += 2)
+        for (size_t k = 0; k < N_minus_1; k += 2)
             MulV[i] += B[k][i] * B[k + 1][i];
     }
 
@@ -70,7 +70,7 @@ Matrix multiply_vinograd_opt(Matrix A, Matrix B)
         for (size_t j = 0; j < Q; j++)
         {
             C[i][j] = -MulH[i] - MulV[j];
-            for (size_t k = 0; k < N; k += 2)
+            for (size_t k = 0; k < N_minus_1; k += 2)
                 C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
         }
 
