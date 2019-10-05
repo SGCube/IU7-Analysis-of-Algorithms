@@ -18,12 +18,14 @@ int main(void)
 
     Matrix matrix_c = matrix_a * matrix_b;
     Matrix matrix_c1 = multiply_vinograd(matrix_a, matrix_b);
+    Matrix matrix_c2 = multiply_vinograd_opt(matrix_a, matrix_b);
 
     std::cout << std::endl << matrix_a << std::endl;
     std::cout << matrix_b << std::endl << std::endl;
 
     std::cout << matrix_c << std::endl;
     std::cout << matrix_c1 << std::endl;
+    std::cout << matrix_c2 << std::endl;
 
     return 0;
 }
