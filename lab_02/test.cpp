@@ -1,17 +1,20 @@
 #include <iostream>
 #include <fstream>
 #include "matrix.hpp"
-#include "vinograd.hpp"
+#include "mamult.hpp"
 
-void handle_result(Matrix &expected, Matrix &got)
+void handle_result(int **matr1, unsigned rows1, unsigned cols1,
+        int **matr2, unsigned rows2, unsigned cols2)
 {
-    if (expected == got)
+    if (Matrix::equal(matr1, rows1, cols1, matr2, rows2, cols2))
         std::cout << "PASSED" << std::endl;
     else
     {
         std::cout << "FAILED" << std::endl;
-        std::cout << "Expected:" << std::endl << expected << std::endl;
-        std::cout << "Got:" << std::endl << got << std::endl;
+        std::cout << "Expected:" << std::endl;
+        Matrix::write(std::cout, matr1, rows1, cols1);
+        std::cout << "Got:" << std::endl;
+        Matrix::write(std::cout, matr2, rows2, cols2);
     }
 }
 
@@ -28,34 +31,27 @@ int main(void)
         std::ifstream fin_2(fname_2);
         std::ifstream fin_res(fname_res);
 
-        size_t rows_a = 0, rows_b = 0, rows_c = 0;
-        size_t cols_a = 0, cols_b = 0, cols_c = 0;
+        unsigned rows_a = 0, rows_b = 0, rows_c = 0;
+        unsigned cols_a = 0, cols_b = 0, cols_c = 0;
 
-        fin_1 >> rows_a;
-        fin_1 >> cols_a;
-        fin_2 >> rows_b;
-        fin_2 >> cols_b;
-        fin_res >> rows_c;
-        fin_res >> cols_c;
-
-        Matrix A(rows_a, cols_a), B(rows_b, cols_b), C(rows_c, cols_c);
-        fin_1 >> A;
-        fin_2 >> B;
-        fin_res >> C;
+        int **A = Matrix::read_wsize(fin_1, rows_a, cols_a);
+        int **B = Matrix::read_wsize(fin_2, rows_b, cols_b);
+        int **C = Matrix::read_wsize(fin_res, rows_c, cols_c);
+        int **CC = Matrix::init(rows_a, cols_b);
 
         std::cout << "TEST " << i << ": " << std::endl;
-        std::cout << A << B;
 
-        Matrix test_0 = A * B;
-        Matrix test_1 = multiply_vinograd(A, B);
-        Matrix test_2 = multiply_vinograd_opt(A, B);
-
+        multiply_classic(A, B, CC, rows_a, cols_a, cols_b);
         std::cout << "1) Classic: ";
-        handle_result(C, test_0);
+        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+
+        multiply_vinograd(A, B, CC, rows_a, cols_a, cols_b);
         std::cout << "2) Vinograd: ";
-        handle_result(C, test_1);
-        std::cout << "3) Vinograd (optimized): ";
-        handle_result(C, test_2);
+        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+
+        multiply_vinograd_opt(A, B, CC, rows_a, cols_a, cols_b);
+        std::cout << "3) V. Optimized: ";
+        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
 
         fin_1.close();
         fin_2.close();

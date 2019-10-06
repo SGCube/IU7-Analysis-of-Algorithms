@@ -2,129 +2,86 @@
 #include <iostream>
 #include <cstdlib>
 
-Matrix::Matrix(size_t rows, size_t columns)
+namespace Matrix
 {
-    _rows = rows;
-    _columns = columns;
-    ptr = new int*[_rows];
-
-    for (size_t i = 0; i < _rows; i++)
+    int **init(unsigned rows, unsigned cols)
     {
-        ptr[i] = new int[_columns];
-        for (size_t j = 0; j < _columns; j++)
-            ptr[i][j] = 0;
-    }
-}
- 
-Matrix::~Matrix()
-{
-   delete [] ptr;
-}
- 
-size_t Matrix::get_rows() const
-{
-    return _rows;
-}
-
-size_t Matrix::get_columns() const
-{
-    return _columns;
-}
- 
-int **Matrix::get_ptr() const
-{
-    return ptr;
-}
- 
-int *Matrix::operator[](size_t index)
-{
-    if (index < 0 || index >= _rows)
-    {
-        std::cerr << "\n Ошибка индекса: " << index << std::endl;
-        exit(1);
-    }
-    return ptr[index];
-}
- 
-void Matrix::randomize(int min, int max)
-{
-    for (size_t i = 0; i < _rows; i++)
-        for (size_t j = 0; j < _columns; j++)
-            ptr[i][j] = rand() % (max - min + 1) + min;
-}
-
-std::istream& operator>>(std::istream& stream, Matrix& matrix)
-{
-   for (size_t i = 0; i < matrix.get_rows(); i++)
-        for (size_t j = 0; j < matrix.get_columns(); j++)
-            stream >> matrix[i][j];
-
-    return stream;
-}
-
-std::ostream& operator<<(std::ostream& stream, Matrix& matrix)
-{
-   for (size_t i = 0; i < matrix.get_rows(); i++)
-    {
-        for (size_t j = 0; j < matrix.get_columns(); j++)
-            stream << matrix[i][j] << ' ';
-        stream  << std::endl;
-    }
-
-    return stream;
-}
- 
-Matrix Matrix::operator* (const Matrix &right)
-{
-    if (_columns != right._rows)
-    {
-        std::cout << "Matrices sizes are not matched!\n";
-        exit(1);
-    }
- 
-    Matrix result(_rows, right._columns);
-    for (size_t i = 0; i < _rows; i++)
-        for (size_t j = 0; j < right._columns; j++)
-            for (size_t k = 0; k < _columns; k++)
-                result.ptr[i][j] += ptr[i][k] * right.ptr[k][j];
-    return result;
-}
-
-bool Matrix::operator== (const Matrix &right)
-{
-    if (&right != this)
-    {
-        if (_rows != right._rows || _columns != right._columns)
-            return false;
- 
-        for (size_t i = 0; i < _rows; i++)
-            for (size_t j = 0; j < _columns; j++)
-                if (ptr[i][j] != right.ptr[i][j])
-                    return false;
-    }
- 
-    return true;
-}
- 
-const Matrix &Matrix::operator= (const Matrix &right)
-{
-    if (&right != this)
-    {
-        if (_rows != right._rows || _columns != right._columns)
+        int **matr = new int * [rows];
+        for (unsigned i = 0; i < rows; i++)
         {
-            delete [] ptr;
-            _rows = right._rows;
-            _columns = right._columns;
-
-            ptr = new int*[_rows];
-            for (size_t i = 0; i < _rows; i++)
-                ptr[i] = new int[right._columns];
+            matr[i] = new int[cols];
+            for (unsigned j = 0; j < cols; j++)
+                matr[i][j] = 0;
         }
- 
-        for (size_t i = 0; i < _rows; i++)
-            for (size_t j = 0; j < _columns; j++)
-                ptr[i][j] = right.ptr[i][j];
+        return matr;
     }
- 
-    return *this;
-}
+
+    void destroy(int **matr, unsigned rows)
+    {
+        for (unsigned i = 0; i < rows; i++)
+            delete [] matr[i];
+        delete [] matr;
+    }
+
+    void randomize(int **matr, unsigned rows, unsigned cols, int min, int max)
+    {
+        for (unsigned i = 0; i < rows; i++)
+            for (unsigned j = 0; j < cols; j++)
+                matr[i][j] = rand() % (max - min + 1) + min;
+    }
+
+    int **randinit(unsigned rows, unsigned cols, int min, int max)
+    {
+        int **matr = new int * [rows];
+        for (unsigned i = 0; i < rows; i++)
+        {
+            matr[i] = new int[cols];
+            for (unsigned j = 0; j < cols; j++)
+                matr[i][j] = rand() % (max - min + 1) + min;
+        }
+        return matr;
+    }
+
+    int **read_wsize(std::istream& stream, unsigned &rows, unsigned &cols)
+    {
+        stream >> rows;
+        stream >> cols;
+        int **matr = Matrix::init(rows, cols);
+
+        for (unsigned i = 0; i < rows; i++)
+            for (unsigned j = 0; j < cols; j++)
+                stream >> matr[i][j];
+
+        return matr;
+    }
+
+    void read(std::istream& stream, int **matr, unsigned rows, unsigned cols)
+    {
+        for (unsigned i = 0; i < rows; i++)
+            for (unsigned j = 0; j < cols; j++)
+                stream >> matr[i][j];
+    }
+
+    void write(std::ostream& stream, int **matr, unsigned rows, unsigned cols)
+    {
+        for (unsigned i = 0; i < rows; i++)
+        {
+            for (unsigned j = 0; j < cols; j++)
+                stream << matr[i][j] << ' ';
+            stream  << std::endl;
+        }
+    }
+    
+    bool equal(int **matr1, unsigned rows1, unsigned cols1,
+        int **matr2, unsigned rows2, unsigned cols2)
+    {
+        if (rows1 != rows2 || cols1 != cols2)
+            return false;
+
+        for (unsigned i = 0; i < rows1; i++)
+            for (unsigned j = 0; j < cols1; j++)
+                if (matr1[i][j] != matr2[i][j])
+                    return false;
+        return true;
+    }
+};

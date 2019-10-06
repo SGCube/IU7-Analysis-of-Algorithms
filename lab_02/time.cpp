@@ -4,7 +4,7 @@
 #include <ctime>
 
 #include "matrix.hpp"
-#include "vinograd.hpp"
+#include "mamult.hpp"
 
 unsigned long long tick(void)
 {
@@ -13,38 +13,38 @@ unsigned long long tick(void)
 	return d;
 }
 
-void time_measure(std::ofstream &file, size_t start_size, size_t end_size, size_t step)
+void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size, unsigned step)
 {
     unsigned long long start_time = 0, end_time = 0;
-    size_t test_repeats = 100;
+    unsigned test_repeats = 100;
     file << "Size;Classic;Vinograd;VinOptimized\n";
 
-    for (size_t i = start_size; i <= end_size; i += step)
+    for (unsigned size = start_size; size <= end_size; size += step)
     {
         unsigned long long results[3] = { 0, 0, 0 };
-        for (size_t k = 0; k < test_repeats; k++)
+        for (unsigned k = 0; k < test_repeats; k++)
         {
-            Matrix matrix_a(i, i), matrix_b(i, i);
-            matrix_a.randomize(-10, 10);
-            matrix_b.randomize(-10, 10);
+            int **matrix_a = Matrix::randinit(size, size, -10, 10);
+            int **matrix_b = Matrix::randinit(size, size, -10, 10);
+            int **matrix_c = Matrix::init(size, size);
 
             start_time = tick();
-            Matrix matrix_c = matrix_a * matrix_b;
+            multiply_classic(matrix_a, matrix_b, matrix_c, size, size, size);
             end_time = tick();
             results[0] += end_time - start_time;
 
             start_time = tick();
-            Matrix matrix_c1 = multiply_vinograd(matrix_a, matrix_b);
+            multiply_vinograd(matrix_a, matrix_b, matrix_c, size, size, size);
             end_time = tick();
             results[1] += end_time - start_time;
 
             start_time = tick();
-            Matrix matrix_c2 = multiply_vinograd_opt(matrix_a, matrix_b);
+            multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, size, size, size);
             end_time = tick();
             results[2] += end_time - start_time;
         }
-        file << i;
-        for (size_t k = 0; k < 3; k++)
+        file << size;
+        for (unsigned k = 0; k < 3; k++)
         {
             results[k] /= test_repeats;
             file << ";" << results[k];

@@ -3,29 +3,42 @@
 #include <ctime>
 
 #include "matrix.hpp"
-#include "vinograd.hpp"
+#include "mamult.hpp"
 
 int main(void)
 {
     srand(time(NULL));
 
-    size_t m, n, q;
+    unsigned m, n, q;
+    std::cout << "Enter 3 size of matrices (M, N, Q): ";
     std::cin >> m >> n >> q;
 
-    Matrix matrix_a(m, n), matrix_b(n, q);
-    matrix_a.randomize(-10, 10);
-    matrix_b.randomize(-10, 10);
+    int **matrix_a = Matrix::randinit(m, n, -10, 10);
+    int **matrix_b = Matrix::randinit(n, q, -10, 10);
 
-    Matrix matrix_c = matrix_a * matrix_b;
-    Matrix matrix_c1 = multiply_vinograd(matrix_a, matrix_b);
-    Matrix matrix_c2 = multiply_vinograd_opt(matrix_a, matrix_b);
+    std::cout << std::endl;
+    Matrix::write(std::cout, matrix_a, m, n);
+    std::cout << std::endl;
+    Matrix::write(std::cout, matrix_b, n, q);
+    std::cout << std::endl;
 
-    std::cout << std::endl << matrix_a << std::endl;
-    std::cout << matrix_b << std::endl << std::endl;
+    int **matrix_c = Matrix::init(m, q);
 
-    std::cout << matrix_c << std::endl;
-    std::cout << matrix_c1 << std::endl;
-    std::cout << matrix_c2 << std::endl;
+    multiply_classic(matrix_a, matrix_b, matrix_c, m, n, q);
+    Matrix::write(std::cout, matrix_c, m, q);
+    std::cout << std::endl;
+
+    multiply_vinograd(matrix_a, matrix_b, matrix_c, m, n, q);
+    Matrix::write(std::cout, matrix_c, m, q);
+    std::cout << std::endl;
+
+    multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
+    Matrix::write(std::cout, matrix_c, m, q);
+    std::cout << std::endl;
+
+    Matrix::destroy(matrix_a, m);
+    Matrix::destroy(matrix_b, n);
+    Matrix::destroy(matrix_a, q);
 
     return 0;
 }
