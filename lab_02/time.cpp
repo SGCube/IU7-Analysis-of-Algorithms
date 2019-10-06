@@ -71,7 +71,7 @@ int main(void)
         return -1;
     }
 
-    time_measure(csv_even, 10, 100, 10);
+    time_measure(csv_even, 100, 1000, 100);
     csv_even.close();
 
     std::ofstream csv_odd("time_analyze_odd.csv");
@@ -81,7 +81,7 @@ int main(void)
         return -1;
     }
 
-    time_measure(csv_odd, 11, 101, 10);
+    time_measure(csv_odd, 101, 1010, 100);
     csv_odd.close();
 
     return 0;
