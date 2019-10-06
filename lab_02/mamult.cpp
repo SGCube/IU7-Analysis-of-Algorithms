@@ -78,12 +78,9 @@ unsigned M, unsigned N, unsigned Q)
             C[i][j] = -MulH[i] - MulV[j];
             for (unsigned k = 0; k < N_minus_1; k += 2)
                 C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
-        }
-
-    if (is_odd)
-        for (unsigned i = 0; i < M; i++)
-            for (unsigned j = 0; j < Q; j++)
+            if (is_odd)
                 C[i][j] += A[i][N_minus_1] * B[N_minus_1][j];
+        }        
 
     delete [] MulH;
     delete [] MulV;
