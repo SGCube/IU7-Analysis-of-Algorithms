@@ -26,37 +26,33 @@ std::string random_string(unsigned size)
     return s;
 }
 
-void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size, unsigned step)
+void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size,
+                    unsigned step, unsigned (*f1)(std::string, std::string, bool),
+                    unsigned (*f2)(std::string, std::string, bool))
 {
     unsigned long long start_time = 0, end_time = 0;
     unsigned test_repeats = 100;
-    file << "Size;Leven;DamerauM;DamerauR\n";
 
     for (unsigned size = start_size; size <= end_size; size += step)
     {
-        unsigned long long results[3] = { 0, 0, 0 };
+        unsigned long long results[2] = { 0, 0 };
         for (unsigned k = 0; k < test_repeats; k++)
         {
             std::string s1 = random_string(size);
             std::string s2 = random_string(size);
 
             start_time = rdtsc();
-            levenshtein(s1, s2);
+            f1(s1, s2, false);
             end_time = rdtsc();
             results[0] += end_time - start_time;
 
             start_time = rdtsc();
-            damerau(s1, s2);
+            f2(s1, s2, false);
             end_time = rdtsc();
             results[1] += end_time - start_time;
-
-            start_time = rdtsc();
-            damerau_r(s1, s2);
-            end_time = rdtsc();
-            results[2] += end_time - start_time;
         }
         file << size;
-        for (unsigned k = 0; k < 3; k++)
+        for (unsigned k = 0; k < 2; k++)
         {
             results[k] /= test_repeats;
             file << ";" << results[k];
@@ -69,15 +65,27 @@ int main(void)
 {
     srand(time(NULL));
 
-    std::ofstream csv_file("TimeResults.csv");
-    if (!csv_file.is_open())
+    std::ofstream csv_matrix("report\\MatrixTime.csv");
+    if (!csv_matrix.is_open())
     {
         std::cout << "File open error!";
         return -1;
     }
 
-    time_measure(csv_file, 1, 10, 1);
-    csv_file.close();
+    csv_matrix << "Size;Leven;Damerau\n";
+    time_measure(csv_matrix, 10, 70, 10, levenshtein, damerau);
+    csv_matrix.close();
+
+    std::ofstream csv_damerau("report\\DamerauTime.csv");
+    if (!csv_damerau.is_open())
+    {
+        std::cout << "File open error!";
+        return -1;
+    }
+
+    csv_damerau << "Size;Matrix;Recursive\n";
+    time_measure(csv_damerau, 1, 10, 1, damerau, damerau_r);
+    csv_damerau.close();
 
     return 0;
 }
