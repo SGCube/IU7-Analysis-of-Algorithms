@@ -22,49 +22,49 @@
     <td>Умножение матриц</th>
     <td>✔️</th>
     <td>⌛️</th>
-    <td>0</th>
+    <td></th>
    </tr>
    <tr>
     <td>3</td>
     <td>Сортировка массивов</th>
     <td>⭕️</th>
     <td>⭕️</th>
-    <td>0</th>
+    <td></th>
    </tr>
    <tr>
     <td>4</td>
     <td>Многопоточность</th>
     <td>⭕️</th>
     <td>⭕️</th>
-    <td>0</th>
+    <td></th>
    </tr>
    <tr>
     <td>5</td>
     <td></th>
     <td></th>
     <td></th>
-    <td>0</th>
+    <td></th>
    </tr>
    <tr>
     <td>6</td>
     <td></th>
     <td></th>
     <td></th>
-    <td>0</th>
+    <td></th>
    </tr>
    <tr>
     <td>7</td>
     <td></th>
     <td></th>
     <td></th>
-    <td>0</th>
+    <td></th>
    </tr>
    <tr>
     <td>8</td>
     <td></th>
     <td></th>
     <td></th>
-    <td>0</th>
+    <td></th>
    </tr>
 </table>
 
