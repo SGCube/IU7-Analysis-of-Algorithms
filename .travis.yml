@@ -17,8 +17,9 @@ before_install:
 - cd -
 
 script:
+- cmake CMakeLists.txt
 - make
-- valgrind —leak-check=full -q ./run_tests.exe
+- valgrind —leak-check=full -q ./lab_01/test.exe
 
 after_script:
 - make clean
