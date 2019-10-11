@@ -19,7 +19,7 @@ before_install:
 script:
 - cmake CMakeLists.txt
 - make
-- valgrind —leak-check=full -q ./lab_01/test.exe
+- valgrind --tool=memcheck ./lab_01/test.exe
 
 after_script:
 - make clean
