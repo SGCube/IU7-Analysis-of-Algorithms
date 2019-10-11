@@ -19,23 +19,23 @@
    </tr>
    <tr>
     <td>2</td>
-    <td></th>
-    <td></th>
-    <td></th>
+    <td>Умножение матриц</th>
+    <td>✔️</th>
+    <td>⌛️</th>
     <td>0</th>
    </tr>
    <tr>
     <td>3</td>
-    <td></th>
-    <td></th>
-    <td></th>
+    <td>Сортировка массивов</th>
+    <td>⭕️</th>
+    <td>⭕️</th>
     <td>0</th>
    </tr>
    <tr>
     <td>4</td>
-    <td></th>
-    <td></th>
-    <td></th>
+    <td>Многопоточность</th>
+    <td>⭕️</th>
+    <td>⭕️</th>
     <td>0</th>
    </tr>
    <tr>
