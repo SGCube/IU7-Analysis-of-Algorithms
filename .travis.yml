@@ -2,7 +2,7 @@ addons:
 apt:
 update: true
 
-language: c++
+language: cpp
 
 before_install:
 - sudo apt update
