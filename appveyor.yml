@@ -6,7 +6,7 @@ init:
     # вместе с тем, она присутствует в официальных примерах, так что пусть будет:
     - git config --global core.autocrlf input
 
-clone_folder: c:\projects\my-prj # выбираем локальную директорию для клонирования
+clone_folder: D:\Programming\education\Analysis-of-Algorithms # выбираем локальную директорию для клонирования
 shallow_clone: true              # копируем только последний коммит, без истории (git clone --depth 1)
 
 matrix:
