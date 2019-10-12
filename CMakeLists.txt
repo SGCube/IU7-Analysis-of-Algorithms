@@ -7,3 +7,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 add_subdirectory(lab_01)
+add_subdirectory(lab_02)
