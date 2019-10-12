@@ -17,6 +17,10 @@ before_install:
 - cd -
 
 script:
+- mkdir build
+- cd build
+- cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake --build .
 - make
 - valgrind --tool=memcheck ./lab_01/test.exe
 
