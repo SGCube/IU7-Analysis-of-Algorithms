@@ -1,6 +1,9 @@
 # Executables
 *.exe
 
+# Make
+**/CMakeLists/**
+
 # Report
 *.log
 *.toc
