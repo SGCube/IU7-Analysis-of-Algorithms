@@ -23,6 +23,7 @@ script:
 - cmake --build .
 - make
 - valgrind --tool=memcheck ./lab_01/test.exe
+- valgrind --tool=memcheck ./lab_02/test.exe
 
 after_script:
 - make clean
