@@ -8,7 +8,7 @@ stages:
   - style
   - build
   - memcheck
-  - test
+  - unit_test
 
 before_install:
 - sudo apt update
@@ -40,7 +40,7 @@ memcheck:
   install: sudo apt install valgrind
   script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
 
-unit_tests:
-  stage: test
+unit_test:
+  stage: unit_test
   script: ./lab_01/test_01.exe
   after_script: make clean
