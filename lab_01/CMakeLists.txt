@@ -6,4 +6,4 @@ add_executable(lab_01.exe main.cpp leven.cpp)
 
 enable_testing()
 add_executable(test_01.exe test.cpp leven.cpp)
-add_test(NAME test_01.exe)
+add_test(Lab01Tests test_01.exe)
