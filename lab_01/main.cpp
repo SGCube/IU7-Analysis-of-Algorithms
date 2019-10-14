@@ -1,9 +1,9 @@
 #include <iostream>
 #include "leven.hpp"
 
-int main(int argc, char **args)
+int main(int argc, char **argv)
 {
-    if (argc == 2 && std::string(args[1]) == "-memcheck")
+    if (argc == 2 && std::string(argv[1]) == "-memcheck")
     {
         std::string s1 = "memcheck", s2 = "omemcpy";
         levenshtein(s1, s2, true);

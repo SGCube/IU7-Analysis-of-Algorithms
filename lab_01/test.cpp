@@ -1,5 +1,5 @@
 #include <string>
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 #include "leven.hpp"
 
@@ -238,7 +238,8 @@ TEST(Substring, ReplaceBeginEnd)
     ASSERT_EQ(4, damerau_r(s1, s2));
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
