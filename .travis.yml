@@ -4,15 +4,13 @@ update: true
 
 language: cpp
 
-stages:
+jobs:
+    stages:
     - installations
     - style
     - build
     - memcheck
     - test
-
-
-jobs:
     include:
         stage: installations
         before_install:
