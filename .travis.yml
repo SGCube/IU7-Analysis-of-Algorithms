@@ -2,37 +2,36 @@ addons:
 apt:
 update: true
 
-language: cpp
-
 stages:
   - build
   - memcheck
   - unit_test
 
-build:
-  stage: build
-  install:
-  - sudo apt update
-  - sudo apt install cmake
-  - sudo apt install libgtest-dev
-  - cd /usr/src/gtest
-  - sudo cmake CMakeLists.txt
-  - sudo make
-  - sudo cp *.a /usr/lib
-  - cd -
-  script:
-  - mkdir build
-  - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-  - cmake --build .
-  - make
+language: cpp
 
-memcheck:
-  stage: memcheck
-  install: sudo apt install valgrind
-  script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
+jobs:
+  include:
+    stage: build
+    install:
+    - sudo apt update
+    - sudo apt install cmake
+    - sudo apt install libgtest-dev
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt
+    - sudo make
+    - sudo cp *.a /usr/lib
+    - cd -
+    script:
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build .
+    - make
 
-unit_test:
-  stage: unit_test
-  script: ./lab_01/test_01.exe
-  after_script: make clean
+    stage: memcheck
+    install: sudo apt install valgrind
+    script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
+    
+    stage: unit_test
+    script: ./lab_01/test_01.exe
+    after_script: make clean
