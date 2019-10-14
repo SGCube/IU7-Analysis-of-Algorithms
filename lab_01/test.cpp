@@ -10,7 +10,7 @@ TEST(EmptyStrings, BothEmpty)
     std::string s2 = "";
     ASSERT_EQ(0, levenshtein(s1, s2));
     ASSERT_EQ(0, damerau(s1, s2));
-    ASSERT_EQ(0, damerau_recursive(s1, s2));
+    ASSERT_EQ(0, damerau_r(s1, s2));
 }
 
 TEST(EmptyStrings, FirstEmpty)
@@ -19,7 +19,7 @@ TEST(EmptyStrings, FirstEmpty)
     std::string s2 = "a";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(EmptyStrings, SecondEmpty)
@@ -28,7 +28,7 @@ TEST(EmptyStrings, SecondEmpty)
     std::string s2 = "";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(OneChar, Matched)
@@ -37,7 +37,7 @@ TEST(OneChar, Matched)
     std::string s2 = "a";
     ASSERT_EQ(0, levenshtein(s1, s2));
     ASSERT_EQ(0, damerau(s1, s2));
-    ASSERT_EQ(0, damerau_recursive(s1, s2));
+    ASSERT_EQ(0, damerau_r(s1, s2));
 }
 
 TEST(OneChar, Different)
@@ -46,7 +46,7 @@ TEST(OneChar, Different)
     std::string s2 = "b";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(InsertChar, Begin)
@@ -55,7 +55,7 @@ TEST(InsertChar, Begin)
     std::string s2 = "base";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(InsertChar, Middle)
@@ -64,7 +64,7 @@ TEST(InsertChar, Middle)
     std::string s2 = "misspelling";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(InsertChar, End)
@@ -73,7 +73,7 @@ TEST(InsertChar, End)
     std::string s2 = "data";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(DeleteChar, Begin)
@@ -82,7 +82,7 @@ TEST(DeleteChar, Begin)
     std::string s2 = "mail.ru";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(DeleteChar, Middle)
@@ -91,7 +91,7 @@ TEST(DeleteChar, Middle)
     std::string s2 = "programmer";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(DeleteChar, End)
@@ -100,7 +100,7 @@ TEST(DeleteChar, End)
     std::string s2 = "data";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(ReplaceChar, Begin)
@@ -109,7 +109,7 @@ TEST(ReplaceChar, Begin)
     std::string s2 = "code";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(ReplaceChar, Middle)
@@ -118,7 +118,7 @@ TEST(ReplaceChar, Middle)
     std::string s2 = "hash";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(ReplaceChar, End)
@@ -127,7 +127,7 @@ TEST(ReplaceChar, End)
     std::string s2 = "data";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(TransposeChars, Begin)
@@ -136,7 +136,7 @@ TEST(TransposeChars, Begin)
     std::string s2 = "xcode";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(TransposeChars, Middle)
@@ -145,7 +145,7 @@ TEST(TransposeChars, Middle)
     std::string s2 = "function";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(TransposeChars, End)
@@ -154,7 +154,7 @@ TEST(TransposeChars, End)
     std::string s2 = "universe";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
-    ASSERT_EQ(1, damerau_recursive(s1, s2));
+    ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
 TEST(Substring, InsertBegin)
@@ -163,7 +163,7 @@ TEST(Substring, InsertBegin)
     std::string s2 = "subheader";
     ASSERT_EQ(3, levenshtein(s1, s2));
     ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_recursive(s1, s2));
+    ASSERT_EQ(3, damerau_r(s1, s2));
 }
 
 TEST(Substring, DeleteBegin)
@@ -172,7 +172,7 @@ TEST(Substring, DeleteBegin)
     std::string s2 = "header";
     ASSERT_EQ(3, levenshtein(s1, s2));
     ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_recursive(s1, s2));
+    ASSERT_EQ(3, damerau_r(s1, s2));
 }
 
 TEST(Substring, ReplaceBegin)
@@ -181,7 +181,7 @@ TEST(Substring, ReplaceBegin)
     std::string s2 = "decoder";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
-    ASSERT_EQ(2, damerau_recursive(s1, s2));
+    ASSERT_EQ(2, damerau_r(s1, s2));
 }
 
 TEST(Substring, InsertEnd)
@@ -190,7 +190,7 @@ TEST(Substring, InsertEnd)
     std::string s2 = "course";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
-    ASSERT_EQ(2, damerau_recursive(s1, s2));
+    ASSERT_EQ(2, damerau_r(s1, s2));
 }
 
 TEST(Substring, DeleteEnd)
@@ -199,7 +199,7 @@ TEST(Substring, DeleteEnd)
     std::string s2 = "cour";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
-    ASSERT_EQ(2, damerau_recursive(s1, s2));
+    ASSERT_EQ(2, damerau_r(s1, s2));
 }
 
 TEST(Substring, ReplaceEnd)
@@ -208,7 +208,7 @@ TEST(Substring, ReplaceEnd)
     std::string s2 = "scientific";
     ASSERT_EQ(3, levenshtein(s1, s2));
     ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_recursive(s1, s2));
+    ASSERT_EQ(3, damerau_r(s1, s2));
 }
 
 TEST(Substring, InsertBeginEnd)
@@ -217,7 +217,7 @@ TEST(Substring, InsertBeginEnd)
     std::string s2 = "decoder";
     ASSERT_EQ(3, levenshtein(s1, s2));
     ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_recursive(s1, s2));
+    ASSERT_EQ(3, damerau_r(s1, s2));
 }
 
 TEST(Substring, DeleteBeginEnd)
@@ -226,7 +226,7 @@ TEST(Substring, DeleteBeginEnd)
     std::string s2 = "code";
     ASSERT_EQ(3, levenshtein(s1, s2));
     ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_recursive(s1, s2));
+    ASSERT_EQ(3, damerau_r(s1, s2));
 }
 
 TEST(Substring, ReplaceBeginEnd)
@@ -235,7 +235,7 @@ TEST(Substring, ReplaceBeginEnd)
     std::string s2 = "recoding";
     ASSERT_EQ(4, levenshtein(s1, s2));
     ASSERT_EQ(4, damerau(s1, s2));
-    ASSERT_EQ(4, damerau_recursive(s1, s2));
+    ASSERT_EQ(4, damerau_r(s1, s2));
 }
 
 int main(void)
