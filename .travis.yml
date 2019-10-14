@@ -5,7 +5,6 @@ update: true
 language: cpp
 
 before_install:
-- sudo apt update
 - sudo apt install valgrind
 - sudo apt install cmake
 - sudo apt install cppcheck
@@ -20,7 +19,7 @@ stages:
   - name: style
   - name: build
   - name: memcheck
-  - name: test
+  - name: tests
 
 jobs:
   include:
@@ -38,6 +37,6 @@ jobs:
       stage: memcheck
       script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
 
-      stage: test
+      stage: tests
       script: ./lab_01/test_01.exe
       after_script: make clean
