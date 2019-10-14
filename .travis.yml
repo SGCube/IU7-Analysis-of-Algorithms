@@ -12,7 +12,8 @@ stages:
     - test
 
 get_ready:
-    stage: before_install
+    stage: get_ready
+    before_install:
     - sudo apt update
     - sudo apt install valgrind
     - sudo apt install cmake
