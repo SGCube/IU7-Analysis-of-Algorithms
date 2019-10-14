@@ -9,6 +9,8 @@ stages:
 
 language: cpp
 
+compiler: gcc
+
 jobs:
   include:
     before_install:
