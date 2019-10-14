@@ -10,11 +10,9 @@ stages:
   - memcheck
   - unit_test
 
-before_install:
-- sudo apt update
-
 style:
   stage: style
+  before_install: sudo apt update
   install: sudo apt install cppcheck
   script: cppcheck .
 
