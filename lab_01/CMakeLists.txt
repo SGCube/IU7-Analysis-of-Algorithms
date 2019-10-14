@@ -9,5 +9,5 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(test_01.exe test.cpp leven.cpp)
-target_link_libraries(test_01.exe ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(test_01.exe GTest::GTest GTest::Main)
 add_test(Lab01Tests test_01.exe)
