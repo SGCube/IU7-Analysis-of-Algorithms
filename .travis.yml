@@ -36,5 +36,5 @@ jobs:
     script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
 
     stage: unit_test
-    script: ctest
+    script: ctest --output-on-failure
     after_script: make clean
