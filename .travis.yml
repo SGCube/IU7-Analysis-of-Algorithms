@@ -1,0 +1,52 @@
+addons:
+apt:
+update: true
+
+language: cpp
+
+stages:
+    - style
+    - build
+    - memcheck
+    - test
+
+before_install:
+- sudo apt update
+- sudo apt install valgrind
+- sudo apt install cmake
+- sudo apt install cppcheck
+# Установка gtest
+- sudo apt install libgtest-dev
+- cd /usr/src/gtest
+- sudo cmake CMakeLists.txt
+- sudo make
+- sudo cp *.a /usr/lib
+- cd -
+
+style:
+    stage: style
+    script:
+    - cppcheck .
+
+build:
+    stage: build
+    before_script:
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build .
+    script:
+    - make
+
+memcheck:
+    stage: memcheck
+    script:
+    - valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
+
+test:
+    stage: test
+    script:
+    - ./lab_01/test_01.exe
+
+after_script:
+- make clean
