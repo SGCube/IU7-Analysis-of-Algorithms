@@ -5,20 +5,14 @@ update: true
 language: cpp
 
 stages:
-  - style
   - build
   - memcheck
   - unit_test
 
-style:
-  stage: style
-  before_install: sudo apt update
-  install: sudo apt install cppcheck
-  script: cppcheck .
-
 build:
   stage: build
   install:
+  - sudo apt update
   - sudo apt install cmake
   - sudo apt install libgtest-dev
   - cd /usr/src/gtest
