@@ -4,40 +4,43 @@ update: true
 
 language: cpp
 
+stages:
+  - style
+  - build
+  - memcheck
+  - test
+
 before_install:
 - sudo apt update
-- sudo apt install valgrind
-- sudo apt install cmake
-- sudo apt install cppcheck
-- sudo apt install libgtest-dev
-- cd /usr/src/gtest
-- sudo cmake CMakeLists.txt
-- sudo make
-- sudo cp *.a /usr/lib
-- cd -
 
-stages:
-  - name: style
-  - name: build
-  - name: memcheck
-  - name: tests
+style:
+  stage: style
+  install: sudo apt install cppcheck
+  script: cppcheck .
 
-jobs:
-  include:
-      stage: style
-      script: cppcheck .
+build:
+  stage: build
+  install:
+  - sudo apt install cmake
+  - sudo apt install libgtest-dev
+  - cd /usr/src/gtest
+  - sudo cmake CMakeLists.txt
+  - sudo make
+  - sudo cp *.a /usr/lib
+  - cd -
+  script:
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+  - cmake --build .
+  - make
 
-      stage: build
-      script:
-      - mkdir build
-      - cd build
-      - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-      - cmake --build .
-      - make
+memcheck:
+  stage: memcheck
+  install: sudo apt install valgrind
+  script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
 
-      stage: memcheck
-      script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
-
-      stage: tests
-      script: ./lab_01/test_01.exe
-      after_script: make clean
+unit_tests:
+  stage: test
+  script: ./lab_01/test_01.exe
+  after_script: make clean
