@@ -135,7 +135,7 @@ TEST(TransposeChars, Begin)
     std::string s1 = "cxode";
     std::string s2 = "xcode";
     ASSERT_EQ(2, levenshtein(s1, s2));
-    ASSERT_EQ(2, damerau(s1, s2));
+    ASSERT_EQ(1, damerau(s1, s2));
     ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
@@ -144,7 +144,7 @@ TEST(TransposeChars, Middle)
     std::string s1 = "functoin";
     std::string s2 = "function";
     ASSERT_EQ(2, levenshtein(s1, s2));
-    ASSERT_EQ(2, damerau(s1, s2));
+    ASSERT_EQ(1, damerau(s1, s2));
     ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
@@ -153,7 +153,7 @@ TEST(TransposeChars, End)
     std::string s1 = "univeres";
     std::string s2 = "universe";
     ASSERT_EQ(2, levenshtein(s1, s2));
-    ASSERT_EQ(2, damerau(s1, s2));
+    ASSERT_EQ(1, damerau(s1, s2));
     ASSERT_EQ(1, damerau_r(s1, s2));
 }
 
@@ -177,7 +177,7 @@ TEST(Substring, DeleteBegin)
 
 TEST(Substring, ReplaceBegin)
 {
-    std::string s1 = "recoder";
+    std::string s1 = "encoder";
     std::string s2 = "decoder";
     ASSERT_EQ(2, levenshtein(s1, s2));
     ASSERT_EQ(2, damerau(s1, s2));
