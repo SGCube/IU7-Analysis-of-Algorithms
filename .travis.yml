@@ -4,27 +4,26 @@ update: true
 
 language: cpp
 
+
+before_install:
+- sudo apt update
+- sudo apt install valgrind
+- sudo apt install cmake
+- sudo apt install cppcheck
+- sudo apt install libgtest-dev
+- cd /usr/src/gtest
+- sudo cmake CMakeLists.txt
+- sudo make
+- sudo cp *.a /usr/lib
+- cd -
+
 jobs:
     stages:
-    - installations
     - style
     - build
     - memcheck
     - test
     include:
-        stage: installations
-        before_install:
-        - sudo apt update
-        - sudo apt install valgrind
-        - sudo apt install cmake
-        - sudo apt install cppcheck
-        - sudo apt install libgtest-dev
-        - cd /usr/src/gtest
-        - sudo cmake CMakeLists.txt
-        - sudo make
-        - sudo cp *.a /usr/lib
-        - cd -
-
         stage: style
         script:
         - cppcheck .
