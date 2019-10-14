@@ -5,6 +5,7 @@ update: true
 language: cpp
 
 before_install:
+- sudo apt update
 - sudo apt install valgrind
 - sudo apt install cmake
 - sudo apt install cppcheck
