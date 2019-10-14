@@ -4,7 +4,6 @@ update: true
 
 language: cpp
 
-
 before_install:
 - sudo apt update
 - sudo apt install valgrind
@@ -17,31 +16,28 @@ before_install:
 - sudo cp *.a /usr/lib
 - cd -
 
+stages:
+  - name: style
+  - name: build
+  - name: memcheck
+  - name: test
+
 jobs:
-    stages:
-    - style
-    - build
-    - memcheck
-    - test
-    include:
-        stage: style
-        script:
-        - cppcheck .
+  include:
+      stage: style
+      script: cppcheck .
 
-        stage: build
-        script:
-        - mkdir build
-        - cd build
-        - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-        - cmake --build .
-        - make
+      stage: build
+      script:
+      - mkdir build
+      - cd build
+      - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+      - cmake --build .
+      - make
 
-        stage: memcheck
-        script:
-        - valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
+      stage: memcheck
+      script: valgrind --tool=memcheck ./lab_01/lab_01.exe -memcheck
 
-        stage: test
-        script:
-        - ./lab_01/test_01.exe
-        after_script:
-        - make clean
+      stage: test
+      script: ./lab_01/test_01.exe
+      after_script: make clean
