@@ -1,0 +1,43 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+#include "array.hpp"
+
+int main(void)
+{
+    srand(time(NULL));
+
+    size_t n = 0;
+    std::cout << "Enter size of array: ";
+    std::cin >> n;
+
+    size_t bytes_to_copy = n * sizeof(int);
+
+    int *arr = new int[n];
+    array_randomize(arr, n, -1000, 1000);
+    int *to_sort = new int[n];
+
+    std::cout << std::endl << "Source: ";
+    array_write(std::cout, arr, n);
+
+    memcpy(to_sort, arr, bytes_to_copy);
+    array_sort_insert(to_sort, n);
+    std::cout << std::endl << "Insert: ";
+    array_write(std::cout, to_sort, n);
+
+    memcpy(to_sort, arr, bytes_to_copy);
+    array_sort_merge(to_sort, 0, n - 1);
+    std::cout << std::endl << "Merge: ";
+    array_write(std::cout, to_sort, n);
+
+    memcpy(to_sort, arr, bytes_to_copy);
+    array_sort_quick(to_sort, 0, n - 1);
+    std::cout << std::endl << "Quick: ";
+    array_write(std::cout, to_sort, n);
+
+    delete [] arr;
+    delete [] to_sort;
+
+    return 0;
+}
