@@ -134,9 +134,9 @@ TEST(Substring, InsertBegin)
 
 TEST(Substring, DeleteBegin)
 {
-    ASSERT_EQ(2, levenshtein("subheader", "header"));
-    ASSERT_EQ(2, damerau("subheader", "header"));
-    ASSERT_EQ(2, damerau_r("subheader", "header"));
+    ASSERT_EQ(3, levenshtein("subheader", "header"));
+    ASSERT_EQ(3, damerau("subheader", "header"));
+    ASSERT_EQ(3, damerau_r("subheader", "header"));
 }
 
 TEST(Substring, ReplaceBegin)
