@@ -37,25 +37,28 @@ void array_sort_insert(int * const arr, size_t n)
 
 void array_merge(int * const arr, size_t first, size_t last)
 {
-    int *arr_tmp = new int[last - first + 1];
+    size_t len = last - first + 1;
     size_t middle = (first + last) / 2;
-    size_t start = first;
-    size_t final = middle + 1;
+    size_t start_1 = first;
+    size_t start_2 = middle + 1;
 
-    for (size_t i = first; i <= last; i++)
-        if ((start <= middle) && ((final > last) || (arr[start] < arr[final])))
+    int *arr_tmp = new int[len];
+
+    for (size_t i = 0; i < len; i++)
+        if ((start_1 <= middle) && ((start_2 > last) ||
+            (arr[start_1] < arr[start_2])))
         {
-            arr_tmp[i] = arr[start];
-            start++;
+            arr_tmp[i] = arr[start_1];
+            start_1++;
         }
         else
         {
-            arr_tmp[i] = arr[final];
-            final++;
+            arr_tmp[i] = arr[start_2];
+            start_2++;
         }
 
     for (size_t i = first; i <= last; i++)
-        arr[i] = arr_tmp[i];
+        arr[i] = arr_tmp[i - first];
     delete [] arr_tmp;
 }
 
@@ -63,14 +66,10 @@ void array_sort_merge(int * const arr, size_t first, size_t last)
 {
     if (first < last)
     {
-        std::cout << std::endl;
-        array_write(std::cout, &arr[first], last - first + 1);
         size_t middle = (first + last) / 2;
         array_sort_merge(arr, first, middle);
         array_sort_merge(arr, middle + 1, last);
         array_merge(arr, first, last);
-        std::cout << std::endl << "!:\t";
-        array_write(std::cout, &arr[first], last - first + 1);
     }
 }
 
