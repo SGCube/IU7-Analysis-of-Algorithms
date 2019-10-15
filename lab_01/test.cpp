@@ -6,8 +6,8 @@
 
 TEST(EmptyStrings, BothEmpty)
 {
-    std::string s1 = "";
-    std::string s2 = "";
+    std::string s1;
+    std::string s2;
     ASSERT_EQ(0, levenshtein(s1, s2));
     ASSERT_EQ(0, damerau(s1, s2));
     ASSERT_EQ(0, damerau_r(s1, s2));
@@ -15,7 +15,7 @@ TEST(EmptyStrings, BothEmpty)
 
 TEST(EmptyStrings, FirstEmpty)
 {
-    std::string s1 = "";
+    std::string s1;
     std::string s2 = "a";
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
@@ -25,7 +25,7 @@ TEST(EmptyStrings, FirstEmpty)
 TEST(EmptyStrings, SecondEmpty)
 {
     std::string s1 = "a";
-    std::string s2 = "";
+    std::string s2;
     ASSERT_EQ(1, levenshtein(s1, s2));
     ASSERT_EQ(1, damerau(s1, s2));
     ASSERT_EQ(1, damerau_r(s1, s2));
@@ -168,11 +168,9 @@ TEST(Substring, InsertBegin)
 
 TEST(Substring, DeleteBegin)
 {
-    std::string s1 = "subheader";
-    std::string s2 = "header";
-    ASSERT_EQ(3, levenshtein(s1, s2));
-    ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_r(s1, s2));
+    ASSERT_EQ(3, levenshtein("subheader", "header"));
+    ASSERT_EQ(3, damerau("subheader", "header"));
+    ASSERT_EQ(3, damerau_r("subheader", "header"));
 }
 
 TEST(Substring, ReplaceBegin)
@@ -222,11 +220,9 @@ TEST(Substring, InsertBeginEnd)
 
 TEST(Substring, DeleteBeginEnd)
 {
-    std::string s1 = "decoder";
-    std::string s2 = "code";
-    ASSERT_EQ(3, levenshtein(s1, s2));
-    ASSERT_EQ(3, damerau(s1, s2));
-    ASSERT_EQ(3, damerau_r(s1, s2));
+    ASSERT_EQ(3, levenshtein("decoder", "code"));
+    ASSERT_EQ(3, damerau("decoder", "code"));
+    ASSERT_EQ(3, damerau_r("decoder", "code"));
 }
 
 TEST(Substring, ReplaceBeginEnd)
