@@ -19,7 +19,6 @@ _deps
 *.toc
 *.aux
 *.synctex.gz
-*.graphml
 *.rsf
 
 # Visual Studio / Visual Code
