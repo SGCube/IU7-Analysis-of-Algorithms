@@ -30,7 +30,7 @@ jobs:
   include:
     - stage: memcheck
       before_script: cd -
-      script: valgrind --tool=memcheck ./lab_01 -memcheck
+      script: valgrind --tool=memcheck ./lab_01/lab_01 -memcheck
 
     - stage: program_test
       before_script: cd -
