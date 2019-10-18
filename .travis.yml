@@ -12,19 +12,18 @@ language: cpp
 jobs:
   include:
     - stage: prebuild
-        before_install:
-        - sudo apt update
-        - sudo apt install valgrind
-        - sudo apt install cmake
-        - sudo apt install libgtest-dev
-        - cd /usr/src/gtest
-    - stage: build
+      before_install: sudo apt update
+      install:sudo apt install valgrind
+      install:sudo apt install cmake
+      install:sudo apt install libgtest-dev
       script: sudo cmake CMakeLists.txt
       script: sudo make
       script: sudo cp *.a /usr/lib
       script: cd -
       script: mkdir build
       script: cd build
+    
+    - stage: build
       script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
       script: cmake --build .
       script: make
