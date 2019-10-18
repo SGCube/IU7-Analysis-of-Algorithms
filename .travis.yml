@@ -8,18 +8,20 @@ stages:
   - test
 
 language: cpp
+
+before_install:
+    - sudo apt update
+    - sudo apt install valgrind
+    - sudo apt install cmake
+    - sudo apt install libgtest-dev
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt
+    - sudo make
+    - sudo cp *.a /usr/lib
     
 jobs:
   include:
     - stage: build
-      before_install: sudo apt update
-      before_install: sudo apt install valgrind
-      before_install: sudo apt install cmake
-      before_install: sudo apt install libgtest-dev
-      before_install: cd /usr/src/gtest
-      before_install: sudo cmake CMakeLists.txt
-      before_install: sudo make
-      before_install: sudo cp *.a /usr/lib
       script: cd -
       script: mkdir build
       script: cd build
@@ -28,9 +30,13 @@ jobs:
       script: make
 
     - stage: memcheck
+      before_install: skip
+      script: cd -
       script: valgrind --tool=memcheck ./lab_01 -memcheck
 
     - stage: test
+      before_install: skip
+      script: cd -
       script: ctest --output-on-failure
       after_script: make clean
     
