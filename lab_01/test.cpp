@@ -4,27 +4,6 @@
 #include "leven.hpp"
 
 
-TEST(EmptyStrings, BothEmpty)
-{
-    ASSERT_EQ(0, levenshtein("", ""));
-    ASSERT_EQ(0, damerau("", ""));
-    ASSERT_EQ(0, damerau_r("", ""));
-}
-
-TEST(EmptyStrings, FirstEmpty)
-{
-    ASSERT_EQ(1, levenshtein("", "a"));
-    ASSERT_EQ(1, damerau("", "a"));
-    ASSERT_EQ(1, damerau_r("", "a"));
-}
-
-TEST(EmptyStrings, SecondEmpty)
-{
-    ASSERT_EQ(1, levenshtein("a", ""));
-    ASSERT_EQ(1, damerau("a", ""));
-    ASSERT_EQ(1, damerau_r("a", ""));
-}
-
 TEST(OneChar, Matched)
 {
     ASSERT_EQ(0, levenshtein("a", "a"));
@@ -132,13 +111,6 @@ TEST(Substring, InsertBegin)
     ASSERT_EQ(3, damerau_r("header", "subheader"));
 }
 
-TEST(Substring, DeleteBegin)
-{
-    ASSERT_EQ(3, levenshtein("subheader", "header"));
-    ASSERT_EQ(3, damerau("subheader", "header"));
-    ASSERT_EQ(3, damerau_r("subheader", "header"));
-}
-
 TEST(Substring, ReplaceBegin)
 {
     ASSERT_EQ(2, levenshtein("encoder", "decoder"));
@@ -172,13 +144,6 @@ TEST(Substring, InsertBeginEnd)
     ASSERT_EQ(3, levenshtein("code", "decoder"));
     ASSERT_EQ(3, damerau("code", "decoder"));
     ASSERT_EQ(3, damerau_r("code", "decoder"));
-}
-
-TEST(Substring, DeleteBeginEnd)
-{
-    ASSERT_EQ(3, levenshtein("decoder", "code"));
-    ASSERT_EQ(3, damerau("decoder", "code"));
-    ASSERT_EQ(3, damerau_r("decoder", "code"));
 }
 
 TEST(Substring, ReplaceBeginEnd)
