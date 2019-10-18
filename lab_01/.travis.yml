@@ -15,7 +15,11 @@ only:
 
 jobs:
   include:
-    install:
+    before_install:
+    - sudo apt update
+    - sudo apt install valgrind
+    - sudo apt install cmake
+    - sudo apt install libgtest-dev
     - cd /usr/src/gtest
     - sudo cmake CMakeLists.txt
     - sudo make
