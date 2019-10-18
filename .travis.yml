@@ -1,23 +1,24 @@
 addons:
- apt:
- update: true
- packages:
-    - cmake
-    - time
-    - valgrind
-    - libgtest-dev
+apt:
+update: true
 
 stages:
   - memcheck
   - program_test
 
 language: cpp
-    
-install:
+
+before_install:
+    - sudo apt update
+    - sudo apt install valgrind
+    - sudo apt install cmake
+    - sudo apt install libgtest-dev
     - cd /usr/src/gtest
     - sudo cmake CMakeLists.txt
     - sudo make
     - sudo cp *.a /usr/lib
+
+install:
     - cd -
     - mkdir build
     - cd build
