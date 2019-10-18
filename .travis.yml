@@ -3,9 +3,9 @@ apt:
 update: true
 
 stages:
-  - build
+  - program_build
   - memcheck
-  - test
+  - program_test
 
 language: cpp
 
@@ -18,23 +18,24 @@ before_install:
     - sudo cmake CMakeLists.txt
     - sudo make
     - sudo cp *.a /usr/lib
+install:
+    - cd -
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build .
+    - make
     
 jobs:
   include:
-    - stage: build
-      script: cd -
-      script: mkdir build
-      script: cd build
-      script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-      script: cmake --build .
-      script: make
+    - stage: program_build
 
     - stage: memcheck
-      script: cd -
+      before_script: cd -
       script: valgrind --tool=memcheck ./lab_01 -memcheck
 
-    - stage: test
-      script: cd -
+    - stage: program_test
+      before_script: cd -
       script: ctest --output-on-failure
       after_script: make clean
     
