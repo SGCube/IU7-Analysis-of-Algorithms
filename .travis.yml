@@ -13,9 +13,9 @@ jobs:
   include:
     - stage: prebuild
       before_install: sudo apt update
-      install:sudo apt install valgrind
-      install:sudo apt install cmake
-      install:sudo apt install libgtest-dev
+      install: sudo apt install valgrind
+      install: sudo apt install cmake
+      install: sudo apt install libgtest-dev
       script: sudo cmake CMakeLists.txt
       script: sudo make
       script: sudo cp *.a /usr/lib
@@ -33,5 +33,6 @@ jobs:
 
     - stage: test
       script: ctest --output-on-failure
+      after_script: make clean
     
-script: make clean
+
