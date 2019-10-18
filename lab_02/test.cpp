@@ -5,9 +5,9 @@
 
 TEST(Size_1x1, Classic)
 {
-    int **A = {{5}};
-    int **B = {{-8}};
-    int **C = {{-40}};
+    int A[][1] = {{5}};
+    int B[][1] = {{-8}};
+    int C[][1] = {{-40}};
     int **CC = Matrix::init(1, 1);
 
     multiply_classic(A, B, CC, 1, 1, 1);
@@ -18,9 +18,9 @@ TEST(Size_1x1, Classic)
 
 TEST(Size_1x1, Vinograd)
 {
-    int **A = {{5}};
-    int **B = {{-8}};
-    int **C = {{-40}};
+    int A[][1] = {{5}};
+    int B[][1] = {{-8}};
+    int C[][1] = {{-40}};
     int **CC = Matrix::init(1, 1);
 
     multiply_vinograd(A, B, CC, 1, 1, 1);
@@ -31,9 +31,9 @@ TEST(Size_1x1, Vinograd)
 
 TEST(Size_1x1, Optimized)
 {
-    int **A = {{5}};
-    int **B = {{-8}};
-    int **C = {{-40}};
+    int A[][1] = {{5}};
+    int B[][1] = {{-8}};
+    int C[][1] = {{-40}};
     int **CC = Matrix::init(1, 1);
 
     multiply_vinograd_opt(A, B, CC, 1, 1, 1);
@@ -44,9 +44,9 @@ TEST(Size_1x1, Optimized)
 
 TEST(Size_1x3_3x1, Classic)
 {
-    int **A = {{2, 1, 1}};
-    int **B = {{1}, {-1}, {5}};
-    int **C = {{6}};
+    int A[][3] = {{2, 1, 1}};
+    int B[][1] = {{1}, {-1}, {5}};
+    int C[][1] = {{6}};
     int **CC = Matrix::init(1, 1);
 
     multiply_classic(A, B, CC, 1, 3, 1);
@@ -57,9 +57,9 @@ TEST(Size_1x3_3x1, Classic)
 
 TEST(Size_1x3_3x1, Vinograd)
 {
-    int **A = {{2, 1, 1}};
-    int **B = {{1}, {-1}, {5}};
-    int **C = {{6}};
+    int A[][3] = {{2, 1, 1}};
+    int B[][1] = {{1}, {-1}, {5}};
+    int C[][1] = {{6}};
     int **CC = Matrix::init(1, 1);
 
     multiply_vinograd(A, B, CC, 1, 3, 1);
@@ -70,9 +70,9 @@ TEST(Size_1x3_3x1, Vinograd)
 
 TEST(Size_1x3_3x1, Optimized)
 {
-    int **A = {{2, 1, 1}};
-    int **B = {{1}, {-1}, {5}};
-    int **C = {{6}};
+    int A[][3] = {{2, 1, 1}};
+    int B[][1] = {{1}, {-1}, {5}};
+    int C[][1] = {{6}};
     int **CC = Matrix::init(1, 1);
 
     multiply_vinograd_opt(A, B, CC, 1, 1, 1);
