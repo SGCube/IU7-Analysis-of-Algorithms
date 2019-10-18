@@ -3,6 +3,7 @@ apt:
 update: true
 
 stages:
+  - prebuild
   - build
   - memcheck
   - test
