@@ -6,8 +6,8 @@ int main(int argc, char **argv)
     if (argc == 2 && std::string(argv[1]) == "-memcheck")
     {
         std::string s1 = "memcheck", s2 = "omemcpy";
-        levenshtein(s1, s2, true);
-        damerau(s1, s2, true);
+        levenshtein(s1, s2, false);
+        damerau(s1, s2, false);
         damerau_r(s1, s2);
         return 0;
     }
