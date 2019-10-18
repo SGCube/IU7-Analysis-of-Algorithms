@@ -30,12 +30,10 @@ jobs:
       script: make
 
     - stage: memcheck
-      before_install: skip
       script: cd -
       script: valgrind --tool=memcheck ./lab_01 -memcheck
 
     - stage: test
-      before_install: skip
       script: cd -
       script: ctest --output-on-failure
       after_script: make clean
