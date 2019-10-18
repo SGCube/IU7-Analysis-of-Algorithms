@@ -23,7 +23,11 @@ before_install:
 jobs:
   include:
     - stage: build
-      script: ./build.sh
+      script: mkdir build
+      script: cd build
+      script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+      script: cmake --build .
+      script: make
 
     - stage: memcheck
       script: valgrind --tool=memcheck ./lab_01 -memcheck
