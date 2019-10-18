@@ -2,28 +2,36 @@ addons:
 apt:
 update: true
 
+stages:
+  - memcheck
+  - program_test
+
 language: cpp
 
 before_install:
-- sudo apt update
-- sudo apt install valgrind
-- sudo apt install cmake
-# Установка gtest
-- sudo apt install libgtest-dev
-- cd /usr/src/gtest
-- sudo cmake CMakeLists.txt
-- sudo make
-- sudo cp *.a /usr/lib
-- cd -
+    - sudo apt update
+    - sudo apt install valgrind
+    - sudo apt install cmake
+    - sudo apt install libgtest-dev
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt
+    - sudo make
+    - sudo cp *.a /usr/lib
 
-script:
-- mkdir build
-- cd build
-- cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-- cmake --build .
-- make
-- valgrind --tool=memcheck ./lab_01/test.exe
-- valgrind --tool=memcheck ./lab_02/test.exe
+install:
+    - cd -
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build .
+    - make
+    
+jobs:
+  include:
+    - stage: memcheck
+      script: valgrind --tool=memcheck --leak-check=full ./lab_01/lab_01 -memcheck
+      script: valgrind --tool=memcheck --leak-check=full ./lab_02/lab_02 -memcheck
 
-after_script:
-- make clean
+    - stage: program_test
+      script: ctest --output-on-failure
+      after_script: make clean

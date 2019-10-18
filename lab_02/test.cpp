@@ -1,61 +1,88 @@
-#include <iostream>
-#include <fstream>
+#include "gtest/gtest.h"
+
 #include "matrix.hpp"
 #include "mamult.hpp"
 
-void handle_result(int **matr1, unsigned rows1, unsigned cols1,
-        int **matr2, unsigned rows2, unsigned cols2)
+TEST(Size_1x1, Classic)
 {
-    if (Matrix::equal(matr1, rows1, cols1, matr2, rows2, cols2))
-        std::cout << "PASSED" << std::endl;
-    else
-    {
-        std::cout << "FAILED" << std::endl;
-        std::cout << "Expected:" << std::endl;
-        Matrix::write(std::cout, matr1, rows1, cols1);
-        std::cout << "Got:" << std::endl;
-        Matrix::write(std::cout, matr2, rows2, cols2);
-    }
+    int **A = {{5}};
+    int **B = {{-8}};
+    int **C = {{-40}};
+    int **CC = Matrix::init(1, 1);
+
+    multiply_classic(A, B, CC, 1, 1, 1);
+    ASSERT_TRUE(Matrix::equal(C, 1, 1, CC, 1, 1));
+
+    delete [] CC;
 }
 
-int main(void)
+TEST(Size_1x1, Vinograd)
 {
-    for (int i = 1; i <= 6; i++)
-    {
-        char fname_1[20], fname_2[20], fname_res[20];
-        sprintf(fname_1, "in_%d_0.txt", i);
-        sprintf(fname_2, "in_%d_1.txt", i);
-        sprintf(fname_res, "out_%d.txt", i);
+    int **A = {{5}};
+    int **B = {{-8}};
+    int **C = {{-40}};
+    int **CC = Matrix::init(1, 1);
 
-        std::ifstream fin_1(fname_1);
-        std::ifstream fin_2(fname_2);
-        std::ifstream fin_res(fname_res);
+    multiply_vinograd(A, B, CC, 1, 1, 1);
+    ASSERT_TRUE(Matrix::equal(C, 1, 1, CC, 1, 1));
 
-        unsigned rows_a = 0, rows_b = 0, rows_c = 0;
-        unsigned cols_a = 0, cols_b = 0, cols_c = 0;
+    delete [] CC;
+}
 
-        int **A = Matrix::read_wsize(fin_1, rows_a, cols_a);
-        int **B = Matrix::read_wsize(fin_2, rows_b, cols_b);
-        int **C = Matrix::read_wsize(fin_res, rows_c, cols_c);
-        int **CC = Matrix::init(rows_a, cols_b);
+TEST(Size_1x1, Optimized)
+{
+    int **A = {{5}};
+    int **B = {{-8}};
+    int **C = {{-40}};
+    int **CC = Matrix::init(1, 1);
 
-        std::cout << "TEST " << i << ": " << std::endl;
+    multiply_vinograd_opt(A, B, CC, 1, 1, 1);
+    ASSERT_TRUE(Matrix::equal(C, 1, 1, CC, 1, 1));
 
-        multiply_classic(A, B, CC, rows_a, cols_a, cols_b);
-        std::cout << "1) Classic: ";
-        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+    delete [] CC;
+}
 
-        multiply_vinograd(A, B, CC, rows_a, cols_a, cols_b);
-        std::cout << "2) Vinograd: ";
-        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+TEST(Size_1x3_3x1, Classic)
+{
+    int **A = {{2, 1, 1}};
+    int **B = {{1}, {-1}, {5}};
+    int **C = {{6}};
+    int **CC = Matrix::init(1, 1);
 
-        multiply_vinograd_opt(A, B, CC, rows_a, cols_a, cols_b);
-        std::cout << "3) V. Optimized: ";
-        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+    multiply_classic(A, B, CC, 1, 3, 1);
+    ASSERT_TRUE(Matrix::equal(C, 1, 1, CC, 1, 1));
 
-        fin_1.close();
-        fin_2.close();
-        fin_res.close();
-    }
-    return 0;
+    delete [] CC;
+}
+
+TEST(Size_1x3_3x1, Vinograd)
+{
+    int **A = {{2, 1, 1}};
+    int **B = {{1}, {-1}, {5}};
+    int **C = {{6}};
+    int **CC = Matrix::init(1, 1);
+
+    multiply_vinograd(A, B, CC, 1, 3, 1);
+    ASSERT_TRUE(Matrix::equal(C, 1, 1, CC, 1, 1));
+
+    delete [] CC;
+}
+
+TEST(Size_1x3_3x1, Optimized)
+{
+    int **A = {{2, 1, 1}};
+    int **B = {{1}, {-1}, {5}};
+    int **C = {{6}};
+    int **CC = Matrix::init(1, 1);
+
+    multiply_vinograd_opt(A, B, CC, 1, 1, 1);
+    ASSERT_TRUE(Matrix::equal(C, 1, 1, CC, 1, 1));
+
+    delete [] CC;
+}
+
+int main(int argc, char **argv)
+{
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
