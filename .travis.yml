@@ -34,5 +34,5 @@ jobs:
 
     - stage: program_test
       script: ctest --output-on-failure
-      script: ./lab_02/lab_02
+      script: ./lab_02/test_02
       after_script: make clean
