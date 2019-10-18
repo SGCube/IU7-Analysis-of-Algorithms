@@ -29,7 +29,7 @@ install:
 jobs:
   include:
     - stage: memcheck
-      script: valgrind --tool=memcheck ./lab_01/lab_01 -memcheck
+      script: valgrind --tool=memcheck --leak-check=full ./lab_01/lab_01 -memcheck
 
     - stage: program_test
       script: ctest --output-on-failure
