@@ -20,11 +20,11 @@ jobs:
       install: sudo cmake CMakeLists.txt
       install: sudo make
       install: sudo cp *.a /usr/lib
-      install: cd -
-      install: mkdir build
-      install: cd build
+      script: cd -
     
     - stage: build
+      script: mkdir build
+      script: cd build
       script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
       script: cmake --build .
       script: make
