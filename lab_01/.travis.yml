@@ -9,10 +9,9 @@ stages:
 
 language: cpp
 
-branches:
-    only:
-        - lab_01
-        - master
+only:
+    - lab_01
+    - master
 
 jobs:
   include:
