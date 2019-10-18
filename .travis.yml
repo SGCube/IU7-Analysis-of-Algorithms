@@ -12,7 +12,7 @@ language: cpp
 jobs:
   include:
     - stage: build
-      install: ./ci_scripts/install-dependencies.sh
+      before_install: ./ci_scripts/install-dependencies.sh
       script: ./ci_scripts/build.sh
 
     - stage: memcheck
