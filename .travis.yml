@@ -8,16 +8,16 @@ stages:
   - test
 
 language: cpp
-
-before_install:
-    - sudo apt update
-    - sudo apt install valgrind
-    - sudo apt install cmake
-    - sudo apt install libgtest-dev
-    - cd /usr/src/gtest
     
 jobs:
   include:
+    - stage: prebuild
+        before_install:
+        - sudo apt update
+        - sudo apt install valgrind
+        - sudo apt install cmake
+        - sudo apt install libgtest-dev
+        - cd /usr/src/gtest
     - stage: build
       script: sudo cmake CMakeLists.txt
       script: sudo make
