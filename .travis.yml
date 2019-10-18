@@ -2,11 +2,6 @@ addons:
 apt:
 update: true
 
-stages:
-  - build
-  - memcheck
-  - test
-
 language: cpp
 
 jobs:
