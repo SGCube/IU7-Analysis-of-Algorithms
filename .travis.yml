@@ -18,11 +18,11 @@ before_install:
     - sudo cmake CMakeLists.txt
     - sudo make
     - sudo cp *.a /usr/lib
-    - cd -
     
 jobs:
   include:
     - stage: build
+      script: cd -
       script: mkdir build
       script: cd build
       script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
