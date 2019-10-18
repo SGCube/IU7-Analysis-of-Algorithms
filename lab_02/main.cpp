@@ -23,8 +23,8 @@ int main(int argc, char **argv)
 
         Matrix::destroy(matrix_a, m);
         Matrix::destroy(matrix_b, n);
-        Matrix::destroy(matrix_a, q);
-        
+        Matrix::destroy(matrix_c, m);
+
         return 0;
     }
 
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
     Matrix::destroy(matrix_a, m);
     Matrix::destroy(matrix_b, n);
-    Matrix::destroy(matrix_a, q);
+    Matrix::destroy(matrix_c, m);
 
     return 0;
 }
