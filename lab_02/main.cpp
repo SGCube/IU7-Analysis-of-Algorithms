@@ -5,9 +5,28 @@
 #include "matrix.hpp"
 #include "mamult.hpp"
 
-int main(void)
+int main(int argc, char **argv)
 {
     srand(time(NULL));
+
+    if (argc == 2 && std::string(argv[1]) == "-memcheck")
+    {
+        unsigned m = 10, n = 20, q = 30;
+
+        int **matrix_a = Matrix::randinit(m, n, -10, 10);
+        int **matrix_b = Matrix::randinit(n, q, -10, 10);
+        int **matrix_c = Matrix::init(m, q);
+
+        multiply_classic(matrix_a, matrix_b, matrix_c, m, n, q);
+        multiply_vinograd(matrix_a, matrix_b, matrix_c, m, n, q);
+        multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
+
+        Matrix::destroy(matrix_a, m);
+        Matrix::destroy(matrix_b, n);
+        Matrix::destroy(matrix_a, q);
+        
+        return 0;
+    }
 
     unsigned m, n, q;
     std::cout << "Enter 3 size of matrices (M, N, Q): ";
