@@ -15,6 +15,12 @@ only:
 
 jobs:
   include:
+    install:
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt
+    - sudo make
+    - sudo cp *.a /usr/lib
+    - cd -
     stage: build
     before_script:
     - mkdir build
