@@ -8,12 +8,19 @@ stages:
   - test
 
 language: cpp
+
+before_install:
+    - sudo apt update
+    - sudo apt install valgrind
+    - sudo apt install cmake
+    - sudo apt install libgtest-dev
+    - sudo cmake CMakeLists.txt
+    - sudo cp *.a /usr/lib
     
 jobs:
   include:
     - stage: build
-      before_install: ./ci_scripts/install-dependencies.sh
-      script: ./ci_scripts/build.sh
+      script: ./build.sh
 
     - stage: memcheck
       script: valgrind --tool=memcheck ./lab_01 -memcheck
