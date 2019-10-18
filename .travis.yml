@@ -9,9 +9,7 @@ stages:
 
 language: cpp
 
-jobs:
-  include:
-    before_install:
+before_install:
     - sudo apt update
     - sudo apt install valgrind
     - sudo apt install cmake
@@ -21,14 +19,15 @@ jobs:
     - sudo make
     - sudo cp *.a /usr/lib
     - cd -
-    
+
+jobs:
+  include:
     - stage: build
-        before_script:
-        - mkdir build
-        - cd build
-        - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-        - cmake --build .
-        - make
+      script: mkdir build
+      script: cd build
+      script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+      script: cmake --build .
+      script: make
 
     - stage: memcheck
       script: valgrind --tool=memcheck ./lab_01 -memcheck
@@ -36,4 +35,4 @@ jobs:
     - stage: test
       script: ctest --output-on-failure
     
-    after_script: make clean
+script: make clean
