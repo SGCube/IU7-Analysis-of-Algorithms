@@ -1,0 +1,31 @@
+addons:
+apt:
+update: true
+
+stages:
+  - build
+  - memcheck
+  - test
+
+language: cpp
+
+only:
+    - lab_01
+    - master
+
+jobs:
+  include:
+    stage: build
+    before_script:
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build .
+    - make
+
+    stage: memcheck
+    script: valgrind --tool=memcheck ./lab_01 -memcheck
+
+    stage: test
+    script: ctest --output-on-failure
+    after_script: make clean
