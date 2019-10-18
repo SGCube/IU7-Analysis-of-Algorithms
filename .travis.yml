@@ -15,14 +15,14 @@ before_install:
     - sudo apt install cmake
     - sudo apt install libgtest-dev
     - cd /usr/src/gtest
-    - sudo cmake CMakeLists.txt
-    - sudo make
-    - sudo cp *.a /usr/lib
-    - cd -
-
+    
 jobs:
   include:
     - stage: build
+      script: sudo cmake CMakeLists.txt
+      script: sudo make
+      script: sudo cp *.a /usr/lib
+      script: cd -
       script: mkdir build
       script: cd build
       script: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
