@@ -23,7 +23,7 @@ void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size,
                     unsigned step)
 {
     unsigned long long start_time = 0, end_time = 0;
-    unsigned test_repeats = 100;
+    unsigned test_repeats = 1000;
 
     for (unsigned size = start_size; size <= end_size; size += step)
     {
