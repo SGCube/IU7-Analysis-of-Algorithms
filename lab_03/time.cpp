@@ -2,7 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
-#include <string>
+#include <cstring>
 
 #include "array.hpp"
 #ifdef _WIN32

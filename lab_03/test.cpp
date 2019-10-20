@@ -1,4 +1,4 @@
-#include <string>
+#include <cstring>
 
 #include "gtest/gtest.h"
 #include "array.hpp"
