@@ -40,7 +40,13 @@ int main(int argc, char **argv)
     size_t bytes_to_copy = n * sizeof(int);
 
     int *arr = new int[n];
-    array_randomize(arr, n, -1000, 1000);
+    if (argc == 2 && std::string(argv[1]) == "-rand")
+        array_randomize(arr, n, -1000, 1000);
+    else
+    {
+        std::cout << "Enter array: ";
+        array_read(std::cin, arr, n);
+    }
     int *to_sort = new int[n];
 
     std::cout << std::endl << "Source: ";
