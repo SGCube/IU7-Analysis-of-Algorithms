@@ -30,9 +30,6 @@ void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size,
         unsigned long long results[3] = { 0, 0, 0 };
         for (unsigned k = 0; k < test_repeats; k++)
         {
-            std::string s1 = random_string(size);
-            std::string s2 = random_string(size);
-
             unsigned bytes_to_copy = size * sizeof(int);
 
             int *arr = new int[size];
