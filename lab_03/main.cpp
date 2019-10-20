@@ -4,7 +4,7 @@
 
 #include "array.hpp"
 
-int main(void)
+int main(int argc, char **argv)
 {
     srand(time(NULL));
 
@@ -22,7 +22,7 @@ int main(void)
 
         memcpy(to_sort, arr, bytes_to_copy);
         array_sort_merge(to_sort, 0, n - 1);
-        
+
         memcpy(to_sort, arr, bytes_to_copy);
         array_sort_quick(to_sort, 0, n - 1);
 
