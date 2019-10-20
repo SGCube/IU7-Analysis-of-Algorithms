@@ -103,7 +103,7 @@ TEST(SomeSame, InsertSort)
 {
     int source[6] = { 5, 4, 0, 2, -1, 4 };
     int sorted[6] = { -1, 0, 2, 4, 4, 5 };
-    array_sort_insert(source, 10);
+    array_sort_insert(source, 6);
     ASSERT_TRUE(memcmp(source, sorted, 6 * sizeof(int)) == 0 );
 }
 
@@ -127,7 +127,7 @@ TEST(NoSame, InsertSort)
 {
     int source[6] = { 5, 4, 0, 2, -1, 3 };
     int sorted[6] = { -1, 0, 2, 3, 4, 5 };
-    array_sort_insert(source, 10);
+    array_sort_insert(source, 6);
     ASSERT_TRUE(memcmp(source, sorted, 6 * sizeof(int)) == 0 );
 }
 
