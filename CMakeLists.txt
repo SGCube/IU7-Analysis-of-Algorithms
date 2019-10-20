@@ -10,6 +10,4 @@ enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_subdirectory(lab_01)
-add_subdirectory(lab_02)
 add_subdirectory(lab_03)
