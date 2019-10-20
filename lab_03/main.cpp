@@ -8,6 +8,30 @@ int main(void)
 {
     srand(time(NULL));
 
+    if (argc == 2 && std::string(argv[1]) == "-memcheck")
+    {
+        size_t n = 10;
+        size_t bytes_to_copy = n * sizeof(int);
+
+        int *arr = new int[n];
+        array_randomize(arr, n, -1000, 1000);
+        int *to_sort = new int[n];
+
+        memcpy(to_sort, arr, bytes_to_copy);
+        array_sort_insert(to_sort, n);
+
+        memcpy(to_sort, arr, bytes_to_copy);
+        array_sort_merge(to_sort, 0, n - 1);
+        
+        memcpy(to_sort, arr, bytes_to_copy);
+        array_sort_quick(to_sort, 0, n - 1);
+
+        delete [] arr;
+        delete [] to_sort;
+
+        return 0;
+    }
+
     size_t n = 0;
     std::cout << "Enter size of array: ";
     std::cin >> n;
