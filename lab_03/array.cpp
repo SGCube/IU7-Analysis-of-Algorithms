@@ -81,14 +81,14 @@ void array_sort_quick(int * const arr, size_t first, size_t last)
 
     while (first < last)
     {
-        while ((arr[last] >= pivot) && (first < last))
+        while ((first < last) && (arr[last] >= pivot))
             last--;
         if (first != last)
         {
             arr[first] = arr[last];
             first++;
         }
-        while ((arr[first] <= pivot) && (first < last))
+        while ((first < last) && (arr[first] <= pivot))
             first++;
         if (first != last)
         {

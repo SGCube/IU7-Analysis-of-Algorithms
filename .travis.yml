@@ -3,34 +3,44 @@ apt:
 update: true
 
 stages:
+  - stylecheck
   - memcheck
-  - program_test
+  - test
 
 language: cpp
 
 before_install:
-    - sudo apt update
-    - sudo apt install valgrind
-    - sudo apt install cmake
-    - sudo apt install libgtest-dev
-    - cd /usr/src/gtest
-    - sudo cmake CMakeLists.txt
-    - sudo make
-    - sudo cp *.a /usr/lib
+- sudo apt update
+- sudo apt install valgrind
+- sudo apt install cmake
+- sudo apt install libgtest-dev
+- cd /usr/src/gtest
+- sudo cmake CMakeLists.txt
+- sudo make
+- sudo cp *.a /usr/lib
+- cd -
 
 install:
-    - cd -
-    - mkdir build
-    - cd build
-    - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
-    - cmake --build .
-    - make
+- mkdir build
+- cd build
+- cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake --build .
+- make
     
 jobs:
   include:
+    - stage: stylecheck
+      before_install:
+      - sudo apt update
+      - sudo apt install cppcheck
+      - sudo apt install libgtest-dev
+      install: skip
+      before_script: cppcheck --std=c++11 -q --enable=all --error-exitcode=1 .
+      script: skip
+    
     - stage: memcheck
       script: valgrind --tool=memcheck --leak-check=full -q ./lab_03/lab_03 -memcheck
 
-    - stage: program_test
+    - stage: test
       script: ctest --output-on-failure
       after_script: make clean
