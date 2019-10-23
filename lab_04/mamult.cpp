@@ -3,7 +3,7 @@
 
 #include "mamult.hpp"
 
-void init_MVector(int **A, int ***MVector, unsigned M, unsigned half_N)
+void init_MVector(int ***MVector, int **A, unsigned M, unsigned half_N)
 {
     *MVector = new int[M];
     for (unsigned i = 0; i < M; i++)
@@ -17,7 +17,7 @@ void init_MVector(int **A, int ***MVector, unsigned M, unsigned half_N)
     }
 }
 
-void node_calc_odd(int **A, int **B, int **C,
+void node_calc_odd(int **A, int **B, int **C, int *MulH, int *MulV,
     unsigned i, unsigned j, unsigned half_N, unsigned N_minus_1)
 {
     C[i][j] = A[i][N_minus_1] * B[N_minus_1][j] - MulH[i] - MulV[j];
@@ -28,7 +28,7 @@ void node_calc_odd(int **A, int **B, int **C,
     }
 }
 
-void node_calc_even(int **A, int **B, int **C,
+void node_calc_even(int **A, int **B, int **C, int *MulH, int *MulV,
     unsigned i, unsigned j, unsigned half_N)
 {
     C[i][j] = -MulH[i] - MulV[j];
@@ -46,8 +46,8 @@ void multiply_vinograd_opt(int **A, int **B, int **C,
 
     int *MulH = nullptr, *MulV = nullptr;
 
-    std::thread thr_MulH(init_MVector, A, &MulH, M, half_N);
-    std::thread thr_MulV(init_MVector, B, &MulV, Q, half_N);
+    std::thread thr_MulH(init_MVector, &MulH, A, M, half_N);
+    std::thread thr_MulV(init_MVector, &MulV, B, Q, half_N);
 
     thr_MulH.join();
     thr_MulV.join();
@@ -60,14 +60,15 @@ void multiply_vinograd_opt(int **A, int **B, int **C,
         for (unsigned i = 0; i < M; i++)
             for (unsigned j = 0; j < Q; j++)
                 threads.push_back(std::thread(node_calc_odd, A, B, C,
-                                                i, j, half_N, N_minus_1));
+                                            MulH, MulV, i, j, half_N,
+                                            N_minus_1));
     }
     else
     {
         for (unsigned i = 0; i < M; i++)
             for (unsigned j = 0; j < Q; j++)
                 threads.push_back(std::thread(node_calc_even, A, B, C,
-                                                i, j, half_N));
+                                            MulH, MulV, i, j, half_N));
     }
 
     for (auto& th : threads)
