@@ -14,15 +14,11 @@ _deps
 # Executables
 *.exe
 
-# Make
-**/CMakeLists/**
-
 # Report
 *.log
 *.toc
 *.aux
 *.synctex.gz
-*.graphml
 *.rsf
 
 # Visual Studio / Visual Code
