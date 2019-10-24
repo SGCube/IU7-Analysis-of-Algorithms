@@ -3,7 +3,7 @@
 
 #include "mamult.hpp"
 
-void init_MVector(int ***MVector, int **A, unsigned M, unsigned half_N)
+void init_MVector(int **MVector, int **A, unsigned M, unsigned half_N)
 {
     *MVector = new int[M];
     for (unsigned i = 0; i < M; i++)
