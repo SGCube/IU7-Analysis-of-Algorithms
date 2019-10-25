@@ -1,5 +1,7 @@
 # Анализ алгоритмов
 
+[![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=master)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste>
+
 ### Лабораторные работы
 
 <table>
