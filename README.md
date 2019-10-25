@@ -1,10 +1,21 @@
 # Анализ алгоритмов
 
-[![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=master)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste>
+
    
 [![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_01)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste>
 
 ### Лабораторные работы
+
+|ЛР|Тема|Программа|Отчёт|Балл|
+|--|----|---------|-----|----|
+|1|Расстояние Левенштейна|✔️[![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=master)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste>|✔️|Отлично|
+|2|||||
+|3|||||
+|4|||||
+|5|||||
+|6|||||
+|7|||||
+|8|||||
 
 <table>
    <tr>
