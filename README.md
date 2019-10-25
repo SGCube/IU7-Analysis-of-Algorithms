@@ -15,28 +15,28 @@
    <tr>
     <td>1</td>
     <td>Расстояние Левенштейна</th>
-    <td>✔️ ![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_01)</th>
+    <td>✔️ [![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_01)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste></th>
     <td>✔️</th>
     <td>Отлично</th>
    </tr>
    <tr>
     <td>2</td>
     <td>Умножение матриц</th>
-    <td>✔️ ![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_02)</th>
+    <td>✔️ [![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_02)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste></th>
     <td>✔️</th>
     <td></th>
    </tr>
    <tr>
     <td>3</td>
     <td>Сортировка массивов</th>
-    <td>✔️ ![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_03)</th>
+    <td>✔️ [![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_03)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste></th>
     <td>⌛️</th>
     <td></th>
    </tr>
    <tr>
     <td>4</td>
     <td>Многопоточность</th>
-    <td>⭕️ ![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_04)</th>
+    <td>⭕️ [![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_04)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste></th>
     <td>⭕️</th>
     <td></th>
    </tr>
