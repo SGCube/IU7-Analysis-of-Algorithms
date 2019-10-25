@@ -8,7 +8,7 @@
 
 |ЛР|Тема|Программа|Отчёт|Балл|
 |--|----|---------|-----|----|
-|1|Расстояние Левенштейна|✔️[![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=master)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste>|✔️|Отлично|
+|1|Расстояние Левенштейна|✔️![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=master)|✔️|Отлично|
 |2|||||
 |3|||||
 |4|||||
