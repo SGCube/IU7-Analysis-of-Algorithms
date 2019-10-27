@@ -55,28 +55,19 @@ public:
 
     void randomize(int min, int max);
 
+    Matrix& operator=(Matrix other);
+
     bool operator==(const Matrix &other);
     bool operator!=(const Matrix &other);
 
-    void set_rows(unsigned rows);
     unsigned get_rows();
-
-    void set_cols(unsigned cols);
     unsigned get_cols();
-
-    Array& operator[] (unsigned i)
-    {
-        return arrays[i];
-    }
-
-    int** matr();
+    Array& operator[] (unsigned i);
 
 private:
-    int **ptr;
+    Array *ptr;
     unsigned _rows;
     unsigned _cols;
-
-    Array *arrays;
 };
 
 #endif

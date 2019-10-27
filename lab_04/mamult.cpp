@@ -3,7 +3,7 @@
 
 #include "mamult.hpp"
 
-void init_MVector(int **MVector, int **A, unsigned M, unsigned half_N)
+/*void init_MVector(int **MVector, int **A, unsigned M, unsigned half_N)
 {
     *MVector = new int[M];
     for (unsigned i = 0; i < M; i++)
@@ -45,12 +45,7 @@ Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
     const unsigned N = A.get_cols();
     const unsigned Q = B.get_cols();
 
-    int **A_matr = A.matr();
-    int **B_matr = B.matr();
-
     Matrix C(M, Q);
-    int **C_matr = C.matr();
-
 
     unsigned half_N = N >> 1;
 
@@ -88,7 +83,7 @@ Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
     delete [] MulV;
 
     return C;
-}
+}*/
 
 Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
 {
@@ -96,11 +91,7 @@ Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
     const unsigned N = A.get_cols();
     const unsigned Q = B.get_cols();
 
-    int **A_matr = A.matr();
-    int **B_matr = B.matr();
-
     Matrix C(M, Q);
-    int **C_matr = C.matr();
 
     unsigned half_N = N >> 1;
 
@@ -111,7 +102,7 @@ Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
         for (unsigned k = 0; k < half_N; k++)
         {
             k <<= 1;
-            MulH[i] += A_matr[i][k] * A_matr[i][k + 1];
+            MulH[i] += A[i][k] * A[i][k + 1];
         }
     }
 
@@ -122,7 +113,7 @@ Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
         for (unsigned k = 0; k < half_N; k++)
         {
             k <<= 1;
-            MulV[i] += B_matr[k][i] * B_matr[k + 1][i];
+            MulV[i] += B[k][i] * B[k + 1][i];
         }
     }
 
@@ -132,13 +123,13 @@ Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
         for (unsigned i = 0; i < M; i++)
             for (unsigned j = 0; j < Q; j++)
             {
-                C_matr[i][j] = A_matr[i][N_minus_1] * B_matr[N_minus_1][j] -
+                C[i][j] = A[i][N_minus_1] * B[N_minus_1][j] -
                                 MulH[i] - MulV[j];
                 for (unsigned k = 0; k < half_N; k++)
                 {
                     k <<= 1;
-                    C_matr[i][j] += (A_matr[i][k] + B_matr[k + 1][j]) * 
-                                    (A_matr[i][k + 1] + B_matr[k][j]);
+                    C[i][j] += (A[i][k] + B[k + 1][j]) * 
+                                (A[i][k + 1] + B[k][j]);
                 }
             }
     }
@@ -147,12 +138,12 @@ Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
         for (unsigned i = 0; i < M; i++)
             for (unsigned j = 0; j < Q; j++)
             {
-                C_matr[i][j] = -MulH[i] - MulV[j];
+                C[i][j] = -MulH[i] - MulV[j];
                 for (unsigned k = 0; k < half_N; k++)
                 {
                     k <<= 1;
-                    C_matr[i][j] += (A_matr[i][k] + B_matr[k + 1][j]) * 
-                                    (A_matr[i][k + 1] + B_matr[k][j]);
+                    C[i][j] += (A[i][k] + B[k + 1][j]) * 
+                                (A[i][k + 1] + B[k][j]);
                 }
             }
     }

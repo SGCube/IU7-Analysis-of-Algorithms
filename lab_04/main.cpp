@@ -13,11 +13,11 @@ int main(int argc, char **argv)
     {
         unsigned m = 10, n = 20, q = 30;
 
-        Matrix A(m, n), B(n, q), C(m, q);
+        Matrix A(m, n), B(n, q);
         A.randomize(-10, 10);
         B.randomize(-10, 10);
 
-        multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
+        Matrix C = multiply_vinograd_nothread(A, B);
 
         return 0;
     }
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     std::cout << "Enter 3 size of matrices (M, N, Q): ";
     std::cin >> m >> n >> q;
 
-    Matrix A(m, n), B(n, q), C(m, q);
+    Matrix A(m, n), B(n, q);
     A.randomize(-10, 10);
     B.randomize(-10, 10);
 
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     B.write(std::cout);
     std::cout << std::endl;
 
-    Matrix C = multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
+    Matrix C = multiply_vinograd_nothread(A, B);
     C.write(std::cout);
     std::cout << std::endl;
 

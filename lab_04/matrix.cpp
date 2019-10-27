@@ -7,51 +7,35 @@ Matrix::Matrix(unsigned rows, unsigned cols)
     _rows = rows;
     _cols = cols;
 
-    ptr = new int * [_rows];
-    for (unsigned i = 0; i < _rows; i++)
-    {
-        ptr[i] = new int[_cols];
-        for (unsigned j = 0; j < _cols; j++)
-            ptr[i][j] = 0;
-    }
+    ptr = new Array(_cols)[_rows];
 }
 
 Matrix::Matrix(std::istream& stream)
 {
     stream >> _rows;
     stream >> _cols;
-    ptr = new int * [_rows];
+
+    ptr = new Array(_cols)[_rows];
 
     for (unsigned i = 0; i < _rows; i++)
-    {
-        ptr[i] = new int[_cols];
-        for (unsigned j = 0; j < _cols; j++)
-            stream >> ptr[i][j];
-    }
+        ptr[i].read(stream);
 }
 
 Matrix::~Matrix()
 {
-    for (unsigned i = 0; i < _rows; i++)
-        delete [] ptr[i];
     delete [] ptr;
 }
 
 void Matrix::read(std::istream& stream)
 {
     for (unsigned i = 0; i < _rows; i++)
-        for (unsigned j = 0; j < _cols; j++)
-            stream >> ptr[i][j];
+        ptr[i].read(stream);
 }
 
 void Matrix::write(std::ostream& stream)
 {
     for (unsigned i = 0; i < _rows; i++)
-    {
-        for (unsigned j = 0; j < _cols; j++)
-            stream << ptr[i][j] << ' ';
-        stream  << std::endl;
-    }
+        ptr[i].write(stream);
 }
 
 void Matrix::randomize(int min, int max)
@@ -59,6 +43,16 @@ void Matrix::randomize(int min, int max)
     for (unsigned i = 0; i < _rows; i++)
         for (unsigned j = 0; j < _cols; j++)
             ptr[i][j] = rand() % (max - min + 1) + min;
+}
+
+Matrix& Matrix::operator=(Matrix &other)
+{
+    Matrix tmp(other._rows, other._cols);
+    for (unsigned i = 0; i < tmp._rows; i++)
+        for (unsigned j = 0; j < tmp._cols; j++)
+            tmp.ptr[i][j] = other.ptr[i][j];
+    
+    return tmp;
 }
 
 bool Matrix::operator==(const Matrix &other)
@@ -78,27 +72,17 @@ bool Matrix::operator!=(const Matrix &other)
     return !(self == other);
 }
 
-void set_rows(unsigned rows)
-{
-    _rows = rows;
-}
-
-unsigned get_rows()
+unsigned Matrix::get_rows()
 {
     return _rows;
 }
 
-void set_cols(unsigned cols)
-{
-    _cols = cols;
-}
-
-unsigned get_cols()
+unsigned Matrix::get_cols()
 {
     return _cols;
 }
 
-int** matr()
+Array& Matrix::operator[](unsigned i)
 {
-    return ptr;
+    return arrays[i];
 }
