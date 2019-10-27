@@ -21,6 +21,17 @@ Matrix::Matrix(std::istream& stream)
         ptr[i].read(stream);
 }
 
+Matrix(const Matrix &other)
+{
+    _rows = other._rows;
+    _cols = other._cols;
+
+    ptr = new Array(_cols)[_rows];
+    for (unsigned i = 0; i < _rows; i++)
+        for (unsigned j = 0; j < _cols; j++)
+            ptr[i][j] = other.ptr[i][j];
+}
+
 Matrix::~Matrix()
 {
     delete [] ptr;

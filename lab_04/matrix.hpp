@@ -14,6 +14,14 @@ public:
             ptr[i] = 0;
     }
 
+    Array(const Array& other)
+    {
+        _size = other._size;
+        ptr = new int[_size];
+        for (unsigned i = 0; i < _size; i++)
+            ptr[i] = other.ptr[i];
+    }
+
     ~Array()
     {
         delete [] ptr;
@@ -48,6 +56,7 @@ class Matrix
 public:
     Matrix(unsigned rows, unsigned cols);
     Matrix(std::istream& stream);
+    Matrix(const Matrix &other);
     ~Matrix();
 
     void read(std::istream& stream);
