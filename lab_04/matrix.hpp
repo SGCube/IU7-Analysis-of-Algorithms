@@ -3,27 +3,80 @@
 
 #include <iostream>
 
-namespace Matrix
+class Array
 {
-    int **init(unsigned rows, unsigned cols);
+public:
+    Array(unsigned size)
+    {
+        _size = size;
+        ptr = new int[_size];
+        for (unsigned i = 0; i < _size; i++)
+            ptr[i] = 0;
+    }
 
-    void destroy(int **matr, unsigned rows);
+    ~Array()
+    {
+        delete [] ptr;
+    }
 
-    void randomize(int **matr, unsigned rows, unsigned cols,
-        int min, int max);
-    
-    int **randinit(unsigned rows, unsigned cols, int min, int max);
+    void read(std::istream& stream)
+    {
+        for (unsigned i = 0; i < _size; i++)
+            stream >> ptr[i];
+    }
 
-    int **read(std::istream& stream, int **matr, unsigned &rows,
-        unsigned &cols);
+    void write(std::ostream& stream)
+    {
+        for (unsigned i = 0; i < _size; i++)
+            stream << ptr[i] << ' ';
+    }
+ 
+    int& operator[](unsigned i)
+    {
+        return ptr[i];
+    }
 
-    int **read_wsize(std::istream& stream, unsigned &rows, unsigned &cols);
+    friend Matrix;
 
-    void write(std::ostream& stream, int **matr, unsigned rows,
-        unsigned cols);
-    
-    bool equal(int **matr1, unsigned rows1, unsigned cols1,
-        int **matr2, unsigned rows2, unsigned cols2);
+private:
+    int *ptr;
+    unsigned _size;
+};
+
+class Matrix
+{
+public:
+    Matrix(unsigned rows, unsigned cols);
+    Matrix(std::istream& stream);
+    ~Matrix();
+
+    void read(std::istream& stream);
+    void write(std::ostream& stream);
+
+    void randomize(int min, int max);
+
+    bool operator==(const Matrix &other);
+    bool operator!=(const Matrix &other);
+
+    void set_rows(unsigned rows);
+    unsigned get_rows();
+
+    void set_cols(unsigned cols);
+    unsigned get_cols();
+
+    Array& operator[] (unsigned i)
+    {
+        return arrays[i];
+    }
+
+    int** matr();
+
+private:
+    int **ptr;
+    unsigned _rows;
+    unsigned _cols;
+
+    Array *arrays;
 };
 
 #endif

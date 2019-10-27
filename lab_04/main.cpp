@@ -13,15 +13,11 @@ int main(int argc, char **argv)
     {
         unsigned m = 10, n = 20, q = 30;
 
-        int **matrix_a = Matrix::randinit(m, n, -10, 10);
-        int **matrix_b = Matrix::randinit(n, q, -10, 10);
-        int **matrix_c = Matrix::init(m, q);
+        Matrix A(m, n), B(n, q), C(m, q);
+        A.randomize(-10, 10);
+        B.randomize(-10, 10);
 
         multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
-
-        Matrix::destroy(matrix_a, m);
-        Matrix::destroy(matrix_b, n);
-        Matrix::destroy(matrix_c, m);
 
         return 0;
     }
@@ -30,24 +26,19 @@ int main(int argc, char **argv)
     std::cout << "Enter 3 size of matrices (M, N, Q): ";
     std::cin >> m >> n >> q;
 
-    int **matrix_a = Matrix::randinit(m, n, -10, 10);
-    int **matrix_b = Matrix::randinit(n, q, -10, 10);
+    Matrix A(m, n), B(n, q), C(m, q);
+    A.randomize(-10, 10);
+    B.randomize(-10, 10);
 
     std::cout << std::endl;
-    Matrix::write(std::cout, matrix_a, m, n);
+    A.write(std::cout);
     std::cout << std::endl;
-    Matrix::write(std::cout, matrix_b, n, q);
-    std::cout << std::endl;
-
-    int **matrix_c = Matrix::init(m, q);
-
-    multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
-    Matrix::write(std::cout, matrix_c, m, q);
+    B.write(std::cout);
     std::cout << std::endl;
 
-    Matrix::destroy(matrix_a, m);
-    Matrix::destroy(matrix_b, n);
-    Matrix::destroy(matrix_c, m);
+    Matrix C = multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, m, n, q);
+    C.write(std::cout);
+    std::cout << std::endl;
 
     return 0;
 }

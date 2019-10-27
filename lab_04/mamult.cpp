@@ -39,9 +39,19 @@ void node_calc_even(int **A, int **B, int **C, int *MulH, int *MulV,
     }
 }
 
-void multiply_vinograd_opt(int **A, int **B, int **C,
-    unsigned M, unsigned N, unsigned Q)
+Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
 {
+    const unsigned M = A.get_rows();
+    const unsigned N = A.get_cols();
+    const unsigned Q = B.get_cols();
+
+    int **A_matr = A.matr();
+    int **B_matr = B.matr();
+
+    Matrix C(M, Q);
+    int **C_matr = C.matr();
+
+
     unsigned half_N = N >> 1;
 
     int *MulH = nullptr, *MulV = nullptr;
@@ -76,11 +86,22 @@ void multiply_vinograd_opt(int **A, int **B, int **C,
 
     delete [] MulH;
     delete [] MulV;
+
+    return C;
 }
 
-void multiply_vinograd_nothread(int **A, int **B, int **C,
-    unsigned M, unsigned N, unsigned Q)
+Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
 {
+    const unsigned M = A.get_rows();
+    const unsigned N = A.get_cols();
+    const unsigned Q = B.get_cols();
+
+    int **A_matr = A.matr();
+    int **B_matr = B.matr();
+
+    Matrix C(M, Q);
+    int **C_matr = C.matr();
+
     unsigned half_N = N >> 1;
 
     int *MulH = new int[M];
@@ -90,7 +111,7 @@ void multiply_vinograd_nothread(int **A, int **B, int **C,
         for (unsigned k = 0; k < half_N; k++)
         {
             k <<= 1;
-            MulH[i] += A[i][k] * A[i][k + 1];
+            MulH[i] += A_matr[i][k] * A_matr[i][k + 1];
         }
     }
 
@@ -101,7 +122,7 @@ void multiply_vinograd_nothread(int **A, int **B, int **C,
         for (unsigned k = 0; k < half_N; k++)
         {
             k <<= 1;
-            MulV[i] += B[k][i] * B[k + 1][i];
+            MulV[i] += B_matr[k][i] * B_matr[k + 1][i];
         }
     }
 
@@ -111,11 +132,13 @@ void multiply_vinograd_nothread(int **A, int **B, int **C,
         for (unsigned i = 0; i < M; i++)
             for (unsigned j = 0; j < Q; j++)
             {
-                C[i][j] = A[i][N_minus_1] * B[N_minus_1][j] - MulH[i] - MulV[j];
+                C_matr[i][j] = A_matr[i][N_minus_1] * B_matr[N_minus_1][j] -
+                                MulH[i] - MulV[j];
                 for (unsigned k = 0; k < half_N; k++)
                 {
                     k <<= 1;
-                    C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
+                    C_matr[i][j] += (A_matr[i][k] + B_matr[k + 1][j]) * 
+                                    (A_matr[i][k + 1] + B_matr[k][j]);
                 }
             }
     }
@@ -124,15 +147,18 @@ void multiply_vinograd_nothread(int **A, int **B, int **C,
         for (unsigned i = 0; i < M; i++)
             for (unsigned j = 0; j < Q; j++)
             {
-                C[i][j] = -MulH[i] - MulV[j];
+                C_matr[i][j] = -MulH[i] - MulV[j];
                 for (unsigned k = 0; k < half_N; k++)
                 {
                     k <<= 1;
-                    C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
+                    C_matr[i][j] += (A_matr[i][k] + B_matr[k + 1][j]) * 
+                                    (A_matr[i][k + 1] + B_matr[k][j]);
                 }
             }
     }
 
     delete [] MulH;
     delete [] MulV;
+
+    return C;
 }

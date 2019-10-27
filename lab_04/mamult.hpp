@@ -3,10 +3,8 @@
 
 #include "matrix.hpp"
 
-void multiply_vinograd_opt(int **A, int **B, int **C,
-    unsigned M, unsigned N, unsigned Q);
+Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B);
 
-void multiply_vinograd_nothread(int **A, int **B, int **C,
-    unsigned M, unsigned N, unsigned Q);
+Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B);
 
 #endif
