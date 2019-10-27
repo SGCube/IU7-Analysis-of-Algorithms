@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+class Matrix;
+
 class Array
 {
 public:

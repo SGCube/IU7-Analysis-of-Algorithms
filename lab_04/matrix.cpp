@@ -21,7 +21,7 @@ Matrix::Matrix(std::istream& stream)
         ptr[i].read(stream);
 }
 
-Matrix(const Matrix &other)
+Matrix::Matrix(const Matrix &other)
 {
     _rows = other._rows;
     _cols = other._cols;
@@ -68,19 +68,19 @@ Matrix& Matrix::operator=(Matrix &other)
 
 bool Matrix::operator==(const Matrix &other)
 {
-    if (self._rows != other._rows || self._cols != other._cols)
+    if (this._rows != other._rows || this._cols != other._cols)
         return false;
 
     for (unsigned i = 0; i < _rows; i++)
         for (unsigned j = 0; j < _cols; j++)
-            if (self.ptr[i][j] != other.ptr[i][j])
+            if (this.ptr[i][j] != other.ptr[i][j])
                 return false;
     return true;
 }
 
 bool Matrix::operator!=(const Matrix &other)
 {
-    return !(self == other);
+    return !(this == other);
 }
 
 unsigned Matrix::get_rows()
@@ -95,5 +95,5 @@ unsigned Matrix::get_cols()
 
 Array& Matrix::operator[](unsigned i)
 {
-    return arrays[i];
+    return ptr[i];
 }
