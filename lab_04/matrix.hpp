@@ -8,43 +8,18 @@ class Matrix;
 class Array
 {
 public:
-    explicit Array(unsigned size)
-    {
-        _size = size;
-        ptr = new int[_size];
-        for (unsigned i = 0; i < _size; i++)
-            ptr[i] = 0;
-    }
+    Array();
+    explicit Array(unsigned size);
+    Array(const Array& other);
 
-    Array(const Array& other)
-    {
-        _size = other._size;
-        ptr = new int[_size];
-        for (unsigned i = 0; i < _size; i++)
-            ptr[i] = other.ptr[i];
-    }
+    ~Array();
 
-    ~Array()
-    {
-        delete [] ptr;
-    }
+    void alloc(unsigned size);
 
-    void read(std::istream& stream)
-    {
-        for (unsigned i = 0; i < _size; i++)
-            stream >> ptr[i];
-    }
-
-    void write(std::ostream& stream)
-    {
-        for (unsigned i = 0; i < _size; i++)
-            stream << ptr[i] << ' ';
-    }
+    void read(std::istream& stream);
+    void write(std::ostream& stream);
  
-    int& operator[](unsigned i)
-    {
-        return ptr[i];
-    }
+    int& operator[](unsigned i);
 
     friend Matrix;
 
@@ -58,7 +33,7 @@ class Matrix
 public:
     Matrix(unsigned rows, unsigned cols);
     explicit Matrix(std::istream& stream);
-    explicit Matrix(const Matrix &other);
+    Matrix(const Matrix &other);
     ~Matrix();
 
     void read(std::istream& stream);
@@ -66,7 +41,7 @@ public:
 
     void randomize(int min, int max);
 
-    Matrix& operator=(Matrix other);
+    Matrix& operator=(Matrix &other);
 
     bool operator==(const Matrix &other);
     bool operator!=(const Matrix &other);

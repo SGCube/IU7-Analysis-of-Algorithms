@@ -5,6 +5,6 @@
 
 //Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B);
 
-Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B);
+Matrix multiply_vinograd_nothread(Matrix &A, Matrix &B);
 
 #endif

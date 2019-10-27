@@ -85,7 +85,7 @@ Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
     return C;
 }*/
 
-Matrix& multiply_vinograd_nothread(const Matrix &A, const Matrix &B)
+Matrix multiply_vinograd_nothread(Matrix &A, Matrix &B)
 {
     const unsigned M = A.get_rows();
     const unsigned N = A.get_cols();

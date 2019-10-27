@@ -2,12 +2,79 @@
 #include <iostream>
 #include <cstdlib>
 
+///////////////////////////////////////////////
+///             ARRAY                       ///
+///////////////////////////////////////////////
+
+Array::Array()
+{
+    _size = 0;
+    ptr = nullptr;
+}
+
+
+Array::Array(unsigned size)
+{
+    _size = size;
+    ptr = new int[_size];
+    for (unsigned i = 0; i < _size; i++)
+        ptr[i] = 0;
+}
+
+Array::Array(const Array& other)
+{
+    _size = other._size;
+    ptr = new int[_size];
+    for (unsigned i = 0; i < _size; i++)
+        ptr[i] = other.ptr[i];
+}
+
+Array::~Array()
+{
+    delete [] ptr;
+}
+
+void Array::alloc(unsigned size)
+{
+    if (!ptr && !_size)
+    {
+        _size = size;
+        ptr = new int[_size];
+        for (unsigned i = 0; i < _size; i++)
+            ptr[i] = 0;
+    }
+}
+
+void Array::read(std::istream& stream)
+{
+    for (unsigned i = 0; i < _size; i++)
+        stream >> ptr[i];
+}
+
+void Array::write(std::ostream& stream)
+{
+    for (unsigned i = 0; i < _size; i++)
+        stream << ptr[i] << ' ';
+}
+
+int& Array::operator[](unsigned i)
+{
+    return ptr[i];
+}
+
+///////////////////////////////////////////////
+///             MATRIX                      ///
+///////////////////////////////////////////////
+
+
 Matrix::Matrix(unsigned rows, unsigned cols)
 {
     _rows = rows;
     _cols = cols;
 
-    ptr = new Array(_cols)[_rows];
+    ptr = new Array[_rows];
+    for (unsigned i = 0; i < _rows; i++)
+        ptr[i].alloc(_cols);
 }
 
 Matrix::Matrix(std::istream& stream)
@@ -15,10 +82,13 @@ Matrix::Matrix(std::istream& stream)
     stream >> _rows;
     stream >> _cols;
 
-    ptr = new Array(_cols)[_rows];
+    ptr = new Array[_rows];
 
     for (unsigned i = 0; i < _rows; i++)
+    {
+        ptr[i].alloc(_cols);
         ptr[i].read(stream);
+    }
 }
 
 Matrix::Matrix(const Matrix &other)
@@ -26,10 +96,13 @@ Matrix::Matrix(const Matrix &other)
     _rows = other._rows;
     _cols = other._cols;
 
-    ptr = new Array(_cols)[_rows];
+    ptr = new Array[_rows];
     for (unsigned i = 0; i < _rows; i++)
+    {
+        ptr[i].alloc(_cols);
         for (unsigned j = 0; j < _cols; j++)
             ptr[i][j] = other.ptr[i][j];
+    }
 }
 
 Matrix::~Matrix()
@@ -46,7 +119,10 @@ void Matrix::read(std::istream& stream)
 void Matrix::write(std::ostream& stream)
 {
     for (unsigned i = 0; i < _rows; i++)
+    {
         ptr[i].write(stream);
+        stream << std::endl;
+    }
 }
 
 void Matrix::randomize(int min, int max)
@@ -58,29 +134,38 @@ void Matrix::randomize(int min, int max)
 
 Matrix& Matrix::operator=(Matrix &other)
 {
-    Matrix tmp(other._rows, other._cols);
-    for (unsigned i = 0; i < tmp._rows; i++)
-        for (unsigned j = 0; j < tmp._cols; j++)
-            tmp.ptr[i][j] = other.ptr[i][j];
+    _rows = other._rows;
+    _cols = other._cols;
+
+    if (ptr)
+        delete [] ptr;
+
+    ptr = new Array[_rows];
+    for (unsigned i = 0; i < _rows; i++)
+    {
+        ptr[i].alloc(_cols);
+        for (unsigned j = 0; j < _cols; j++)
+            ptr[i][j] = other.ptr[i][j];
+    }
     
-    return tmp;
+    return *this;
 }
 
 bool Matrix::operator==(const Matrix &other)
 {
-    if (this._rows != other._rows || this._cols != other._cols)
+    if ((*this)._rows != other._rows || (*this)._cols != other._cols)
         return false;
 
     for (unsigned i = 0; i < _rows; i++)
         for (unsigned j = 0; j < _cols; j++)
-            if (this.ptr[i][j] != other.ptr[i][j])
+            if ((*this).ptr[i][j] != other.ptr[i][j])
                 return false;
     return true;
 }
 
 bool Matrix::operator!=(const Matrix &other)
 {
-    return !(this == other);
+    return !((*this) == other);
 }
 
 unsigned Matrix::get_rows()
