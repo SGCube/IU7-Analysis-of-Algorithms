@@ -6,7 +6,7 @@
 class Array
 {
 public:
-    Array(unsigned size)
+    explicit Array(unsigned size)
     {
         _size = size;
         ptr = new int[_size];
@@ -55,8 +55,8 @@ class Matrix
 {
 public:
     Matrix(unsigned rows, unsigned cols);
-    Matrix(std::istream& stream);
-    Matrix(const Matrix &other);
+    explicit Matrix(std::istream& stream);
+    explicit Matrix(const Matrix &other);
     ~Matrix();
 
     void read(std::istream& stream);
