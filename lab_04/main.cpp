@@ -17,7 +17,7 @@ int main(int argc, char **argv)
         A.randomize(-10, 10);
         B.randomize(-10, 10);
 
-        Matrix C = multiply_vinograd_nothread(A, B);
+        Matrix C = multiply_vinograd_thread(A, B, 10);
 
         return 0;
     }
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     B.write(std::cout);
     std::cout << std::endl;
 
-    Matrix C = multiply_vinograd_nothread(A, B);
+    Matrix C = multiply_vinograd_thread(A, B, 10);
     C.write(std::cout);
     std::cout << std::endl;
 

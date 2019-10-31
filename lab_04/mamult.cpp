@@ -3,8 +3,30 @@
 
 #include "mamult.hpp"
 
-/*void init_MVector(int **MVector, int **A, unsigned M, unsigned half_N)
+typedef struct
 {
+    Matrix &A;
+    Matrix &B;
+    Matrix &C;
+    int *MulH;
+    int *MulV;
+    unsigned half_N;
+    unsigned N_minus_1;
+} MultArgs;
+
+typedef struct
+{
+    unsigned i;
+    unsigned start_i;
+    unsigned end_i;
+    unsigned step;
+    unsigned left;
+    unsigned amount;
+} ThreadArgs;
+
+void init_MultH(int **MVector, Matrix A, unsigned half_N)
+{
+    const unsigned M = A.get_rows();
     *MVector = new int[M];
     for (unsigned i = 0; i < M; i++)
     {
@@ -17,29 +39,78 @@
     }
 }
 
-void node_calc_odd(int **A, int **B, int **C, int *MulH, int *MulV,
-    unsigned i, unsigned j, unsigned half_N, unsigned N_minus_1)
+void init_MultV(int **MVector, Matrix B, unsigned half_N)
 {
-    C[i][j] = A[i][N_minus_1] * B[N_minus_1][j] - MulH[i] - MulV[j];
-    for (unsigned k = 0; k < half_N; k++)
+    const unsigned Q = B.get_cols();
+    *MVector = new int[Q];
+    for (unsigned j = 0; j < Q; j++)
     {
-        k <<= 1;
-        C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
+        (*MVector)[j] = 0;
+        for (unsigned k = 0; k < half_N; k++)
+        {
+            k <<= 1;
+            (*MVector)[j] += B[k][j] * B[k + 1][j];
+        }
     }
 }
 
-void node_calc_even(int **A, int **B, int **C, int *MulH, int *MulV,
-    unsigned i, unsigned j, unsigned half_N)
+void multiply_even(void *_args, void *_thread_args)
 {
-    C[i][j] = -MulH[i] - MulV[j];
-    for (unsigned k = 0; k < half_N; k++)
-    {
-        k <<= 1;
-        C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
-    }
+    MultArgs *args = (MultArgs*) _args;
+    ThreadArgs *thread_args = (ThreadArgs*) _thread_args;
+
+    const unsigned Q = args->B.get_cols();
+
+    for (unsigned i = thread_args->start_i; i < thread_args->end_i; i++)
+        for (unsigned j = 0; j < Q; j++)
+        {
+            args->C[i][j] = args->A[i][args->N_minus_1] *
+                            args->B[args->N_minus_1][j]
+                            - args->MulH[i] - args->MulV[j];
+            for (unsigned k = 0; k < args->half_N; k++)
+            {
+                k <<= 1;
+                args->C[i][j] += (args->A[i][k] + args->B[k + 1][j]) *
+                                (args->A[i][k + 1] + args->B[k][j]);
+            }
+        }
+
+    thread_args->i += 1;
+	thread_args->start_i = thread_args->end_i;
+	if (thread_args->i + 1 != thread_args->amount)
+		thread_args->end_i += thread_args->step;
+	else
+		thread_args->end_i += thread_args->step + thread_args->left;
 }
 
-Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
+void multiply_odd(void *_args, void *_thread_args)
+{
+    MultArgs *args = (MultArgs*) _args;
+    ThreadArgs *thread_args = (ThreadArgs*) _thread_args;
+
+    const unsigned Q = args->B.get_cols();
+
+    for (unsigned i = thread_args->start_i; i < thread_args->end_i; i++)
+        for (unsigned j = 0; j < Q; j++)
+        {
+            args->C[i][j] = -args->MulH[i] - args->MulV[j];
+            for (unsigned k = 0; k < args->half_N; k++)
+            {
+                k <<= 1;
+                args->C[i][j] += (args->A[i][k] + args->B[k + 1][j]) *
+                                    (args->A[i][k + 1] + args->B[k][j]);
+            }
+        }
+
+    thread_args->i += 1;
+	thread_args->start_i = thread_args->end_i;
+	if (thread_args->i + 1 != thread_args->amount)
+		thread_args->end_i += thread_args->step;
+	else
+		thread_args->end_i += thread_args->step + thread_args->left;
+}
+
+Matrix multiply_vinograd_thread(Matrix &A, Matrix &B, unsigned thread_amount)
 {
     const unsigned M = A.get_rows();
     const unsigned N = A.get_cols();
@@ -51,30 +122,29 @@ Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
 
     int *MulH = nullptr, *MulV = nullptr;
 
-    std::thread thr_MulH(init_MVector, &MulH, A, M, half_N);
-    std::thread thr_MulV(init_MVector, &MulV, B, Q, half_N);
+    std::thread thr_MulH(init_MultH, &MulH, A, half_N);
+    std::thread thr_MulV(init_MultV, &MulV, B, half_N);
 
     thr_MulH.join();
     thr_MulV.join();
 
     std::vector<std::thread> threads;
 
+    MultArgs args = { A, B, C, MulH, MulV, half_N, N - 1 };
+    ThreadArgs targs;
+    targs.amount = thread_amount;
+    targs.step = M / thread_amount;
+	targs.left = M % thread_amount;
+    targs.i = 0;
+	targs.start_i = 0;
+	targs.end_i = targs.step;
+    
+    void (*f)(void*, void*) = multiply_odd;
     if (N % 2)
-    {
-        unsigned N_minus_1 = N - 1;
-        for (unsigned i = 0; i < M; i++)
-            for (unsigned j = 0; j < Q; j++)
-                threads.push_back(std::thread(node_calc_odd, A, B, C,
-                                            MulH, MulV, i, j, half_N,
-                                            N_minus_1));
-    }
-    else
-    {
-        for (unsigned i = 0; i < M; i++)
-            for (unsigned j = 0; j < Q; j++)
-                threads.push_back(std::thread(node_calc_even, A, B, C,
-                                            MulH, MulV, i, j, half_N));
-    }
+        f = multiply_even;
+
+    for (unsigned i = 0; i < thread_amount; i++)
+        threads.push_back(std::thread(f, (void *)&args, (void *)&targs));
 
     for (auto& th : threads)
         th.join();
@@ -83,7 +153,7 @@ Matrix& multiply_vinograd_opt(const Matrix &A, const Matrix &B)
     delete [] MulV;
 
     return C;
-}*/
+}
 
 Matrix multiply_vinograd_nothread(Matrix &A, Matrix &B)
 {
