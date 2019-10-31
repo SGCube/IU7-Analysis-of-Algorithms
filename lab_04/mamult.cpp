@@ -1,7 +1,11 @@
 #include <vector>
 #include <thread>
+#include <pthread.h>
 
 #include "mamult.hpp"
+
+#define ERROR_CREATE_THREAD -1
+#define ERROR_JOIN_THREAD -2
 
 typedef struct
 {
@@ -12,56 +16,66 @@ typedef struct
     int *MulV;
     unsigned half_N;
     unsigned N_minus_1;
-} MultArgs;
 
-typedef struct
-{
     unsigned i;
     unsigned start_i;
     unsigned end_i;
     unsigned step;
     unsigned left;
     unsigned amount;
-} ThreadArgs;
+} MultArgs;
 
-void init_MultH(int **MVector, Matrix A, unsigned half_N)
+
+typedef struct
 {
-    const unsigned M = A.get_rows();
-    *MVector = new int[M];
+    int **MVector;
+    Matrix &A;
+    unsigned half_N;
+} InitVectorArgs;
+
+void *init_MultH(void *_args)
+{
+    InitVectorArgs *args = (InitVectorArgs*) _args;
+
+    const unsigned M = args->A.get_rows();
+    *(args->MVector) = new int[M];
     for (unsigned i = 0; i < M; i++)
     {
-        (*MVector)[i] = 0;
-        for (unsigned k = 0; k < half_N; k++)
+        (*(args->MVector))[i] = 0;
+        for (unsigned k = 0; k < args->half_N; k++)
         {
             k <<= 1;
-            (*MVector)[i] += A[i][k] * A[i][k + 1];
+            (*(args->MVector))[i] += args->A[i][k] * args->A[i][k + 1];
         }
     }
+    return NULL;
 }
 
-void init_MultV(int **MVector, Matrix B, unsigned half_N)
+void *init_MultV(void *_args)
 {
-    const unsigned Q = B.get_cols();
-    *MVector = new int[Q];
+    InitVectorArgs *args = (InitVectorArgs*) _args;
+
+    const unsigned Q = args->A.get_cols();
+    *(args->MVector) = new int[Q];
     for (unsigned j = 0; j < Q; j++)
     {
-        (*MVector)[j] = 0;
-        for (unsigned k = 0; k < half_N; k++)
+        (*(args->MVector))[j] = 0;
+        for (unsigned k = 0; k < args->half_N; k++)
         {
             k <<= 1;
-            (*MVector)[j] += B[k][j] * B[k + 1][j];
+            (*(args->MVector))[j] += args->A[k][j] * args->A[k + 1][j];
         }
     }
+    return NULL;
 }
 
-void multiply_even(void *_args, void *_thread_args)
+void *multiply_even(void *_args)
 {
     MultArgs *args = (MultArgs*) _args;
-    ThreadArgs *thread_args = (ThreadArgs*) _thread_args;
 
     const unsigned Q = args->B.get_cols();
 
-    for (unsigned i = thread_args->start_i; i < thread_args->end_i; i++)
+    for (unsigned i = args->start_i; i < args->end_i; i++)
         for (unsigned j = 0; j < Q; j++)
         {
             args->C[i][j] = args->A[i][args->N_minus_1] *
@@ -75,22 +89,23 @@ void multiply_even(void *_args, void *_thread_args)
             }
         }
 
-    thread_args->i += 1;
-	thread_args->start_i = thread_args->end_i;
-	if (thread_args->i + 1 != thread_args->amount)
-		thread_args->end_i += thread_args->step;
+    args->i += 1;
+	args->start_i = args->end_i;
+	if (args->i + 1 != args->amount)
+		args->end_i += args->step;
 	else
-		thread_args->end_i += thread_args->step + thread_args->left;
+		args->end_i += args->step + args->left;
+
+    return NULL;
 }
 
-void multiply_odd(void *_args, void *_thread_args)
+void *multiply_odd(void *_args)
 {
     MultArgs *args = (MultArgs*) _args;
-    ThreadArgs *thread_args = (ThreadArgs*) _thread_args;
 
     const unsigned Q = args->B.get_cols();
 
-    for (unsigned i = thread_args->start_i; i < thread_args->end_i; i++)
+    for (unsigned i = args->start_i; i < args->end_i; i++)
         for (unsigned j = 0; j < Q; j++)
         {
             args->C[i][j] = -args->MulH[i] - args->MulV[j];
@@ -102,16 +117,22 @@ void multiply_odd(void *_args, void *_thread_args)
             }
         }
 
-    thread_args->i += 1;
-	thread_args->start_i = thread_args->end_i;
-	if (thread_args->i + 1 != thread_args->amount)
-		thread_args->end_i += thread_args->step;
+    args->i += 1;
+	args->start_i = args->end_i;
+	if (args->i + 1 != args->amount)
+		args->end_i += args->step;
 	else
-		thread_args->end_i += thread_args->step + thread_args->left;
+		args->end_i += args->step + args->left;
+
+    return NULL;
 }
 
 Matrix multiply_vinograd_thread(Matrix &A, Matrix &B, unsigned thread_amount)
 {
+    int status, status_addr;
+    pthread_t thr_MulH, thr_MulV;
+    pthread_t *threads = new pthread_t[thread_amount];
+
     const unsigned M = A.get_rows();
     const unsigned N = A.get_cols();
     const unsigned Q = B.get_cols();
@@ -121,36 +142,67 @@ Matrix multiply_vinograd_thread(Matrix &A, Matrix &B, unsigned thread_amount)
     unsigned half_N = N >> 1;
 
     int *MulH = nullptr, *MulV = nullptr;
+    InitVectorArgs argsH = { &MulH, A, half_N };
+    InitVectorArgs argsV = { &MulV, B, half_N };
 
-    std::thread thr_MulH(init_MultH, &MulH, A, half_N);
-    std::thread thr_MulV(init_MultV, &MulV, B, half_N);
+    status = pthread_create(&thr_MulH, NULL, init_MultH, (void*) &argsH);
+    if (status)
+    {
+        printf("Can't create thread for MulH, status = %d\n", status);
+        exit(ERROR_CREATE_THREAD);
+    }
+    status = pthread_create(&thr_MulV, NULL, init_MultV, (void*) &argsV);
+    if (status)
+    {
+        printf("Can't create thread for MulV, status = %d\n", status);
+        exit(ERROR_CREATE_THREAD);
+    }
 
-    thr_MulH.join();
-    thr_MulV.join();
+    status = pthread_join(thr_MulH, (void**)&status_addr);
+    if (status)
+    {
+        printf("Can't join thread thr_MulH, status = %d\n", status);
+        exit(ERROR_JOIN_THREAD);
+    }
+    status = pthread_join(thr_MulV, (void**)&status_addr);
+    if (status)
+    {
+        printf("Can't join thread thr_MulV, status = %d\n", status);
+        exit(ERROR_JOIN_THREAD);
+    }
 
-    std::vector<std::thread> threads;
-
-    MultArgs args = { A, B, C, MulH, MulV, half_N, N - 1 };
-    ThreadArgs targs;
-    targs.amount = thread_amount;
-    targs.step = M / thread_amount;
-	targs.left = M % thread_amount;
-    targs.i = 0;
-	targs.start_i = 0;
-	targs.end_i = targs.step;
-    
-    void (*f)(void*, void*) = multiply_odd;
+    MultArgs args = {
+        A, B, C, MulH, MulV, half_N, N - 1, thread_amount, M / thread_amount,
+        M % thread_amount, 0, 0, M / thread_amount
+    };
+    void* (*thread_func)(void*) = multiply_odd;
     if (N % 2)
-        f = multiply_even;
+        thread_func = multiply_even;
+    
+    for (unsigned i = 0; i < thread_amount; i++)
+    {
+		status = pthread_create(&(threads[i]), NULL, thread_func,
+                                (void*) &args);
+		if (status)
+        {
+			printf("Can't create thread %d, status = %d\n", i, status);
+			exit(ERROR_CREATE_THREAD);
+	    }
+    }
 
     for (unsigned i = 0; i < thread_amount; i++)
-        threads.push_back(std::thread(f, (void *)&args, (void *)&targs));
-
-    for (auto& th : threads)
-        th.join();
+    {
+		status = pthread_join(threads[i], (void**)&status_addr);
+		if (status)
+        {
+			printf("Can't join thread %d, status = %d\n", i, status);
+			exit(ERROR_JOIN_THREAD);
+		}
+	}
 
     delete [] MulH;
     delete [] MulV;
+    delete [] threads;
 
     return C;
 }
