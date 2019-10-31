@@ -185,7 +185,7 @@ Matrix multiply_vinograd_thread(Matrix &A, Matrix &B, unsigned thread_amount)
                                 (void*) &args);
 		if (status)
         {
-			printf("Can't create thread %d, status = %d\n", i, status);
+			printf("Can't create thread %u, status = %d\n", i, status);
 			exit(ERROR_CREATE_THREAD);
 	    }
     }
@@ -195,7 +195,7 @@ Matrix multiply_vinograd_thread(Matrix &A, Matrix &B, unsigned thread_amount)
 		status = pthread_join(threads[i], (void**)&status_addr);
 		if (status)
         {
-			printf("Can't join thread %d, status = %d\n", i, status);
+			printf("Can't join thread %u, status = %d\n", i, status);
 			exit(ERROR_JOIN_THREAD);
 		}
 	}
