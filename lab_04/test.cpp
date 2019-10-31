@@ -37,7 +37,7 @@ int main(void)
 
         Matrix A(fin_1), B(fin_2), C(fin_res);
 
-        Matrix CC = multiply_vinograd_thread(A, B, 10);
+        Matrix CC = multiply_vinograd_thread(A, B, 8);
         error_count += handle_result(C, CC);
 
         fin_1.close();

@@ -22,9 +22,12 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    unsigned m, n, q;
+    unsigned m, n, q, thread_amount;
     std::cout << "Enter 3 size of matrices (M, N, Q): ";
     std::cin >> m >> n >> q;
+
+    std::cout << "Enter amount of threads: ";
+    std::cin >> thread_amount;
 
     Matrix A(m, n), B(n, q);
     A.randomize(-10, 10);
@@ -36,7 +39,7 @@ int main(int argc, char **argv)
     B.write(std::cout);
     std::cout << std::endl;
 
-    Matrix C = multiply_vinograd_thread(A, B, 10);
+    Matrix C = multiply_vinograd_thread(A, B, thread_amount);
     C.write(std::cout);
     std::cout << std::endl;
 

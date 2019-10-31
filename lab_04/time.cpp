@@ -20,37 +20,38 @@ uint64_t rdtsc()
 }
 #endif
 
-void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size, unsigned step)
+void time_measure(std::ofstream &file, unsigned start_size,
+                    unsigned end_size, unsigned step)
 {
     unsigned long long start_time = 0, end_time = 0;
     unsigned test_repeats = 100;
-    file << "Size;Thread\n";
+    file << "Size;Threads;Result\n";
 
     for (unsigned size = start_size; size <= end_size; size += step)
-    {
-        unsigned long long result = 0;
-        for (unsigned k = 0; k < test_repeats; k++)
+        for (unsigned threads = 2; threads <= 16; threads *= 2)
         {
-            int **matrix_a = Matrix::randinit(size, size, -10, 10);
-            int **matrix_b = Matrix::randinit(size, size, -10, 10);
-            int **matrix_c = Matrix::init(size, size);
+            unsigned long long result = 0;
+            for (unsigned k = 0; k < test_repeats; k++)
+            {
+                Matrix A(size, size), B(size, size);
+                A.randomize(-10, 10);
+                B.randomize(-10, 10);
 
-            start_time = rdtsc();
-            multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, size, size, size);
-            end_time = rdtsc();
-            result += end_time - start_time;
+                start_time = rdtsc();
+                Matrix C = multiply_vinograd_thread(A, B, threads);
+                end_time = rdtsc();
+                result += end_time - start_time;
+            }
+            result /= test_repeats;
+            file << size << ";" << threads << ";" << result << std::endl;
         }
-        file << size;
-        result /= test_repeats;
-        file << ";" << result << std::endl;
-    }
 }
 
 int main(void)
 {
     srand(time(NULL));
 
-    std::ofstream csv_even("report/EvenTime.csv");
+    std::ofstream csv_even("report/TEvenTime.csv");
     if (!csv_even.is_open())
     {
         std::cout << "File open error!";
@@ -60,7 +61,7 @@ int main(void)
     time_measure(csv_even, 100, 1000, 100);
     csv_even.close();
 
-    std::ofstream csv_odd("report/ThreadTime.csv");
+    std::ofstream csv_odd("report/TOddTime.csv");
     if (!csv_odd.is_open())
     {
         std::cout << "File open error!";
