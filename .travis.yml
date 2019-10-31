@@ -42,5 +42,5 @@ jobs:
       script: valgrind --tool=memcheck --leak-check=full -q ./lab_04/lab_04 -memcheck
 
     - stage: test
-      script: ./test_04
+      script: ctest
       after_script: make clean
