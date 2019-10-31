@@ -134,6 +134,9 @@ void Matrix::randomize(int min, int max)
 
 Matrix& Matrix::operator=(Matrix &other)
 {
+    if (this == &other)
+        return *this;
+
     _rows = other._rows;
     _cols = other._cols;
 
