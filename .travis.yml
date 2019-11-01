@@ -1,6 +1,13 @@
 addons:
-apt:
-update: true
+  apt:
+    update: true
+    packages:
+      - cppcheck
+      - valgrind
+      - cmake
+      - build-essential
+      - libgtest-dev
+      - lcov
 
 stages:
   - stylecheck
@@ -10,17 +17,13 @@ stages:
 language: cpp
 
 before_install:
-- sudo apt update
-- sudo apt install valgrind
-- sudo apt install cmake
-- sudo apt install libgtest-dev
 - cd /usr/src/gtest
 - sudo cmake CMakeLists.txt
 - sudo make
 - sudo cp *.a /usr/lib
-- cd -
 
-install:
+before_script:
+- cd -
 - mkdir build
 - cd build
 - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
