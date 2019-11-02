@@ -77,30 +77,26 @@ void array_sort_quick(int * const arr, size_t first, size_t last)
 {
     size_t l_hold = first;
     size_t r_hold = last;
-    int pivot = arr[first];
+    int pivot = arr[(first + last) / 2];
 
-    while (first < last)
+    while (first <= last)
     {
-        while ((first < last) && (arr[last] >= pivot))
+        while (arr[first] < pivot)
+            first++;
+        while (arr[last] > pivot)
             last--;
-        if (first != last)
+        if (first <= last)
         {
-            arr[first] = arr[last];
-            first++;
-        }
-        while ((first < last) && (arr[first] <= pivot))
-            first++;
-        if (first != last)
-        {
+            int tmp = arr[last];
             arr[last] = arr[first];
+            arr[first] = tmp;
+            first++;
             last--;
         }
     }
 
-    size_t middle = first;
-    arr[middle] = pivot;
-    if (l_hold < middle)
-        array_sort_quick(arr, l_hold, middle - 1);
-    if (r_hold > middle)
-        array_sort_quick(arr, middle + 1, r_hold);
+    if (l_hold < last)
+        array_sort_quick(arr, l_hold, last);
+    if (r_hold > first)
+        array_sort_quick(arr, first, r_hold);
 }
