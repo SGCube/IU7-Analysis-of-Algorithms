@@ -14,6 +14,13 @@ void array_randomize(int * const arr, size_t n, int min, int max)
         arr[i] = rand() % (max - min + 1) + min;
 }
 
+void array_sorted(int * const arr, size_t n, int start, int step)
+{
+    arr[0] = start;
+    for (size_t i = 1; i < n; i++)
+        arr[i] = arr[i - 1] + step;
+}
+
 void array_write(std::ostream &stream, const int * const arr, size_t n)
 {
     for (size_t i = 0; i < n; i++)
@@ -73,30 +80,66 @@ void array_sort_merge(int * const arr, size_t first, size_t last)
     }
 }
 
-void array_sort_quick(int * const arr, size_t first, size_t last)
+void array_sort_quick(int * const arr, size_t left, size_t right)
 {
-    size_t l_hold = first;
-    size_t r_hold = last;
-    int pivot = arr[(first + last) / 2];
+    unsigned i = left, j = right;
+    int pivot = arr[(left + right) / 2];
 
-    while (first <= last)
+    while (i <= j)
     {
-        while (arr[first] < pivot)
-            first++;
-        while (arr[last] > pivot)
-            last--;
-        if (first <= last)
-        {
-            int tmp = arr[last];
-            arr[last] = arr[first];
-            arr[first] = tmp;
-            first++;
-            last--;
-        }
-    }
+        while ((i < j) && (arr[i] < pivot))
+            i++;
 
-    if (l_hold < last)
-        array_sort_quick(arr, l_hold, last);
-    if (r_hold > first)
-        array_sort_quick(arr, first, r_hold);
+        while ((i < j) && (arr[j] > pivot))
+            j--;
+
+        if (i <= j)
+        {
+            int tmp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = tmp;
+            if (i < right)
+                i++;
+            if (j > left)
+                j--;
+        }
+    };
+
+    if (left < j)
+        array_sort_quick(arr, left, j);
+
+    if (i < right)
+        array_sort_quick(arr, i, right);
+}
+
+void array_sort_quick_left(int * const arr, size_t left, size_t right)
+{
+    unsigned i = left, j = right;
+    int pivot = arr[left];
+
+    while (i <= j)
+    {
+        while ((i < j) && (arr[i] < pivot))
+            i++;
+
+        while ((i < j) && (arr[j] > pivot))
+            j--;
+
+        if (i <= j)
+        {
+            int tmp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = tmp;
+            if (i < right)
+                i++;
+            if (j > left)
+                j--;
+        }
+    };
+
+    if (left < j)
+        array_sort_quick(arr, left, j);
+
+    if (i < right)
+        array_sort_quick(arr, i, right);
 }
