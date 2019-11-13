@@ -25,10 +25,15 @@ void time_measure(std::ofstream &file, unsigned start_size,
 {
     unsigned long long start_time = 0, end_time = 0;
     unsigned test_repeats = 100;
-    file << "Size;Threads;Result\n";
+    file << "Size";
+    for (unsigned threads = 2; threads <= 8; threads += 2)
+        file << ";" << threads;
+    file << ";NonParallel" << std::endl;
 
     for (unsigned size = start_size; size <= end_size; size += step)
-        for (unsigned threads = 2; threads <= 16; threads *= 2)
+    {
+        file << size;
+        for (unsigned threads = 2; threads <= 8; threads += 2)
         {
             unsigned long long result = 0;
             for (unsigned k = 0; k < test_repeats; k++)
@@ -43,8 +48,24 @@ void time_measure(std::ofstream &file, unsigned start_size,
                 result += end_time - start_time;
             }
             result /= test_repeats;
-            file << size << ";" << threads << ";" << result << std::endl;
+            file << ";" << result;
         }
+        
+        unsigned long long result = 0;
+        for (unsigned k = 0; k < test_repeats; k++)
+        {
+            Matrix A(size, size), B(size, size);
+            A.randomize(-10, 10);
+            B.randomize(-10, 10);
+
+            start_time = rdtsc();
+            Matrix C = multiply_vinograd_nothread(A, B);
+            end_time = rdtsc();
+            result += end_time - start_time;
+        }
+        result /= test_repeats;
+        file << ";" << result << std::endl;
+    }
 }
 
 int main(void)
