@@ -2,7 +2,7 @@
 #include <time.h>
 int main() {
 	srand(time(NULL));
-	int n = 10;									// 1
+	int n = 6;									// 1
 	int *arr = new int[n];						// 2
 	for (int i = 0; i < n; i++) {				// 3
 		arr[i] = rand() % 21 - 10;				// 4
