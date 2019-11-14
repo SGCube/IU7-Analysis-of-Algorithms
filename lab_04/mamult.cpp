@@ -25,7 +25,6 @@ typedef struct
     unsigned amount;
 } MultArgs;
 
-
 typedef struct
 {
     int **MVector;
@@ -172,8 +171,8 @@ Matrix multiply_vinograd_thread(Matrix &A, Matrix &B, unsigned thread_amount)
     }
 
     MultArgs args = {
-        A, B, C, MulH, MulV, half_N, N - 1, thread_amount, M / thread_amount,
-        M % thread_amount, 0, 0, M / thread_amount
+        A, B, C, MulH, MulV, half_N, N - 1,
+        0, 0, M / thread_amount, M / thread_amount, M % thread_amount, thread_amount
     };
     void* (*thread_func)(void*) = multiply_odd;
     if (N % 2)
