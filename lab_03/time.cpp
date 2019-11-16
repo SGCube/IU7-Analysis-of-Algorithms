@@ -87,7 +87,7 @@ int main(void)
 {
     srand(time(NULL));
 
-    /*std::ofstream csv_rand("report/RandTime.csv");
+    std::ofstream csv_rand("report/RandTime.csv");
     if (!csv_rand.is_open())
     {
         std::cout << "File open error!";
@@ -96,7 +96,7 @@ int main(void)
 
     csv_rand << "Size;Insert;Merge;Quick\n";
     time_measure(csv_rand, 100, 1000, 100, RAND);
-    csv_rand.close();*/
+    csv_rand.close();
 
     std::ofstream csv_desc("report/DescTime.csv");
     if (!csv_desc.is_open())
@@ -109,7 +109,7 @@ int main(void)
     time_measure(csv_desc, 100, 1000, 100, DESC);
     csv_desc.close();
 
-    /*std::ofstream csv_asc("report/AscTime.csv");
+    std::ofstream csv_asc("report/AscTime.csv");
     if (!csv_asc.is_open())
     {
         std::cout << "File open error!";
@@ -118,7 +118,7 @@ int main(void)
 
     csv_asc << "Size;Insert;Merge;Quick\n";
     time_measure(csv_asc, 100, 1000, 100, ASC);
-    csv_asc.close();*/
+    csv_asc.close();
 
     std::cout << "OK!" << std::endl;
 
