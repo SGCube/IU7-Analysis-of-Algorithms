@@ -52,7 +52,7 @@ build_all:
     - make
   artifacts:
     paths:
-      - .
+      - lab_*/
 
 build:
   stage: build
@@ -88,7 +88,6 @@ tests_all:
     - apt-get update --yes
     - apt-get install --yes cmake
   script:
-    - cd $APP_FOLDER
     - ctest --output-on-failure
   dependencies:
     - build_all
