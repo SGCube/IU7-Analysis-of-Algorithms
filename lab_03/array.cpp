@@ -85,7 +85,7 @@ void array_sort_quick(int * const arr, size_t left, size_t right)
     unsigned i = left, j = right;
     int pivot = arr[(left + right) / 2];
 
-    while (i <= j)
+    do
     {
         while ((i < j) && (arr[i] < pivot))
             i++;
@@ -103,7 +103,8 @@ void array_sort_quick(int * const arr, size_t left, size_t right)
             if (j > left)
                 j--;
         }
-    };
+    }
+    while (i < j);
 
     if (left < j)
         array_sort_quick(arr, left, j);
