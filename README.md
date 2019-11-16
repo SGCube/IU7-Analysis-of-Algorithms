@@ -1,4 +1,5 @@
-# Анализ алгоритмов [![Build Status](https://travis-ci.org/SGCube/Analysis-of-Algorithms.svg?branch=lab_01)](https://travis-ci.org/SGCube/Analysis-of-Algorithms)<Paste>
+# Анализ алгоритмов
+[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/master/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/master)
 
 ### Лабораторные работы
 
