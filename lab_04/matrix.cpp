@@ -21,13 +21,13 @@ Array::Array(unsigned size)
         ptr[i] = 0;
 }
 
-Array::Array(const Array& other)
+/*Array::Array(const Array& other)
 {
     _size = other._size;
     ptr = new int[_size];
     for (unsigned i = 0; i < _size; i++)
         ptr[i] = other.ptr[i];
-}
+}*/
 
 Array::~Array()
 {
