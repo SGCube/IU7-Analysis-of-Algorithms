@@ -79,7 +79,7 @@ unsigned damerau(std::string s1, std::string s2, bool to_print)
             current_row[j] = std::min({current_row[j - 1] + 1,
                                         prev_row[j] + 1,
                                         prev_row[j - 1] + match_fault});
-            if (i >= 2 && j >= 1)
+            if (i >= 2 && j >= 2)
                 if (s1[i - 1] == s2[j - 2] && s1[i - 2] == s2[j - 1])
                     current_row[j] = std::min(current_row[j],
                                                 prev2_row[j - 2] + 1);
