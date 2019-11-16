@@ -6,7 +6,7 @@ stages:
   - test
   
 variables:
-  APP_FOLDER: lab_01 # $CI_COMMIT_REF_NAME
+  APP_FOLDER: $CI_COMMIT_REF_NAME
 
 .before_build: &before_build
   - apt-get update --yes
