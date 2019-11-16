@@ -1,0 +1,81 @@
+image: ubuntu
+
+stages:
+  - codestyle
+  - build
+  - test
+  
+variables:
+  APP_FOLDER: lab_01 # $CI_COMMIT_REF_NAME
+
+.before_build: &before_build
+  - apt-get update --yes
+  - apt-get install --yes g++
+  - apt-get install --yes cmake
+  - apt-get install --yes libgtest-dev
+  - apt-get install --yes libpthread-stubs0-dev=0.3-4
+  - cd /usr/src/gtest
+  - cmake .
+  - make
+  - cp *.a /usr/lib
+  - cd -
+
+codestyle:
+  stage: codestyle
+  except:
+    - master
+  before_script:
+    - apt-get update --yes
+    - apt-get install --yes cppcheck
+  script:
+    - cd $APP_FOLDER
+    - cppcheck --std=c++11 -q --enable=all --error-exitcode=1 .
+    
+build_all:
+  stage: build
+  only:
+    - master
+  before_script:
+    - *before_build
+  script:
+    - cmake CMakeLists.txt
+    - make
+
+build:
+  stage: build
+  except:
+    - master
+  before_script:
+    - *before_build
+  script:
+    - cd $APP_FOLDER
+    - cmake CMakeLists.txt
+    - make
+  artifacts:
+    paths:
+      - $APP_FOLDER/
+
+memcheck:
+  stage: test
+  except:
+    - master
+  before_script:
+    - apt-get update --yes
+    - apt-get install --yes valgrind
+  script:
+    - valgrind --tool=memcheck --leak-check=full -q ./$APP_FOLDER/$APP_FOLDER -memcheck
+  dependencies:
+    - build
+
+tests:
+  stage: test
+  except:
+    - master
+  before_script:
+    - apt-get update --yes
+    - apt-get install --yes cmake
+  script:
+    - cd $APP_FOLDER
+    - ctest --output-on-failure
+  dependencies:
+    - build
