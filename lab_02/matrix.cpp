@@ -23,13 +23,6 @@ namespace Matrix
         delete [] matr;
     }
 
-    void randomize(int **matr, unsigned rows, unsigned cols, int min, int max)
-    {
-        for (unsigned i = 0; i < rows; i++)
-            for (unsigned j = 0; j < cols; j++)
-                matr[i][j] = rand() % (max - min + 1) + min;
-    }
-
     int **randinit(unsigned rows, unsigned cols, int min, int max)
     {
         int **matr = new int * [rows];
@@ -53,13 +46,6 @@ namespace Matrix
                 stream >> matr[i][j];
 
         return matr;
-    }
-
-    void read(std::istream& stream, int **matr, unsigned rows, unsigned cols)
-    {
-        for (unsigned i = 0; i < rows; i++)
-            for (unsigned j = 0; j < cols; j++)
-                stream >> matr[i][j];
     }
 
     void write(std::ostream& stream, int **matr, unsigned rows, unsigned cols)
