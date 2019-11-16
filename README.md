@@ -1,72 +1,17 @@
 # Анализ алгоритмов
+[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/master/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/master)
 
 ### Лабораторные работы
 
-<table>
-   <tr>
-    <th>ЛР</th>
-    <th>Тема</th>
-    <th>Программа</th>
-    <th>Отчёт</th>
-    <th>Балл</th>
-   </tr>
-   <tr>
-    <td>1</td>
-    <td>Расстояние Левенштейна</th>
-    <td>✔️</th>
-    <td>✔️</th>
-    <td>Отлично</th>
-   </tr>
-   <tr>
-    <td>2</td>
-    <td>Умножение матриц</th>
-    <td>✔️</th>
-    <td>⌛️</th>
-    <td></th>
-   </tr>
-   <tr>
-    <td>3</td>
-    <td>Сортировка массивов</th>
-    <td>⭕️</th>
-    <td>⭕️</th>
-    <td></th>
-   </tr>
-   <tr>
-    <td>4</td>
-    <td>Многопоточность</th>
-    <td>⭕️</th>
-    <td>⭕️</th>
-    <td></th>
-   </tr>
-   <tr>
-    <td>5</td>
-    <td></th>
-    <td></th>
-    <td></th>
-    <td></th>
-   </tr>
-   <tr>
-    <td>6</td>
-    <td></th>
-    <td></th>
-    <td></th>
-    <td></th>
-   </tr>
-   <tr>
-    <td>7</td>
-    <td></th>
-    <td></th>
-    <td></th>
-    <td></th>
-   </tr>
-   <tr>
-    <td>8</td>
-    <td></th>
-    <td></th>
-    <td></th>
-    <td></th>
-   </tr>
-</table>
+|ЛР|Тема|Сборка|Программа|Отчёт|Балл|
+|--|----|------|---------|-----|----|
+|1|Расстояние Левенштейна|[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/lab_01/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/lab_01)|✔️|✔️|Отлично|
+|2|Умножение матриц|[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/lab_01/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/lab_01)|✔️|✔️||
+|3|Сортировка массивов|[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/lab_01/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/lab_01)|✔️|⌛️||
+|4|Многопоточность|[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/lab_01/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/lab_01)|⭕️|⭕️||
+|5|Параллельная конвейерная обработка||⭕️|⭕️||
+|6||||||
+|7||||||
+|8||||||
 
-✔️ - выполнен(а), ⚠️ - требует доработки, ⌛️ - в процессе, ⭕️ - не выполнен(а), ❌ - не сдан(а),  
-
+✔️ - выполнен(а), ⚠️ - требует доработки, ⌛️ - в процессе, ⭕️ - не выполнен(а), ❌ - не сдан(а)

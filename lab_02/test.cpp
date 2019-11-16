@@ -3,23 +3,26 @@
 #include "matrix.hpp"
 #include "mamult.hpp"
 
-void handle_result(int **matr1, unsigned rows1, unsigned cols1,
+int handle_result(int **matr1, unsigned rows1, unsigned cols1,
         int **matr2, unsigned rows2, unsigned cols2)
 {
     if (Matrix::equal(matr1, rows1, cols1, matr2, rows2, cols2))
-        std::cout << "PASSED" << std::endl;
-    else
     {
-        std::cout << "FAILED" << std::endl;
-        std::cout << "Expected:" << std::endl;
-        Matrix::write(std::cout, matr1, rows1, cols1);
-        std::cout << "Got:" << std::endl;
-        Matrix::write(std::cout, matr2, rows2, cols2);
+        std::cout << "PASSED" << std::endl;
+        return 0;
     }
+
+    std::cout << "FAILED" << std::endl;
+    std::cout << "Expected:" << std::endl;
+    Matrix::write(std::cout, matr1, rows1, cols1);
+    std::cout << "Got:" << std::endl;
+    Matrix::write(std::cout, matr2, rows2, cols2);
+    return 1;
 }
 
 int main(void)
 {
+    int error_count = 0;
     for (int i = 1; i <= 6; i++)
     {
         char fname_1[20], fname_2[20], fname_res[20];
@@ -43,19 +46,19 @@ int main(void)
 
         multiply_classic(A, B, CC, rows_a, cols_a, cols_b);
         std::cout << "1) Classic: ";
-        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+        error_count += handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
 
         multiply_vinograd(A, B, CC, rows_a, cols_a, cols_b);
         std::cout << "2) Vinograd: ";
-        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+        error_count += handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
 
         multiply_vinograd_opt(A, B, CC, rows_a, cols_a, cols_b);
         std::cout << "3) V. Optimized: ";
-        handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
+        error_count += handle_result(C, rows_c, cols_c, CC, rows_a, cols_b);
 
         fin_1.close();
         fin_2.close();
         fin_res.close();
     }
-    return 0;
+    return error_count;
 }
