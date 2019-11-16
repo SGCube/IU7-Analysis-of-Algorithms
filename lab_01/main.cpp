@@ -1,8 +1,17 @@
 #include <iostream>
 #include "leven.hpp"
 
-int main(void)
+int main(int argc, char **argv)
 {
+    if (argc == 2 && std::string(argv[1]) == "-memcheck")
+    {
+        std::string s1 = "memcheck", s2 = "omemcpy";
+        levenshtein(s1, s2, false);
+        damerau(s1, s2, false);
+        damerau_r(s1, s2);
+        return 0;
+    }
+    
     std::string s1, s2;
     char c_s1[50], c_s2[50];
 
