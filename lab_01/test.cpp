@@ -97,8 +97,6 @@ TEST(TransposeChars, Middle)
 
 TEST(TransposeChars, End)
 {
-    std::string s1 = "univeres";
-    std::string s2 = "universe";
     ASSERT_EQ(2, levenshtein("univeres", "universe"));
     ASSERT_EQ(1, damerau("univeres", "universe"));
     ASSERT_EQ(1, damerau_r("univeres", "universe"));
