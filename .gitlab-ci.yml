@@ -58,6 +58,7 @@ build:
   stage: build
   except:
     - master
+    - graph
   before_script:
     - *before_build
   script:
@@ -72,6 +73,7 @@ memcheck:
   stage: test
   except:
     - master
+    - graph
   before_script:
     - apt-get update --yes
     - apt-get install --yes valgrind
@@ -96,6 +98,7 @@ tests:
   stage: test
   except:
     - master
+    - graph
   before_script:
     - apt-get update --yes
     - apt-get install --yes cmake
