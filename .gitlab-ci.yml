@@ -34,6 +34,7 @@ codestyle:
   stage: codestyle
   except:
     - master
+    - graph
   before_script:
     - apt-get update --yes
     - apt-get install --yes cppcheck
