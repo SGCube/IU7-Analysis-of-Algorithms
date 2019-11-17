@@ -1,5 +1,4 @@
 # Анализ алгоритмов
-[![Build Status](https://gitlab.com/SGCube/Analysis-of-Algorithms/badges/master/pipeline.svg)](https://gitlab.com/SGCube/Analysis-of-Algorithms/commits/master)
 
 [Wiki-страница](https://gitlab.com/SGCube/Analysis-of-Algorithms/wiki)
 
