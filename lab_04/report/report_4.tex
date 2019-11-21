@@ -533,12 +533,13 @@ columns=fullflexible }
 	На рисунке \ref{pic:example} представлен пример работы программы, демонстрирующий корректную работу алгоритмов.
 	\begin{figure}[ht!]
 		\centering
+		\includegraphics[scale=1]{example.jpg}
 		\caption{Пример работы программы}
 		\label{pic:example}
 	\end{figure}
 	
 	\section{Сравнение работы алгоритмов при чётных размерах матрицы}
-	Для сравнения времени работы алгоритмов умножения матриц были использованы квадратные матрицы размером от 100 до 1000 с шагом 100. Эксперимент для более точного результата повторялся 100 раз. Итоговый результат рассчитывался как средний из полученных результатов. Результаты измерений показаны в таблице \ref{table-even} и на рисунке \ref{graph-even}.\\
+	Для сравнения времени работы алгоритмов умножения матриц были использованы квадратные матрицы размером от 100 до 1000 с шагом 100. Эксперимент для более точного результата повторялся 100 раз. Итоговый результат рассчитывался как средний из полученных результатов. Результаты измерений показаны в таблице \ref{table-even} и на рисунках \ref{graph-even} и \ref{graph-even-2}.\\
 	\begin{table}[ht!]
 		\caption{Время работы алгоритма при чётных размерах матриц}
 		\label{table-even}
@@ -550,12 +551,14 @@ columns=fullflexible }
 			columns/2/.style={column name=2 потоках, column type={|c}},
 			columns/4/.style={column name=4 потоках, column type={|c}},
 			columns/6/.style={column name=6 потоках, column type={|c}},
-			columns/8/.style={column name=8 потоках, column type={|c|}},
+			columns/8/.style={column name=8 потоках, column type={|c}},
+			columns/NonParallel/.style={column name=без потоков, column type={|c|}},
 			every head row/.style={
 				before row={
 					\hline
 					Размер &
-					\multicolumn{4}{c|}{Время в тиках при}\\
+					\multicolumn{4}{c|}{Время в тиках при} &
+					\multicolumn{1}{c|}{Время в тиках}\\
 				},
 				after row=\hline
 			},
@@ -578,24 +581,46 @@ columns=fullflexible }
 			\addplot[color=red, mark=*] table[x={Size}, y={2}] {TEvenTime.csv};
 			\addplot[color=blue, mark=*] table[x={Size}, y={4}] {TEvenTime.csv};
 			\addplot[color=green, mark=*] table[x={Size}, y={6}] {TEvenTime.csv};
-			\addplot[color=purple, mark=*] table[x={Size}, y={8}] {TEvenTime.csv};
+			\addplot[color=orange, mark=*] table[x={Size}, y={8}] {TEvenTime.csv};
 			\legend{2 потока, 4 потока, 6 потоков, 8 потоков}
 		\end{axis}
 		\end{tikzpicture}
 		\caption{График времени работы алгоритмов при чётных размерах матриц}
 		\label{graph-even}
 	\end{figure}
-
-	\newpage
 	
-	...
+	Можно заметить, что с ростом числа используемых потоков, уменьшается и время работы алгоритма: время работы при 2 потоках в 2 раза больше времени работы при 4 потоках. Однако, время работы при 6 и 8 потоках приблизительно одинаково, при этом оно выше времени работы при 4 потоках: время работы при 6-8 потоках выше в среднем на 40\% по сравнению с временем при двух, причём время при восьми меньше, чем время при шести.
+	Стоит заметить, что при размерах матриц, равным 1000, уже время при 6 потоках является самым минимальным: оно меньше времени при 4 потоках на 2,6\%. При этом время работы алгоритма при 8 потоках также меньше времени при двух (на 2,0\%).
+	
+	\begin{figure}[ht!]
+		\begin{tikzpicture}
+		\begin{axis}
+		[%title = График времени работы алгоритмов при чётных размерах матриц,
+		table/col sep = semicolon,
+		xlabel={Размер матриц},
+		ylabel={Время в тиках},
+		ymin = 0,
+		legend pos=outer north east,
+		ymajorgrids=true,
+		grid style=dashed]
+		\addplot[color=red, mark=*] table[x={Size}, y={2}] {TEvenTime.csv};
+		\addplot[color=blue, mark=*] table[x={Size}, y={4}] {TEvenTime.csv};
+		\addplot[color=gray, mark=*] table[x={Size}, y={NonParallel}] {TOddTime.csv};
+		\legend{2 потока, 4 потока, без потоков}
+		\end{axis}
+		\end{tikzpicture}
+		\caption{График времени работы двух реализаций при чётных размерах матриц}
+		\label{graph-even-2}
+	\end{figure}
+	
+	Легко заметить, что многопоточная реализация даже в худшем случае (при 2 потоках) значительно выигрывает последовательную реализацию: последовательная реализация проигрывает в 1,6 раз многопоточной реализации при работе на 2 потоках, в 3 раза - при работе на 4 потоках.
 	
 	\section{Сравнение работы алгоритмов при нечётных размерах матрицы}
-	Для сравнения времени работы алгоритмов умножения матриц были использованы квадратные матрицы размером от 101 до 1001 с шагом 100. Эксперимент для более точного результата повторялся 100 раз. Итоговый результат рассчитывался как средний из полученных результатов. Результаты измерений показаны в таблице \ref{table-odd} и на рисунке \ref{graph-odd}.\\
+	Для сравнения времени работы алгоритмов умножения матриц были использованы квадратные матрицы размером от 101 до 1001 с шагом 100. Эксперимент для более точного результата повторялся 100 раз. Итоговый результат рассчитывался как средний из полученных результатов. Результаты измерений показаны в таблице \ref{table-odd} и на рисунках \ref{graph-odd} и \ref{graph-odd-2}.\\
 	
 	\begin{table}[ht!]
 		\caption{Время работы алгоритма при нечётных размерах матриц}
-		\label{table-even}
+		\label{table-odd}
 		\begin{center}
 			\pgfplotstabletypeset[
 			col sep=semicolon,
@@ -604,12 +629,14 @@ columns=fullflexible }
 			columns/2/.style={column name=2 потоках, column type={|c}},
 			columns/4/.style={column name=4 потоках, column type={|c}},
 			columns/6/.style={column name=6 потоках, column type={|c}},
-			columns/8/.style={column name=8 потоках, column type={|c|}},
+			columns/8/.style={column name=8 потоках, column type={|c}},
+			columns/NonParallel/.style={column name=без потоков, column type={|c|}},
 			every head row/.style={
 				before row={
 					\hline
 					Размер &
-					\multicolumn{4}{c|}{Время в тиках при}\\
+					\multicolumn{4}{c|}{Время в тиках при} &
+					\multicolumn{1}{c|}{Время в тиках}\\
 				},
 				after row=\hline
 			},
@@ -632,17 +659,36 @@ columns=fullflexible }
 		\addplot[color=red, mark=*] table[x={Size}, y={2}] {TOddTime.csv};
 		\addplot[color=blue, mark=*] table[x={Size}, y={4}] {TOddTime.csv};
 		\addplot[color=green, mark=*] table[x={Size}, y={6}] {TOddTime.csv};
-		\addplot[color=purple, mark=*] table[x={Size}, y={8}] {TOddTime.csv};
+		\addplot[color=orange, mark=*] table[x={Size}, y={8}] {TOddTime.csv};
 		\legend{2 потока, 4 потока, 6 потоков, 8 потоков}
 		\end{axis}
 		\end{tikzpicture}
-		\caption{График времени работы алгоритмов при нечётных размерах матриц}
+		\caption{График времени работы многопоточной реализации при нечётных размерах матриц}
 		\label{graph-odd}
 	\end{figure}
 
-	\newpage
+	\begin{figure}[ht!]
+		\begin{tikzpicture}
+		\begin{axis}
+		[%title = График времени работы алгоритмов при нечётных размерах матриц,
+		table/col sep = semicolon,
+		xlabel={Размер матриц},
+		ylabel={Время в тиках},
+		ymin = 0,
+		legend pos=outer north east,
+		ymajorgrids=true,
+		grid style=dashed]
+		\addplot[color=red, mark=*] table[x={Size}, y={2}] {TOddTime.csv};
+		\addplot[color=blue, mark=*] table[x={Size}, y={4}] {TOddTime.csv};
+		\addplot[color=gray, mark=*] table[x={Size}, y={NonParallel}] {TOddTime.csv};
+		\legend{2 потока, 4 потока, без потоков}
+		\end{axis}
+		\end{tikzpicture}
+		\caption{График времени работы двух реализаций при нечётных размерах матриц}
+		\label{graph-odd-2}
+	\end{figure}
 	
- 	...
+ 	При нечётных размерах матриц разница во времени при работе алгоритма при разном числе потоков и в сравнении с последовательной реализацией та же, что и при чётных размерах матриц.
 
 	\chapter*{Заключение}
 	\addcontentsline{toc}{chapter}{Заключение}
