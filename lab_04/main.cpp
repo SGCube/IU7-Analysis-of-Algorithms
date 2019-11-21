@@ -43,5 +43,9 @@ int main(int argc, char **argv)
     C.write(std::cout);
     std::cout << std::endl;
 
+    Matrix D = multiply_vinograd_nothread(A, B);
+    D.write(std::cout);
+    std::cout << std::endl;
+
     return 0;
 }
