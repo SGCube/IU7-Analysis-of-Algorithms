@@ -91,12 +91,12 @@ columns=fullflexible }
 
     \chapter{Аналитическая часть}
 	\section{Задачи}
-	Цель лабораторной работы - изучение двух реализаций алгоритма умножения матриц Винограда: последовательный и параллельный.\\
+	Цель лабораторной работы - изучение двух реализаций алгоритма умножения матриц Винограда: последовательной и параллельной.\\
 	Для того чтобы добиться этой цели, были поставлены следующие задачи:
 	\begin{itemize}
 		\item изучить алгоритм Винограда;
 		\item изучить методы параллельного программирования;
-		\item применить знания программирования для реализации указанных алгоритмов;
+		\item применить знания программирования для реализации указанного алгоритма;
 		\item выполнить сравнительный анализ последовательной реализации и параллельной реализации алгоритма Винограда при различном числе потоков;
 		\item экспериментально подтвердить различия в эффективности по времени реализаций алгоритма Винограда.
 	\end{itemize}
@@ -176,7 +176,6 @@ columns=fullflexible }
 	
 	Широко используемый подход состоит и в применении тех или иных библиотек, обеспечивающих определенный программный интерфейс (application programming interface, API) для разработки параллельных программ. В рамках такого подхода наиболее известны Windows Thread API. Однако первый способ применим только для ОС семейства Microsoft Windows, а второй вариант API является достаточно трудоемким для использования и имеет низкоуровневый характер \cite{Barkalov}.
 	
-
 	\chapter{Конструкторская часть}
 	
 	\section{Схема алгоритма}
@@ -192,13 +191,15 @@ columns=fullflexible }
 	\newpage
 	
 	\section{Распараллеливание алгоритма}
-	Распараллеливание алгоритма должно выполняться над теми данными, которые могут быть использованы только одним потоком. Это условие необходимо для обеспечения защиты данных от случайных изменений разными потоками одновременно. В данном алгоритме распараллеливание происходит в циклах, которые обозначены на схеме алгоритма участком A. В данных циклах каждая строка матрицы вычисляется независимо от других строк. Таким образом, многопоточность можно реализовать имеено на данных циклах: каждый поток отвечает за определённые строки матрицы.\\
+	Распараллеливание алгоритма должно выполняться над теми данными, которые могут быть использованы только одним потоком. Это условие необходимо для обеспечения защиты данных от случайных изменений разными потоками одновременно. В данном алгоритме распараллеливание происходит в циклах, которые обозначены на схеме алгоритма участком A. В данных циклах каждая строка матрицы вычисляется независимо от других строк. Таким образом, многопоточность можно реализовать именно на данных циклах: каждый поток отвечает за определённые строки матрицы.
+	
+	Также можно выполнить параллельную инициализацию векторов MulV и MulH, так как инициализация их значений не зависят друг от друга.
 	
 	\chapter{Технологическая часть}
 	\section{Требования к программному обеспечению}
 	На вход подаются размеры двух матриц, затем число потоков для распараллеливания алгоритма. Матрицы генерируются случайным образом. На выход программа выдаёт сгенерированные исходные матрицы и результирующую матрицу.
 	\section{Средства реализации}
-	Для реализации программы был использован язык C++ ~\cite{CPP}. Для замера процессорного времени была использована функция rdtsc() из библиотеки stdrin.h.
+	Для реализации программы был использован язык C++ ~\cite{CPP}. Для замера процессорного времени была использована функция rdtsc() из библиотеки stdrin.h. Потоки реализовывались с использованием библиотеки pthreads.h.
 	\section{Реализации алгоритмов}
 	В листинге \ref{code-seq} представлен код последовательной реализации алгоритма Винограда.
 	\begin{lstlisting}[label=code-seq,caption=Последовательная реализация алгоритма Винограда]
@@ -272,9 +273,65 @@ columns=fullflexible }
 	Функции потоков вычисления строк при чётных и нечётных размерах матриц представлены в листингах \ref{code-par-even} и \ref{code-par-odd} соответственно.
 	Функции потоков инициализации рабочих векторов описаны в листинге \ref{code-par-vector}.
 	Структура аргументов для функции потока описана в листинге \ref{code-par-args}.
+	Структура класса "Матрица" описана в листинге \ref{code-matrix}.
+	
+	\begin{lstlisting}[label=code-matrix,caption=Класс Матрица]
+	class Matrix;
+	
+	class Array
+	{
+	public:
+		Array();
+		explicit Array(unsigned size);
+		Array(const Array& other);
+	
+		~Array();
+	
+		void alloc(unsigned size);
+	
+		void read(std::istream& stream);
+		void write(std::ostream& stream);
+	
+		int& operator[](unsigned i);
+	
+		friend Matrix;
+	
+	private:
+		int *ptr;
+		unsigned _size;
+	};
+	
+	class Matrix
+	{
+	public:
+		Matrix(unsigned rows, unsigned cols);
+		explicit Matrix(std::istream& stream);
+		Matrix(const Matrix &other);
+		~Matrix();
+	
+		void read(std::istream& stream);
+		void write(std::ostream& stream);
+	
+		void randomize(int min, int max);
+	
+		Matrix& operator=(Matrix &other);
+	
+		bool operator==(const Matrix &other);
+		bool operator!=(const Matrix &other);
+	
+		unsigned get_rows();
+		unsigned get_cols();
+		Array& operator[] (unsigned i);
+	
+	private:
+		Array *ptr;
+		unsigned _rows;
+		unsigned _cols;
+	};
+	\end{lstlisting}
 	
 	\begin{lstlisting}[label=code-par-args,caption=Структура аргументов]
-	typedef struct
+	typedef struct MultArgs_t
 	{
 		Matrix &A;
 		Matrix &B;
@@ -284,12 +341,8 @@ columns=fullflexible }
 		unsigned half_N;
 		unsigned N_minus_1;
 		
-		unsigned i;
 		unsigned start_i;
 		unsigned end_i;
-		unsigned step;
-		unsigned left;
-		unsigned amount;
 	} MultArgs;
 	
 	typedef struct
@@ -345,18 +398,26 @@ columns=fullflexible }
 			exit(ERROR_JOIN_THREAD);
 		}
 		
-		MultArgs args = {
-			A, B, C, MulH, MulV, half_N, N - 1, thread_amount, M / thread_amount,
-			M % thread_amount, 0, 0, M / thread_amount
-		};
-		void* (*thread_func)(void*) = multiply_odd;
+		float step_i = M / float(thread_amount), value_i = step_i;
+		unsigned start_i = 0, end_i = unsigned(value_i);
+		
+		std::vector<MultArgs> args;
+		for (unsigned i = 0; i < thread_amount; i++)
+		{
+			args.push_back({A, B, C, MulH, MulV, half_N, N - 1, start_i, end_i});
+			start_i = end_i;
+			value_i += step_i;
+			end_i = unsigned(value_i);
+		}
+		
+		void* (*thread_func)(void*) = multiply_even;
 		if (N % 2)
-			thread_func = multiply_even;
+			thread_func = multiply_odd;
 		
 		for (unsigned i = 0; i < thread_amount; i++)
 		{
 			status = pthread_create(&(threads[i]), NULL, thread_func,
-			(void*) &args);
+									(void*) &args[i]);
 			if (status)
 			{
 				printf("Can't create thread %u, status = %d\n", i, status);
@@ -420,8 +481,8 @@ columns=fullflexible }
 	}
 	\end{lstlisting}
 	
-	\begin{lstlisting}[label=code-par-even,caption=Функция потока вычисления строки при чётных размерах матрицы]
-	void *multiply_even(void *_args)
+	\begin{lstlisting}[label=code-par-even,caption=Функция потока вычисления строки при нечётных размерах матрицы]
+	void *multiply_odd(void *_args)
 	{
 		MultArgs *args = (MultArgs*) _args;
 		
@@ -441,19 +502,12 @@ columns=fullflexible }
 				}
 			}
 		
-		args->i += 1;
-		args->start_i = args->end_i;
-		if (args->i + 1 != args->amount)
-			args->end_i += args->step;
-		else
-			args->end_i += args->step + args->left;
-		
 		return NULL;
 	}
 	\end{lstlisting}
 	
-	\begin{lstlisting}[label=code-par-odd,caption=Функция потока вычисления строки при нечётных размерах матрицы]
-	void *multiply_odd(void *_args)
+	\begin{lstlisting}[label=code-par-odd,caption=Функция потока вычисления строки при чётных размерах матрицы]
+	void *multiply_even(void *_args)
 	{
 		MultArgs *args = (MultArgs*) _args;
 		
@@ -470,13 +524,6 @@ columns=fullflexible }
 									(args->A[i][k + 1] + args->B[k][j]);
 				}
 			}
-		
-		args->i += 1;
-		args->start_i = args->end_i;
-		if (args->i + 1 != args->amount)
-			args->end_i += args->step;
-		else
-			args->end_i += args->step + args->left;
 		
 		return NULL;
 	}
