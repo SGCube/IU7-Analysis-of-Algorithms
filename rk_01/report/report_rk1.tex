@@ -1,0 +1,237 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepackage{url}
+\usepackage{flowchart}
+\usepackage{tikz}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.svg}
+\usetikzlibrary{shapes, arrows}
+
+\usepackage{pgfplotstable}
+
+\renewcommand\contentsname{Содержание}
+
+\usepackage{geometry}
+\geometry{left=3cm}
+\geometry{right=1cm}
+\geometry{top=2cm}
+\geometry{bottom=2cm}
+
+\lstset{ %
+language=C++,                 % выбор языка для подсветки (здесь это С)
+basicstyle=\small\sffamily, % размер и начертание шрифта для подсветки кода
+numbers=left,               % где поставить нумерацию строк (слева\справа)
+numberstyle=\tiny,           % размер шрифта для номеров строк
+stepnumber=1,                   % размер шага между двумя номерами строк
+numbersep=-5pt,                % как далеко отстоят номера строк от         подсвечиваемого кода
+backgroundcolor=\color{white}, % цвет фона подсветки - используем         \usepackage{color}
+showspaces=false,            % показывать или нет пробелы специальными     отступами
+showstringspaces=false,      % показывать или нет пробелы в строках
+showtabs=false,             % показывать или нет табуляцию в строках
+frame=single,              % рисовать рамку вокруг кода
+tabsize=2,                 % размер табуляции по умолчанию равен 2 пробелам
+captionpos=t,              % позиция заголовка вверху [t] или внизу [b] 
+breaklines=true,           % автоматически переносить строки (да\нет)
+breakatwhitespace=false, % переносить строки только если есть пробел
+escapeinside={\%*}{*)},   % если нужно добавить комментарии в коде
+keywordstyle=\color{blue}\ttfamily,
+stringstyle=\color{red}\ttfamily,
+commentstyle=\color{green}\ttfamily,
+morecomment=[l][\color{magenta}]{\#},
+columns=fullflexible }
+
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\LARGE\bfseries}{\thechapter{.} }{0pt}{\LARGE\bfseries}
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\large\bfseries}
+
+\begin{document}
+
+    \begin{titlepage}
+
+        \begin{center}
+            \Large
+            {\sl Государственное образовательное учреждение высшего профессионального образования\\
+            {\bf«Московский государственный технический университет имени Н.Э. Баумана»\\
+				(МГТУ им. Н.Э. Баумана)}}
+				\noindent\rule{\textwidth}{2pt}
+            \vspace{3cm}
+
+			{\scshape\LARGE Рубежный контроль №1 \par}
+			\vspace{0.5cm}	
+			{\scshape\LARGE по курсу «Анализ алгоритмов» \par}
+			\vspace{1.5cm}
+			{\huge\bfseries Фракталы \par}
+			\vspace{2cm}
+			\Large Выполнил: Сорокин А.П., гр. ИУ7-52Б\\
+			\vspace{0.5cm}
+			{\Large Преподаватели: Волкова Л.Л., Строганов Ю.В.}
+		
+			\vfill
+			\Large \textit {Москва, 2019 г.}
+            
+        \end{center}
+
+    \end{titlepage}
+	
+	\tableofcontents
+
+	\chapter*{Введение}
+	\addcontentsline{toc}{chapter}{Введение}
+	В наше время для моделирования нелинейных процессов, таких как течение жидкости в физике, горение пламени, образование облаков, часто используются фракталы - множества, обладающие свойством самоподобия. Также фракталы применяются в области информатики: их используют для сжатия изображений, в компьютерной графики для изображения деревьев, горы и другие ландшафты. Поэтому вопрос быстрого построения фрактальных изображений большой глубины является очень важным. В качестве объекта исследования в данной работе будет рассмотрен фрактал дракона.
+	
+
+    \chapter{Аналитическая часть}
+
+	\section{Задачи}
+	Цель лабораторной работы: исследовать построение фрактала дракона. Для достижения этой цели поставлены следующие задачи: 
+	\begin{itemize}
+		\item изучить алгоритм построения фрактала дракона;
+		\item реализовать итерационный и рекурсивный варианты алгоритмов;
+		\item оценить эффективность каждой из реализаций по времени и памяти.
+	\end{itemize}
+
+	\section{Описание и построение фрактала}
+	Дракон Хартера, также известный как дракон Хартера — Хейтуэя, был впервые исследован физиками NASA — Джоном Хейтуэем, Брюсом Бэнксом, и Вильямом Хартером. Он был описан в 1967 году Мартином Гарднером в колонке «Математические игры» журнала «Scientific American».
+	
+	Фрактал может быть записан как L-система с параметрами:
+	\begin{itemize}
+		\item угол равен $90^\circ$ или $\frac{\pi}{2}$
+		\item начальная строка — FX
+		\item правила преобразования строк:
+		$\\
+			X \mapsto  X+YF+ \\
+			Y \mapsto  -FX-Y
+		$
+	\end{itemize}
+
+	Для построения фрактала дракона берём отрезок, сгибаем его пополам. Затем многократно повторяем итерацию. Если после этого снова разогнуть получившуюся (сложенную) линию так, чтобы все углы были равны  $90^\circ$, мы получим драконову ломаную. ~\cite{drag}
+
+	\chapter{Технологическая часть}
+	\section{Средства реализации}
+	Для реализации программы был использован язык C++ ~\cite{CPP} и графический библиотеки Qt ~\cite{QT}. Для замера процессорного времени была использована функция rdtsc() из библиотеки stdrin.h.
+	\section{Реализации алгоритмов}
+	На листингах 3.1 - 3.2 представлены коды реализации алгоритмов построения фрактала.
+	\begin{lstlisting}[label=some-code,caption=Итерационная реализация]
+	std::vector<Point> get_dragon_fractal(Point p1, Point p2, int n)
+	{
+		std::vector<Point> line;
+		line.push_back(p1);
+		line.push_back(p2);
+	
+		for (int i = 0; i < n; i++)
+		{
+			int xc = line.back().x(), yc = line.back().y();
+			int old_size = line.size();
+			for (int j = old_size - 2; j >= 0; j--)
+			{
+				int xx = xc + (line[j].y() - yc);
+				int yy = yc - (line[j].x() - xc);
+				line.push_back(Point(xx, yy));
+			}
+		}
+	
+		return line;
+	}
+	\end{lstlisting}
+
+	\begin{lstlisting}[label=some-code,caption=Рекурсивная реализация]
+	std::vector<Point> get_dragon_fractal_rec(std::vector<Point> line, int n)
+	{
+		if (n == 0)
+			return line;
+	
+		std::vector<Point> new_line = get_dragon_fractal_rec(line, n - 1);
+	
+		int xc = new_line.back().x(), yc = new_line.back().y();
+		int old_size = new_line.size();
+		for (int j = old_size - 2; j >= 0; j--)
+		{
+			int xx = xc + (new_line[j].y() - yc);
+			int yy = yc - (new_line[j].x() - xc);
+			new_line.push_back(Point(xx, yy));
+		}
+	
+		for (auto p : new_line)
+			line.push_back(p);
+		return line;
+	}
+	\end{lstlisting}
+
+	\newpage
+
+
+	\chapter{Экспериментальная часть}
+	\section{Примеры работы}
+	На рисунках 3.1 и 3.2 представлены примеры работы программы, демонстрирующий правильное выполнение алгоритмов.
+	\begin{figure}[ht!]
+		\centering
+		\includegraphics[width=0.8\linewidth]{example_1.jpg}
+		\caption{Пример работы программы}
+		\label{fig:example}
+	\end{figure}
+	\begin{figure}[ht!]
+		\centering
+		\includegraphics[width=0.8\linewidth]{example_2.jpg}
+		\caption{Пример работы программы при увеличенной длины начального отрезка}
+		\label{fig:example2}
+	\end{figure}
+	
+	\section{Сравнение работы итерационной и рекурсивной реализации алгоритмов}
+	Для сравнения времени работы двух реализаций алгоритмов построения фрактала глубина построения менялась от 1 до 20. Эксперимент для более точного результата повторялся 100 раз. Итоговый результат рассчитывался как средний из полученных результатов. Результаты измерений показаны в таблице 3.1 и на рисунках 3.3, 3.4.\\
+	\begin{table}[ht!]
+		\caption{Время работы реализаций алгоритмов построения фрактала в тактах процессора}
+		\begin{center}
+			\pgfplotstabletypeset[
+			col sep=semicolon,
+			string type,
+			columns/Size/.style={column name=Глубина, column type={|c}},
+			columns/Iter/.style={column name=Итерационный, column type={|c}},
+			columns/Rec/.style={column name=Рекурсивный, column type={|c|}},
+			every head row/.style={before row=\hline,after row=\hline},
+			every last row/.style={after row=\hline},
+			]{time.csv}
+		\end{center}
+	\end{table}
+	
+	\begin{figure}[ht!]
+		\begin{tikzpicture}
+		\begin{axis}
+		[%title = График времени работы реализаций алгоритмов построения фрактала,
+		table/col sep = semicolon,
+		xlabel={Глубина фрактала},
+		ylabel={Время в тиках},
+		legend pos=outer north east,
+		ymajorgrids=true,
+		grid style=dashed]
+		\addplot[color=red, mark=*] table[x={Size}, y={Iter}] {time.csv};
+		\addplot[color=blue, mark=*] table[x={Size}, y={Rec}] {time.csv};
+		\legend{Итерационный метод, Рекурсивный метод}
+		\end{axis}
+		\end{tikzpicture}
+		\caption{График времени работы реализаций алгоритмов построения фрактала дракона при глубине}
+	\end{figure}
+
+	Можно сделать вывод о том, что рекурсивный алгоритм проигрывает во времени, причём разница во времени стремительно растёт с увеличением глубины.
+
+	\chapter*{Заключение}
+	\addcontentsline{toc}{chapter}{Заключение}
+	В ходе выполнения рубежного контроля был изучен метод построения фрактала дракона. Для этого были реализованы итерационная и рекурсивная реализация алгоритма построения. Также была оценена эффективность двух реализаций: итерационный метод построения при большой глубине (больше 16) фрактала значительно выигрывает рекурсивный метод.
+	
+	\newpage
+	
+	\begin{thebibliography}{}
+	\bibitem{drag} http://mathworld.wolfram.com/DragonCurve.html [Электронный ресурс]
+	\bibitem{QT} https://doc.qt.io/ [Электронный ресурс]
+	\bibitem{CPP} https://cppreference.com/ [Электронный ресурс]
+	\end{thebibliography}
+	\addcontentsline{toc}{chapter}{Литература}
+
+\end{document}
