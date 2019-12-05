@@ -65,6 +65,7 @@ memcheck:
   except:
     - master
     - rk_01
+    - lab_02
   before_script:
     - apt-get update --yes
     - apt-get install --yes valgrind
