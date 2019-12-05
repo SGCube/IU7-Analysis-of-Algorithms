@@ -53,16 +53,15 @@ void multiply_vinograd(int **A, int **B, int **C,
 void multiply_vinograd_opt(int **A, int **B, int **C,
     unsigned M, unsigned N, unsigned Q)
 {
-    unsigned half_N = N >> 1, kk = 0;
+    // unsigned half_N = N >> 1, kk = 0;
 
     int *MulH = new int[M];
     for (unsigned i = 0; i < M; i++)
     {
         MulH[i] = 0;
-        for (unsigned k = 0; k < half_N; k++)
+        for (unsigned k = 0; k < N; k <<= 1)
         {
-            kk = k << 1;
-            MulH[i] += A[i][kk] * A[i][kk + 1];
+            MulH[i] += A[i][k] * A[i][k + 1];
         }
     }
 
@@ -70,10 +69,9 @@ void multiply_vinograd_opt(int **A, int **B, int **C,
     for (unsigned i = 0; i < Q; i++)
     {
         MulV[i] = 0;
-        for (unsigned k = 0; k < half_N; k++)
+        for (unsigned k = 0; k < N; k <<= 1)
         {
-            kk = k << 1;
-            MulV[i] += B[kk][i] * B[kk + 1][i];
+            MulV[i] += B[k][i] * B[k + 1][i];
         }
     }
 
@@ -84,10 +82,9 @@ void multiply_vinograd_opt(int **A, int **B, int **C,
             for (unsigned j = 0; j < Q; j++)
             {
                 C[i][j] = A[i][N_minus_1] * B[N_minus_1][j] - MulH[i] - MulV[j];
-                for (unsigned k = 0; k < half_N; k++)
+                for (unsigned k = 0; k < N; k <<= 1)
                 {
-                    kk = k << 1;
-                    C[i][j] += (A[i][kk] + B[kk + 1][j]) * (A[i][kk + 1] + B[kk][j]);
+                    C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
                 }
             }
     }
@@ -97,10 +94,9 @@ void multiply_vinograd_opt(int **A, int **B, int **C,
             for (unsigned j = 0; j < Q; j++)
             {
                 C[i][j] = -MulH[i] - MulV[j];
-                for (unsigned k = 0; k < half_N; k++)
+                for (unsigned k = 0; k < N; k <<= 1)
                 {
-                    kk = k << 1;
-                    C[i][j] += (A[i][kk] + B[kk + 1][j]) * (A[i][kk + 1] + B[kk][j]);
+                    C[i][j] += (A[i][k] + B[k + 1][j]) * (A[i][k + 1] + B[k][j]);
                 }
             }
     }
