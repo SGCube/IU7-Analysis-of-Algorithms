@@ -19,11 +19,22 @@ variables:
   - make
   - cp *.a /usr/lib
   - cd -
+  
+codestyle_all:
+  stage: codestyle
+  only:
+    - master
+  before_script:
+    - apt-get update --yes
+    - apt-get install --yes cppcheck
+  script:
+    - cppcheck --std=c++11 -q --enable=all --error-exitcode=1 .
 
 codestyle:
   stage: codestyle
   except:
     - master
+    - rk_01
   before_script:
     - apt-get update --yes
     - apt-get install --yes cppcheck
@@ -40,11 +51,15 @@ build_all:
   script:
     - cmake CMakeLists.txt
     - make
+  artifacts:
+    paths:
+      - lab_*/
 
 build:
   stage: build
   except:
     - master
+    - rk_01
   before_script:
     - *before_build
   script:
@@ -59,6 +74,7 @@ memcheck:
   stage: test
   except:
     - master
+    - rk_01
   before_script:
     - apt-get update --yes
     - apt-get install --yes valgrind
@@ -66,11 +82,24 @@ memcheck:
     - valgrind --tool=memcheck --leak-check=full -q ./$APP_FOLDER/$APP_FOLDER -memcheck
   dependencies:
     - build
+    
+tests_all:
+  stage: test
+  only:
+    - master
+  before_script:
+    - apt-get update --yes
+    - apt-get install --yes cmake
+  script:
+    - ctest --output-on-failure
+  dependencies:
+    - build_all
 
 tests:
   stage: test
   except:
     - master
+    - rk_01
   before_script:
     - apt-get update --yes
     - apt-get install --yes cmake
