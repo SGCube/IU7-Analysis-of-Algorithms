@@ -261,6 +261,24 @@
      <number>1</number>
     </property>
    </widget>
+   <widget class="QPushButton" name="timeBtn">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>360</y>
+      <width>261</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Измерение времени</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <customwidgets>

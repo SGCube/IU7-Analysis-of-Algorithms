@@ -1,10 +1,28 @@
 #include <QColorDialog>
 #include <QMessageBox>
+#include <fstream>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include "fractal.h"
+
+#ifdef _WIN32
+#include <intrin.h>
+uint64_t rdtsc() {
+	return __rdtsc();
+}
+#else
+uint64_t rdtsc() 
+{
+	unsigned int lo, hi;
+	__asm__ __volatile__("rdtsc" : "=a" (lo), "=d" (hi));
+	return ((uint64_t)hi << 32) | lo;
+}
+#endif
 
 MainWindow::MainWindow(QWidget *parent):
 	QMainWindow(parent),
@@ -100,4 +118,49 @@ void MainWindow::on_recBtn_clicked()
 	painter.drawBrokenLine(points);
 	painter.end();
 	ui->canvas->repaint();
+}
+
+void MainWindow::on_timeBtn_clicked()
+{
+	srand(time(NULL));
+	
+	std::ofstream file("time.csv");
+	if (!file.is_open())
+	{
+		std::cout << "File open error!";
+		return;
+	}
+	
+	unsigned long long start_time = 0, end_time = 0;
+	unsigned test_repeats = 100;
+	file << "Size;Iter;Rec\n";
+	Point nextPoint = Point(startPoint.x(), startPoint.y() - 1);
+	
+	for (unsigned n = 1; n <= 20; n++)
+	{
+		unsigned long long results[2] = { 0, 0 };
+		for (unsigned k = 0; k < test_repeats; k++)
+		{
+			start_time = rdtsc();
+			std::vector<Point> points = get_dragon_fractal(startPoint,
+														   nextPoint, n);
+			end_time = rdtsc();
+			results[0] += end_time - start_time;
+
+			start_time = rdtsc();
+			std::vector<Point> points2({startPoint, nextPoint});
+			points2 = get_dragon_fractal_rec(points2, n);
+			end_time = rdtsc();
+			results[1] += end_time - start_time;
+		}
+		file << n;
+		for (unsigned k = 0; k < 2; k++)
+		{
+			results[k] /= test_repeats;
+			file << ";" << results[k];
+		}
+		file << "\n";
+	}
+	
+	file.close();
 }
