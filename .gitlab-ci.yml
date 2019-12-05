@@ -19,16 +19,6 @@ variables:
   - make
   - cp *.a /usr/lib
   - cd -
-  
-codestyle_all:
-  stage: codestyle
-  only:
-    - master
-  before_script:
-    - apt-get update --yes
-    - apt-get install --yes cppcheck
-  script:
-    - cppcheck --std=c++11 -q --enable=all --error-exitcode=1 .
 
 codestyle:
   stage: codestyle

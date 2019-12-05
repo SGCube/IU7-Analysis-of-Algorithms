@@ -4,12 +4,11 @@
 
 void rotate_line(std::vector<Point> &line, Point &pc)
 {
-	double x, y;
 	double xc = pc.x(), yc = pc.y();
 	for (auto p : line)
 	{
-		x = p.x();
-		y = p.y();
+		double x = p.x();
+		double y = p.y();
 		p.setX(xc + (y - yc));
 		p.setY(yc - (x - xc));
 	}

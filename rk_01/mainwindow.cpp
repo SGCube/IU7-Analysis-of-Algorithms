@@ -28,8 +28,7 @@ MainWindow::MainWindow(QWidget *parent):
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
 	img(700, 700, QImage::Format_RGB32),
-	startPoint(0, 0),
-	startLine(0, 0, 0, 0)
+	startPoint(0, 0)
 {
 	ui->setupUi(this);
 	ui->canvas->setCanvas(&img, &painter);
@@ -142,8 +141,7 @@ void MainWindow::on_timeBtn_clicked()
 		for (unsigned k = 0; k < test_repeats; k++)
 		{
 			start_time = rdtsc();
-			std::vector<Point> points = get_dragon_fractal(startPoint,
-														   nextPoint, n);
+			get_dragon_fractal(startPoint, nextPoint, n);
 			end_time = rdtsc();
 			results[0] += end_time - start_time;
 
