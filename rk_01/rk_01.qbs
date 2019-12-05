@@ -21,8 +21,6 @@ QtApplication {
         "canvas.h",
         "fractal.cpp",
         "fractal.h",
-        "lineseg.cpp",
-        "lineseg.h",
         "main.cpp",
         "mainwindow.cpp",
         "mainwindow.h",
@@ -31,8 +29,6 @@ QtApplication {
         "painter.h",
         "point.cpp",
         "point.h",
-        "vector.cpp",
-        "vector.h",
     ]
     
     install: true

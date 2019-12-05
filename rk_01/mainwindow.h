@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "point.h"
-#include "lineseg.h"
 #include "canvas.h"
 
 QT_BEGIN_NAMESPACE
@@ -27,9 +26,7 @@ private:
 	Painter painter;
 	QColor bgColor;
 	
-	std::vector<LineSeg> lineSegments;
 	Point startPoint;
-	LineSeg startLine;
 	
 signals:
 	void ortDrawMode(bool isOrt);
