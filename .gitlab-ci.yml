@@ -34,6 +34,7 @@ codestyle:
   stage: codestyle
   except:
     - master
+    - rk_01
   before_script:
     - apt-get update --yes
     - apt-get install --yes cppcheck
@@ -58,6 +59,7 @@ build:
   stage: build
   except:
     - master
+    - rk_01
   before_script:
     - *before_build
   script:
@@ -72,6 +74,7 @@ memcheck:
   stage: test
   except:
     - master
+    - rk_01
   before_script:
     - apt-get update --yes
     - apt-get install --yes valgrind
@@ -96,6 +99,7 @@ tests:
   stage: test
   except:
     - master
+    - rk_01
   before_script:
     - apt-get update --yes
     - apt-get install --yes cmake
