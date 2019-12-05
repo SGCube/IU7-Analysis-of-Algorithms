@@ -23,7 +23,7 @@ uint64_t rdtsc()
 void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size, unsigned step)
 {
     unsigned long long start_time = 0, end_time = 0;
-    unsigned test_repeats = 20;
+    unsigned test_repeats = 100;
     file << "Size;Classic;Vinograd;VinOptimized\n";
 
     for (unsigned size = start_size; size <= end_size; size += step)
@@ -35,7 +35,7 @@ void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size, u
             int **matrix_b = Matrix::randinit(size, size, -10, 10);
             int **matrix_c = Matrix::init(size, size);
 
-            /*start_time = rdtsc();
+            start_time = rdtsc();
             multiply_classic(matrix_a, matrix_b, matrix_c, size, size, size);
             end_time = rdtsc();
             results[0] += end_time - start_time;
@@ -43,7 +43,7 @@ void time_measure(std::ofstream &file, unsigned start_size, unsigned end_size, u
             start_time = rdtsc();
             multiply_vinograd(matrix_a, matrix_b, matrix_c, size, size, size);
             end_time = rdtsc();
-            results[1] += end_time - start_time;*/
+            results[1] += end_time - start_time;
 
             start_time = rdtsc();
             multiply_vinograd_opt(matrix_a, matrix_b, matrix_c, size, size, size);
