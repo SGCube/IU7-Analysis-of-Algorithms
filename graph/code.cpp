@@ -1,6 +1,6 @@
 int n = 6;											// 1
 int arr[] = { 4, 7, 1, 3, 0, 2};					// 2
-for (int left = 0, right = n - 1; left < right) {	// 3
+for (int left = 0, right = n - 1; left < right;) {	// 3
 	for (int i = left; i < right; i++) {			// 4
 		if (arr[i + 1] < arr[i]) {					// 5
 			int temp = arr[i];						// 6
