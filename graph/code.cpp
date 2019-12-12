@@ -1,24 +1,21 @@
-#include <stdlib.h>
-#include <time.h>
-int main() {
-	srand(time(NULL));
-	int n = 6;									// 1
-	int *arr = new int[n];						// 2
-	for (int i = 0; i < n; i++) {				// 3
-		arr[i] = rand() % 21 - 10;				// 4
-	}
-	int min1 = arr[0];							// 5
-	int min2 = arr[1];							// 6
-	if (arr[1] < arr[0]) {						// 7
-		min1 = arr[1];							// 8
-		min2 = arr[0];							// 9
-	}
-	for (int i = 2; i < n; i++) {				// 10
-		if (arr[i] < min1) {					// 11
-			min2 = min1;						// 12
-			min1 = arr[i];						// 13
+int n = 6;											// 1
+int arr[] = { 4, 7, 1, 3, 0, 2};					// 2
+for (int left = 0, right = n - 1; left < right) {	// 3
+	for (int i = left; i < right; i++) {			// 4
+		if (arr[i + 1] < arr[i]) {					// 5
+			int temp = arr[i];						// 6
+			arr[i] = arr[i + 1];					// 7
+			arr[i + 1] = temp;						// 8
 		}
-		else if (arr[i] < min2)					// 14
-			min2 = arr[i];						// 15
 	}
+	right--;										// 9
+
+	for (int i = right; i > left; i--){				// 10
+		if (arr[i - 1] > arr[i]) {					// 11
+			int temp = arr[i];						// 12
+			arr[i] = arr[i - 1];					// 13
+			arr[i - 1] = temp;						// 14
+		}
+	}
+	left++;											// 15
 }
