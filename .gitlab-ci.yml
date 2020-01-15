@@ -24,6 +24,7 @@ codestyle:
   stage: codestyle
   except:
     - master
+    - graph
     - rk_01
   before_script:
     - apt-get update --yes
@@ -49,6 +50,7 @@ build:
   stage: build
   except:
     - master
+    - graph
     - rk_01
   before_script:
     - *before_build
@@ -64,6 +66,7 @@ memcheck:
   stage: test
   except:
     - master
+    - graph
     - rk_01
     - lab_02
   before_script:
@@ -90,6 +93,7 @@ tests:
   stage: test
   except:
     - master
+    - graph
     - rk_01
   before_script:
     - apt-get update --yes
