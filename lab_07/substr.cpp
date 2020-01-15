@@ -7,15 +7,16 @@ int substr_std(std::string s, std::string subs)
 {
     int sn = s.length(), subn = subs.length();
     int n = sn - subn + 1;
-    bool correct = true;
-
-	for (int i = 0; i < n && !correct; i++)
+    
+	for (int i = 0; i < n; i++)
+	{
+		bool correct = true;
 		for (int j = 0; j < subn && correct; j++)
 			if (subs[j] != s[i + j])
 				correct = false;
-    
-    if (correct)
-		return i - 1;
+		if (correct)
+			return i;
+	}
 	return -1;
 }
 
@@ -36,7 +37,7 @@ void fail_compute(std::string s, int n, int *fail)
 int substr_kmp(std::string s, std::string subs)
 {
     int sn = s.length(), subn = subs.length();
-	int *fail = (int*)calloc(subn, sizeof(int));
+	int *fail = new int[subn];
 
 	fail_compute(subs, subn, fail);
 
