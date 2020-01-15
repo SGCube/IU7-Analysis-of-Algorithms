@@ -6,7 +6,7 @@
 int substr_std(std::string s, std::string subs)
 {
     int sn = s.length(), subn = subs.length();
-    int i = 0, n = sn - subn + 1;
+    int n = sn - subn + 1;
     bool correct = true;
 
 	for (int i = 0; i < n && !correct; i++)
@@ -48,8 +48,12 @@ int substr_kmp(std::string s, std::string subs)
         if (subs[j] == s[i])
             j++;
         if (j == subn)
+		{
+			delete [] fail;
             return i - subn + 1;
+		}
     }
+	delete [] fail;
     return -1;
 }
 
