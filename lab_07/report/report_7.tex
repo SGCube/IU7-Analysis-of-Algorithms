@@ -112,35 +112,19 @@ columns=fullflexible }
 	\chapter{Конструкторская часть}
 	
 	В данном разделе представлены принципы работы алгоритмов и их схемы.
-	На рисунках \ref{ris:first} и \ref{ris:kmp} представлен алгоритм Кнута-Морриса-Пратта.
+	На рисунках \ref{ris:kmp} и \ref{ris:bm} представлены схемы алгоритмов Кнута-Морриса-Пратта и Бойера-Мура.
 	\begin{figure}[ht!]
 		\centering
-		\includegraphics[scale=1.2]{img/first.png}
-		\caption{Схема алгоритма Кнута-Морриса-Пратта}
-		\label{ris:first}
-	\end{figure}\newpage
-	
-	\begin{figure}[ht!]
-		\centering
-		\includegraphics[scale=1.2]{img/kmp.png}
-		\caption{Схема функции kmp}
+		\includegraphics[scale=0.55]{img/kmp_ext.jpg}
+		\caption{Схема алгоритма Кнута-Морриса-Пратта (слева - основной алгоритм, справа - алгоритм вычисления массива fail)}
 		\label{ris:kmp}
 	\end{figure}\newpage
 	
-	На рисунках \ref{ris:second} и \ref{ris:bad} представлен алгоритм Бойера-Мура.
-	
 	\begin{figure}[ht!]
 		\centering
-		\includegraphics[scale=1.2]{img/second.png}
-		\caption{Схема алгоритма Бойера-Мура}
-		\label{ris:second}
-	\end{figure}\newpage
-	
-	\begin{figure}[ht!]
-		\centering
-		\includegraphics[scale=1.2]{img/bm.png}
-		\caption{Схема функции bad}
-		\label{ris:bad}
+		\includegraphics[scale=0.55]{img/bm_ext.jpg}
+		\caption{Схема алгоритма Бойера-Мура (слева - основной алгоритм, справа - алгоритм вычисления массива сдвигов)}
+		\label{ris:bm}
 	\end{figure}\newpage
 
 	\newpage
@@ -148,113 +132,112 @@ columns=fullflexible }
 	\chapter{Технологическая часть}
 	В данном разделе приведены требования к программному обеспечению, средствам реализации, а также листинги кода.
 	\section{Средства реализации}
-	Для реализации программы был использован язык C++ ~\cite{CPP}. Для замера процессорного времени была использована функция rdtsc() из библиотеки stdrin.h. Потоки реализовывались с использованием библиотеки pthreads.h.
-	\section{Реализации алгоритмов}
-	В листингах \ref{code-std}, \ref{code-kmp}, \ref{code-bm} представлен коды реализаций рассматриваемых в данной лабораторной работе алгоритмов поиска подстроки в строке.
-	\begin{lstlisting}[label=code-std,caption=Стандартный алгоритм]
-	int substr_std(std::string s, std::string subs)
-	{
-		int sn = s.length(), subn = subs.length();
-		int n = sn - subn + 1;
+	Для реализации программы был использован язык C++ ~\cite{CPP}. Для замера процессорного времени была использована функция rdtsc() из библиотеки stdrin.h.
 	
-		for (int i = 0; i < n; i++)
+	\section{Реализации алгоритмов}
+	В листингах \ref{code-kmp}, \ref{code-fail}, \ref{code-bm}, \ref{code-slide} представлены коды реализаций рассматриваемых в данной лабораторной работе алгоритмов поиска подстроки в строке.
+	\begin{lstlisting}[label=code-kmp,caption=Алгоритм Кнута-Морриса-Пратта]
+	int substr_kmp(const std::string &s, const std::string &subs)
+	{
+		if (s.empty() || subs.empty())
+			return -1;
+	
+		int sn = s.length(), subn = subs.length();
+		int *fail = new int[subn];
+		fail_compute(subs, fail);
+	
+		int index = -1;
+		for (int i = 0, j = 0; i < sn && index == -1; i++)
 		{
-			bool correct = true;
-			for (int j = 0; j < subn && correct; j++)
-				if (subs[j] != s[i + j])
-					correct = false;
-				if (correct)
-					return i;
+			if (j > 0 && subs[j] != s[i])
+				j = fail[j - 1];
+			if (subs[j] == s[i])
+				j++;
+			if (j == subn)
+				index = i - subn + 1;
 		}
-		return -1;
+		delete [] fail;
+		return index;
 	}
 	\end{lstlisting}
 	
-	\begin{lstlisting}[label=code-kmp,caption=Алгоритм Кнута-Морриса-Пратта]
-	void fail_compute(std::string s, int n, int *fail)
+	\begin{lstlisting}[label=code-fail,caption=Вычисление массива сдвигов для алгоритма Кнута-Морриса-Пратта]
+	void fail_compute(const std::string &s, int *fail)
 	{
+		if (s.empty())
+			return;
+	
 		fail[0] = 0;
-		for (int i = 1; i < n; i++)
+		for (unsigned i = 1, j = 0; i < s.length(); i++)
 		{
-			int j = fail[i - 1];
-			while (j > 0 && s[i] != s[j])
+			if (j > 0 && s[i] != s[j])
 				j = fail[j - 1];
 			if (s[i] == s[j])
 				j++; 
 			fail[i] = j;
 		}
 	}
-	
-	int substr_kmp(std::string s, std::string subs)
-	{
-		int sn = s.length(), subn = subs.length();
-		int *fail = new int[subn];
-	
-		fail_compute(subs, subn, fail);
-	
-		int j = 0;
-		for (int i = 0; i < sn; i++)
-		{
-			while (j > 0 && subs[j] != s[i])
-				j = fail[j - 1];
-			if (subs[j] == s[i])
-				j++;
-			if (j == subn)
-			{
-				delete [] fail;
-				return i - subn + 1;
-			}
-		}
-		delete [] fail;
-		return -1;
-	}
 	\end{lstlisting}
 	
 	\begin{lstlisting}[label=code-bm,caption=Алгоритм Бойера-Мура]
-	void bad(std::string subs, int size, int *badchar)
-	{
-		for (int i = 0; i < 256; i++)
-			badchar[i] = -1;
-		for (int i = 0; i < size; i++)
-			badchar[(int)subs[i]] = i;
-	}
-	
-	int substr_bm(std::string s, std::string subs)
+	int substr_bm(const std::string &s, const std::string &subs)
 	{
 		int sn = s.length(), subn = subs.length();
 		int result = -1;
-		int badchar[SIZE];
-		bad(subs, subn, badchar);
+		int slide[ALPHABET_SIZE];
+		get_slide(subs, slide);
 	
-		int i = 0;
-		while (i <= sn - subn)
+		int ind = 0;
+		while (ind <= sn - subn && result == -1)
 		{
-			int j = subn - 1;
-			while (j >= 0 && subs[j] == s[i + j])
-				j--;
-			if (j < 0)
+			int subind = subn - 1;
+			for (; subs[subind] == s[ind + subind] && result == -1; subind--)
 			{
-				result = i;
-				i += (i + subn < sn) ? subn - badchar[(int)s[i + subn]] : 1;
+				if (subind == 0)
+					result = ind;
 			}
-			else
-				i += std::max(1, j - badchar[(int)s[i + j]]);
+			ind += slide[(int)s[ind + subind]];
 		}
 		return result;
 	}
 	\end{lstlisting}
+	
+	\begin{lstlisting}[label=code-slide,caption=Вычисление массива сдвигов для алгоритма Бойера-Мура]
+	void get_slide(const std::string &subs, int *slide)
+	{
+		if (subs.empty())
+			return;
+	
+		int subn = subs.length();
+		for (int i = 0; i < ALPHABET_SIZE; i++)
+			slide[i] = subn;
+		for (int i = 0; i < subn - 1; i++)
+			slide[(int)subs[i]] = subn - 1 - i;
+	}
+	\end{lstlisting}
 
-	\newpage
 
 	\section{Тесты}
-	Для проверки корректности работы были подготовлены функциональные тесты, представленные в таблице \ref{unit-tests}.
-
+	Для проверки корректности работы были подготовлены функциональные тесты, представленные в таблице \ref{unit-tests}. В данной таблице $\lambda$ обозначает пустую строку, а результат, равный -1, означает, что подстрока не входит в исходную строку.
+	
 	\begin{table}[ht!]
 		\caption{Функциональные тесты}
 		\label{unit-tests}
 		\begin{center}
-			\begin{tabular}{|c|c|c|}
-			
+			\begin{tabular}{|c|c||c||c|c|}
+			\hline
+			\bf{Строка} & \bf{Подстрока} & \bf{Ожидание} & \bf{Кнута-Морриса-Прата} & \bf{Бойера-Мура}\\\hline
+			$\lambda$ & $\lambda$ & -1 & -1 & -1 \\\hline
+			$\lambda$ & a & -1 & -1 & -1 \\\hline
+			a & $\lambda$ & -1 & -1 & -1 \\\hline
+			a & a & 0 & 0 & 0 \\\hline
+			abc & a & 0 & 0 & 0 \\\hline
+			a & abc & -1 & -1 & -1 \\\hline
+			abc & abc & 0 & 0 & 0 \\\hline
+			abab & ab & 0 & 0 & 0 \\\hline
+			aabab & ab & 1 & 1 & 1 \\\hline
+			baaab & ab & 3 & 3 & 3 \\\hline
+			baa & ab & -1 & -1 & -1 \\\hline
 			\end{tabular}
 		\end{center}
 	\end{table}
