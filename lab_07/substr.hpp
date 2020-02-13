@@ -3,10 +3,10 @@
 
 #include <string>
 
-int substr_std(std::string s, std::string subs);
+int substr_std(const std::string &s, const std::string &subs);
 
-int substr_kmp(std::string s, std::string subs);
+int substr_kmp(const std::string &s, const std::string &subs);
 
-int substr_bm(std::string s, std::string subs);
+int substr_bm(const std::string &s, const std::string &subs);
 
 #endif

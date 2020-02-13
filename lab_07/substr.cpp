@@ -1,9 +1,9 @@
 #include <cmath>
 #include "substr.hpp"
 
-#define SIZE 256
+#define ALPHABET_SIZE 256
 
-int substr_std(std::string s, std::string subs)
+int substr_std(const std::string &s, const std::string &subs)
 {
     int sn = s.length(), subn = subs.length();
     int n = sn - subn + 1;
@@ -20,13 +20,15 @@ int substr_std(std::string s, std::string subs)
 	return -1;
 }
 
-void fail_compute(std::string s, int n, int *fail)
+void fail_compute(const std::string &s, int *fail)
 {
+	if (s.empty())
+		return;
+
     fail[0] = 0;
-    for (int i = 1; i < n; i++)
+	for (unsigned i = 1, j = 0; i < s.length(); i++)
     {
-        int j = fail[i - 1];
-        while (j > 0 && s[i] != s[j])
+        if (j > 0 && s[i] != s[j])
             j = fail[j - 1];
         if (s[i] == s[j])
             j++; 
@@ -34,58 +36,57 @@ void fail_compute(std::string s, int n, int *fail)
     }
 }
 
-int substr_kmp(std::string s, std::string subs)
+int substr_kmp(const std::string &s, const std::string &subs)
 {
+	if (s.empty() || subs.empty())
+		return -1;
+
     int sn = s.length(), subn = subs.length();
 	int *fail = new int[subn];
+	fail_compute(subs, fail);
 
-	fail_compute(subs, subn, fail);
-
-    int j = 0;
-    for (int i = 0; i < sn; i++)
+    int index = -1;
+	for (int i = 0, j = 0; i < sn && index == -1; i++)
     {
-        while (j > 0 && subs[j] != s[i])
+        if (j > 0 && subs[j] != s[i])
             j = fail[j - 1];
         if (subs[j] == s[i])
             j++;
         if (j == subn)
-		{
-			delete [] fail;
-            return i - subn + 1;
-		}
+			index = i - subn + 1;
     }
 	delete [] fail;
-    return -1;
+    return index;
 }
 
-void bad(std::string subs, int size, int *badchar)
+void get_slide(const std::string &subs, int *slide)
 {
-	for (int i = 0; i < SIZE; i++)
-		badchar[i] = -1;
-	for (int i = 0; i < size; i++)
-		badchar[(int)subs[i]] = i;
+    if (subs.empty())
+		return;
+    
+	int subn = subs.length();
+    for (int i = 0; i < ALPHABET_SIZE; i++)
+        slide[i] = subn;
+    for (int i = 0; i < subn - 1; i++)
+        slide[(int)subs[i]] = subn - 1 - i;
 }
 
-int substr_bm(std::string s, std::string subs)
+int substr_bm(const std::string &s, const std::string &subs)
 {
     int sn = s.length(), subn = subs.length();
 	int result = -1;
-	int badchar[SIZE];
-	bad(subs, subn, badchar);
+	int slide[ALPHABET_SIZE];
+	get_slide(subs, slide);
 
-	int i = 0;
-	while (i <= sn - subn)
+	for(int ind = 0; ind <= sn - subn && result == -1; )
 	{
-		int j = subn - 1;
-		while (j >= 0 && subs[j] == s[i + j])
-			j--;
-		if (j < 0)
+        int subind = subn - 1;
+        for (; subs[subind] == s[ind + subind] && result == -1; subind--)
 		{
-			result = i;
-			i += (i + subn < sn) ? subn - badchar[(int)s[i + subn]] : 1;
-		}
-		else
-			i += std::max(1, j - badchar[(int)s[i + j]]);
-	}
+            if (subind == 0)
+				result = ind;
+        }
+        ind += slide[(int)s[ind + subind]];
+    }
 	return result;
 }
