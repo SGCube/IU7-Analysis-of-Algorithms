@@ -144,7 +144,8 @@ columns=fullflexible }
 		
 		\item На основании предыдущих утверждений мы можем сформулировать
 		вероятностно-пропорциональное правило, определяющее вероятность
-		перехода k-ого муравья из города i в город j:
+		перехода k-ого муравья из города i в город j:
+
 		
 		\begin{equation}
 		\label{formula_pij}
@@ -212,18 +213,13 @@ columns=fullflexible }
 	
 	\section{Схемы алгоритмов}
 	
-	\begin{figure}[ht!]
-		\center
-		\includegraphics[scale=0.6]{img/get_p_1_main.jpg}
-		\caption{Основная часть функции get\_p.}
-		\label{ris:get_p_1}
-	\end{figure}
+	На рисунке \ref{ris:aco} представлена обобщённая схема муравьиного алгоритма.
 	
 	\begin{figure}[ht!]
 		\center
-		\includegraphics[scale=0.6]{img/get_p_4_rtmn.jpg}
-		\caption{Определение является ли город посещенным и занесение в массив процентов числителей вероятностей.}
-		\label{ris:get_p_4}
+		\includegraphics[scale=0.5]{img/aco.jpg}
+		\caption{Схема муравьиного алгоритма}
+		\label{ris:aco}
 	\end{figure}
 
 	\section{Вывод}
@@ -242,145 +238,303 @@ columns=fullflexible }
    
     \section{Реализация алгоритмов}
     
-    Для реализации описанных в конструкторской части решений, было реализовано два класса: Map(листинг \ref{code:map_class}) и Ant(листинг  \ref{code:ant_class}).
-    \begin{lstlisting}[label=code:map_class,caption=Класс Map]
-    class Map {
+    В листингах \ref{code:ant_class}, \ref{code:ant_meth} \ref{code:aсo_class}, \ref{code:aco_init} и \ref{code:aco_alg} описана реализация муравьиного алгоритма.
+    \begin{lstlisting}[label=code:ant_class,caption=Класс муравья Ant]
+    class Ant
+    {
     public:
-	    Map(vector<vector<int>> matrix_d,
-	    vector<vector<float>> matrix_p,
-	    float eva, float al, float be, size_t ci) :
-	    matrix_distance(matrix_d), matrix_pheromone(matrix_p),
-	    evaporation(eva), alpha(al), beta(be), cities(ci){;}
-	
-	    vector<vector<int>> matrix_distance;
-	    vector<vector<float>> matrix_pheromone;
-	    
-	    float evaporation;
-	    float alpha, beta;
-	    size_t cities;
-	    
-	    bool can_move(Ant &ant) {
-		    size_t tabu_size = ant.tabu_list.size();
-		    if (tabu_size >= this->cities) {
-			    return false;
-			}
-			return true;
+    	size_t path_len;
+    	std::vector<bool> visited;
+    	std::vector<size_t> path;
+    
+    	Ant(const size_t graph_size);
+    
+    	void visit_city(const size_t city, const size_t cur_path_len,
+    	const size_t cur_path_dist);
+    	void clear_visits();
+    	void make_default_path();
+    	bool is_visited(const size_t city) const;
+    };
+    \end{lstlisting}
+    
+    \begin{lstlisting}[label=code:ant_meth,caption=Методы класса Ant]
+    Ant::Ant(const size_t graph_size) : path_len(0)
+    {
+	    for (size_t i = 0; i < graph_size; i++)
+	    {
+		    path.push_back(0);
+		    visited.push_back(false);
 	    }
+    }
+    
+    void Ant::visit_city(const size_t city, const size_t cur_path_len,
+    	const size_t cur_path_dist)
+    {
+	    path_len += cur_path_dist;
+	    path[cur_path_len] = city;
+	    visited[city] = true;
+    }
+    
+    void Ant::clear_visits()
+    {
+	    for (size_t i = 0; i < visited.size(); i++)
+	    	visited[i] = false;
+	    path_len = 0;
+    }
+    
+    void Ant::make_default_path()
+    {
+    	path_len = 0;
+    	visit_city(path[path.size() - 1], 0, 0);
+    }
+    
+    bool Ant::is_visited(const size_t city) const
+    {
+    	return visited[city];
+    }
+    \end{lstlisting}
+    
+    \begin{lstlisting}[label=code:aco_class,caption=Класс алгоритма ACO]
+    class ACO
+    {
+    private:
+	    const std::vector<std::vector<int>> dist_graph;
+	    const size_t cities_count;
 	    
-	    void reduce_pheromone();
+	    std::vector<std::vector<double>> pher_graph;
+	    std::vector<std::vector<double>> desire_graph;
 	    
-	    void increase_pheromone(Ant &ant);
+	    std::vector <Ant> ants;
+	    size_t ants_count;
 	    
-	    void make_move(Ant &ant);
+	    std::vector<double> paths_probs;
+	    
+	    double alpha = 0.5;
+	    double rho = 0.5;
+	    size_t tMax = 100;
+	    double beta = 1 - alpha;
+	    
+	    const double Q = 5;
+	    const double ants_factor = 1;
+	    const double init_pher_value = 1;
+    
+    public:
+    	size_t min_len = 0;
+    	std::vector<size_t> min_path;
+    
+    	ACO(const Graph<int>& graph);
+    
+    	void execute();
+    	void change_params(double alpha, double rho, size_t tMax);
     
     private:
-	    float get_p_chisl(size_t from, size_t to);
-	    
-	    int get_w(size_t from, size_t to);
-	    
-	    float get_t(size_t from, size_t to);
-	    
-	    size_t choose_city(Ant &ant);
-	    
-	    void  get_p(Ant &ant, vector<pair<size_t, float>>& procents);
+	    void make_default_state();
+	    void init_ants();
+	    void init_pher_graph();
+	    void pave_ants_paths();
+	    size_t get_next_city(const Ant& ant, const size_t cur_city);
+	    void update_min_path();
+	    void update_pheromones();
+	    void make_default_ants();
+	    size_t select_next_city();
+	    double get_sum_probabilities();
     };
     \end{lstlisting}
     
-    \begin{lstlisting}[label=code:ant_class,caption=Класс Ant]
-    class Ant {
-    public:
-	    Ant(size_t ccn, int Q) {
-		    current_city_number = ccn;
-		    length = 0;
-		    pheromone = Q;
-	    }
-	    vector<size_t> tabu_list;
-	    size_t current_city_number;
-	    int length;
-	    float pheromone;
-	    
-	    void make_move(size_t new_current_city, int new_length);
-    };
-    \end{lstlisting}
-    
-    \begin{lstlisting}[label=code:run,caption=Функция run - получить кратчайший путь]
-    int run(vector<vector<int>> mat_d, size_t time, size_t ants_amount, size_t elite_one,  size_t cities, float eva, float al, float be,  size_t city_from, int Q, int EQ) {
-    if (run_check(mat_d,time, ants_amount, elite_one, cities,
-    eva, city_from) == ERROR) {
-    	return ERROR;
-    }
-    vector<vector<int>> matrix_d = mat_d;
-    vector<float> row(matrix_d[0].size());
-    vector<vector<float>> matrix_f(row.size(), row);
-    
-    Map map(matrix_d, matrix_f, eva, al, be, cities);
-    vector<Ant> ants_save;
-    
-    for (size_t i = 0; i < ants_amount ; i++) {
-	    if (i % elite_one == 0)
-	    	ants_save.push_back(Ant(city_from, EQ));
-	    else
-	    	ants_save.push_back(Ant(city_from, Q));
-    }
-    vector<size_t> tabu_list;
-    vector<Ant> ants;
-    int best_way = -1;
-    
-    size_t ants_size = ants_save.size();
-    for (size_t t = 0; t < time; t++) {
-	    ants = ants_save;
-	    for (size_t a = 0; a < ants_size; a++) {
-	    ants[a].tabu_list.push_back(city_from);
-	    while (map.can_move(ants[a])) map.make_move(ants[a]);
-	    
-	    if (ants[a].tabu_list.back() < map.matrix_distance.size()) {
-	    ants[a].length += map.matrix_distance[ants[a].tabu_list.back()][city_from];
-	    ants[a].tabu_list.push_back(city_from);
-    }
-    else
-    	std::cout << "\n strange error";
-    
-    map.increase_pheromone(ants[a]);
-    
-    if (best_way < 0 || best_way > ants[a].length) {
-	    best_way = ants[a].length;
-	    tabu_list = ants[a].tabu_list;
-	}
-	return best_way;
-    }
-    \end{lstlisting}
-    
-    \begin{lstlisting}[label=code:choose_city,caption=Функция choose\_city - Выбрать следующий город для муравья]
-    size_t Map::choose_city(Ant &ant) {
-	    vector<pair<size_t, float>> procents;
-	    get_p(ant, procents);
-	    int procent = rand() % 100;
-	    int compare_procent = procents[0].second;
-	    
-	    size_t procents_size = procents.size();
-	    size_t i = 0;
-	    for (;i < procents_size - 1 && compare_procent < procent;i++)
-	    	compare_procent += procents[i + 1].second;
-	    if (i == procents_size) {
-		    std::cout << "\n choose_city out of borders " <<
-		    i << "/" << procents_size;
-		    return 0;
+    \begin{lstlisting}[label=code:aco_init,caption=Методы инициализации и запуск алгоритма]
+    ACO::ACO(const Graph<int>& graph) :
+    	dist_graph(graph.graph), cities_count(graph.size)
+    {
+	    // init pher_graph
+	    for (size_t i = 0; i < cities_count; i++)
+	    {
+	    	std::vector<double> line;
+	    	for (size_t j = 0; j < cities_count; j++)
+	    		line.push_back(init_pher_value);
+	    	pher_graph.push_back(line);
 	    }
 	    
-	    if (compare_procent > 100) {
-		    std::cout << "\n choose_city() error procenting " <<
-		    compare_procent;
-		    return 0;
+	    // init desire_graph
+	    for (size_t i = 0; i < cities_count; i++)
+	    {
+	    	std::vector<double> line;
+	    	for (size_t j = 0; j < cities_count; j++)
+	    		line.push_back(dist_graph[i][j] == 0 ? 0 : 
+	    			1.0 / dist_graph[i][j]);
+	   		desire_graph.push_back(line);
 	    }
-	    return procents[i].first;
+	    
+	    // init ants_count
+	    ants_count = cities_count * ants_factor;
+	    for (size_t i = 0; i < ants_count; i++)
+	    {
+	    	Ant ant(cities_count);
+	    	ants.push_back(ant);
+	    }
+	    
+	    // init paths_probs
+	    for (size_t i = 0; i < cities_count; i++)
+	    	paths_probs.push_back(0);
+    }
+    
+    void ACO::execute()
+    {
+	    make_default_state();
+	    init_pher_graph();
+	    init_ants();
+	    
+	    for (size_t i = 0; i < tMax; i++)
+	    {
+	    	pave_ants_paths();
+	    	update_min_path();
+	    	update_pheromones();
+	    	make_default_ants();
+	    }
+    }
+    
+    void ACO::change_params(double alpha, double rho, size_t tMax)
+    {
+    	this->alpha = alpha;
+    	this->beta = 1 - alpha;
+    	this->rho = rho;
+    	this->tMax = tMax;
+    }
+    
+    void ACO::make_default_state()
+    {
+    	min_len = 0;
+    	min_path.clear();
+    }
+    
+    void ACO::init_ants()
+    {
+	    for (size_t i = 0; i < ants_count; i++)
+	    {
+	    	ants[i].clear_visits();
+	    	ants[i].visit_city(rand() % cities_count, 0, 0);
+	    }
+    }
+    
+    void ACO::init_pher_graph()
+    {
+    for (size_t i = 0; i < cities_count; i++)
+	    for (size_t j = 0; j < cities_count; j++)
+	    	pher_graph[i][j] = init_pher_value;
     }
     \end{lstlisting}
     
-    \begin{lstlisting}[label=code:ant_make_move,caption=Функция ant::make\_movе]
-    void Ant::make_move(size_t new_current_city, int new_length) {
-	    tabu_list.push_back(new_current_city);
-	    current_city_number = new_current_city;
-	    length += new_length;
+    \begin{lstlisting}[label=code:aсo_alg,caption=Основные функции муравьиного алгоритма]
+    void ACO::pave_ants_paths()
+    {
+	    for (size_t i = 0; i < cities_count - 1; i++)
+	    {
+		    for (size_t j = 0; j < ants_count; j++)
+		    {
+			    const size_t cur_city = ants[j].path[i];
+			    const size_t next_city = get_next_city(ants[j], cur_city);
+			    const int dist = dist_graph[cur_city][next_city];
+			    
+			    ants[j].visit_city(next_city, i + 1, dist);
+		    }
+	    }
+	    
+	    for (size_t j = 0; j < ants_count; j++)
+	    {
+		    size_t i_ind = ants[j].path[ants[j].path.size() - 1];
+		    size_t j_ind = ants[j].path[0];
+		    const int dist_init_city = dist_graph[i_ind][j_ind];
+		    ants[j].path_len += dist_init_city;
+	    }
+    }
+    
+    size_t ACO::get_next_city(const Ant& ant, const size_t cur_city)
+    {
+	    double sumP = 0;
+	    
+	    for (size_t i = 0; i < cities_count; i++)
+	    {
+	    	double pher_factor = pow(pher_graph[cur_city][i], alpha);
+	    	double desire_factor = pow(desire_graph[cur_city][i], beta);
+	    	sumP += pher_factor * desire_factor;
+	    }
+	    
+	    for (size_t i = 0; i < cities_count; i++)
+	    {
+	    	if (i == cur_city || ant.is_visited(i))
+	    		paths_probs[i] = 0;
+	    	else
+	    	{
+	    		double pher_factor = pow(pher_graph[cur_city][i], alpha);
+	    		double desire_factor = pow(desire_graph[cur_city][i], beta);
+	    		paths_probs[i] = pher_factor * desire_factor / sumP;
+	    	}
+	    }
+	    
+	    return select_next_city();
+    }
+    
+    void ACO::update_min_path()
+    {
+	    for (size_t i = 0; i < ants_count; i++)
+	    {
+		    const size_t cur_len = ants[i].path_len;
+		    if (cur_len < min_len || min_len == 0)
+		    {
+		    	min_len = cur_len;
+		    	min_path = ants[i].path;
+		    }
+	    }
+    }
+    
+    void ACO::update_pheromones()
+    {
+	    for (size_t i = 0; i < cities_count; i++)
+	    	for (size_t j = 0; j < cities_count; j++)
+	    		pher_graph[i][j] *= (1 - rho);
+	    
+	    for (size_t i = 0; i < ants_count; i++)
+	    {
+	    	Ant& ant = ants[i];
+	    
+	    	double dt = Q / ant.path_len;
+	    	for (size_t j = 0; j < cities_count - 1; j++)
+	    		pher_graph[ant.path[j]][ant.path[j + 1]] += dt;
+	    	pher_graph[ant.path[cities_count - 1]][ant.path[0]] += dt;
+	    }
+    }
+    
+    void ACO::make_default_ants()
+    {
+	    for (size_t i = 0; i < ants_count; i++)
+	    {
+	    	ants[i].clear_visits();
+	    	ants[i].make_default_path();
+	    }
+    }
+    
+    size_t ACO::select_next_city()
+    {
+	    double sum_probabilities = get_sum_probabilities();
+	    double rand_num = ((double) rand() / (RAND_MAX)) * sum_probabilities;
+	    double total = 0;
+	    size_t city = 0;
+	    
+	    for (size_t i = 0; i < cities_count && total < rand_num; i++)
+	    {
+	    	total += paths_probs[i];
+	    	if (total >= rand_num)
+	    		city = i;
+	    }
+	    
+	    return city;
+    }
+    
+    double ACO::get_sum_probabilities()
+    {
+	    double sum_probabilities = 0;
+	    for (size_t i = 0; i < cities_count; i++)
+	    	sum_probabilities += paths_probs[i];
+	    return sum_probabilities;
     }
     \end{lstlisting}
     
@@ -1180,8 +1334,8 @@ columns=fullflexible }
     	\bibitem{kom} Шутова Ю.О., Мартынова Ю.А. ИССЛЕДОВАНИЕ ВЛИЯНИЯ РЕГУЛИРУЕМЫХ ПАРАМЕТРОВ МУРАВЬИНОГО АЛГОРИТМА НА СХОДИМОСТЬ. Томский политехнический университет, 634050, Россия, г. Томск, пр. Ленина, 30, 2014. С. 281-282.
     	\bibitem{aco} Чураков Михаил, Якушев Андрей Муравьиные алгоритмы. 2006. С. 9-
     	11.
+    	\bibitem{C} https://cppreference.com/ [Электронный ресурс]
     	\bibitem{time_b}[Электронный ресурс] Документация по функции замера времени. https://proginfo.ru/time/
     	\bibitem{lom}И.В. Ломовской. Курс лекций по языку программирования C, 2017.
-    	\bibitem{C} https://cppreference.com/ [Электронный ресурс]
     \end{thebibliography}
 \end{document}
