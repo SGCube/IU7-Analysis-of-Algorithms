@@ -14,7 +14,7 @@ public:
     size_t size;
 
     Graph() : size(0) {};
-    Graph(size_t n) : size(n) {};
+    explicit Graph(size_t n) : size(n) {};
 
     void randomize()
     {

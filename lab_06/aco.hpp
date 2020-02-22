@@ -8,11 +8,11 @@
 class Ant
 {
 public:
+    explicit Ant(size_t graph_size);
+
     size_t path_len;
     std::vector<bool> visited;
     std::vector<size_t> path;
-    
-    Ant(size_t graph_size);
     
     void visit_city(const size_t city, const size_t cur_path_len,
         const size_t cur_path_dist);

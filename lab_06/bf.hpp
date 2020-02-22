@@ -15,7 +15,7 @@ public:
     size_t min_len = 0;
     std::vector<size_t> min_path;
     
-    BruteForce(const Graph<int>& graph);
+    explicit BruteForce(const Graph<int>& graph);
     void execute();
     
 private:
