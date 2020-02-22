@@ -57,9 +57,9 @@ int main()
         graph.size, end - start);
     
     ACO alg_ACO(graph);
-    start = __rdtsc();
+    start = rdtsc();
     alg_ACO.execute();
-    end = __rdtsc();
+    end = rdtsc();
     path_show("ACO", alg_ACO.min_path, alg_ACO.min_len,
         graph.size, end - start);
 
