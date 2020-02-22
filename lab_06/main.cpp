@@ -30,9 +30,23 @@ void path_show(const char* header, std::vector<size_t>& path,
     std::cout << " ], " << path_len << ", time: " << time << std::endl;
 }
 
-int main()
+int main(int argc, char **argv)
 {
     srand(time(0));
+
+    if (argc == 2 && std::string(argv[1]) == "-memcheck")
+    {
+        Graph<int> graph(10);
+        graph.randomize();
+        
+        BruteForce alg_BF(graph);
+        alg_BF.execute();
+        
+        ACO alg_ACO(graph);
+        alg_ACO.execute();
+
+        return 0;
+    }
 
     Graph<int> graph;
     std::cout << "Input graph size: ";
