@@ -7,7 +7,7 @@ typedef struct args_t
     size_t queue_num;
     std::mutex& mutex;
     bool log;
-} args;
+} par_args;
 
 size_t Conveyor::get_time()
 {
@@ -109,55 +109,58 @@ void Conveyor::execute_linear()
     }
 }
     
-void Conveyor::do_parallel_work1(MatrixSet obj, std::queue<MatrixSet>& queue,
-    size_t queue_num, std::mutex& mutex, bool log)
+void* Conveyor::do_parallel_work1(void *_args)
 {
+    par_args *args = (par_args*) _args;
     size_t start = get_time();
     
-    obj.sum(0, obj.size / 3);
+    args->obj.sum(0, args->obj.size / 3);
     
-    mutex.lock();
-    queue.push(obj);
-    mutex.unlock();
+    args->mutex.lock();
+    args->queue.push(args->obj);
+    args->mutex.unlock();
     
     size_t end = get_time();
-    if (log)
-        log_print_time(obj, queue_num, end - start);
-    time_stay_at_queue[queue_num + 1].push_back(-end);
+    if (args->log)
+        log_print_time(args->obj, args->queue_num, end - start);
+    time_stay_at_queue[args->queue_num + 1].push_back(-end);
+    return NULL;
 }
 
-void Conveyor::do_parallel_work2(MatrixSet obj, std::queue<MatrixSet>& queue,
-    size_t queue_num, std::mutex& mutex, bool log)
+void* Conveyor::do_parallel_work2(void *_args)
 {
+    par_args *args = (par_args*) _args;
     size_t start = get_time();
     
-    obj.sum(obj.size / 3, 2 * obj.size / 3);
+    args->obj.sum(args->obj.size / 3, 2 * args->obj.size / 3);
     
-    mutex.lock();
-    queue.push(obj);
-    mutex.unlock();
+    args->mutex.lock();
+    args->queue.push(args->obj);
+    args->mutex.unlock();
     
     size_t end = get_time();
-    if (log)
-        log_print_time(obj, queue_num, end - start);
-    time_stay_at_queue[queue_num + 1].push_back(-end);
+    if (args->log)
+        log_print_time(args->obj, args->queue_num, end - start);
+    time_stay_at_queue[args->queue_num + 1].push_back(-end);
+    return NULL;
 }
 
-void Conveyor::do_parallel_work3(MatrixSet obj, std::queue<MatrixSet>& queue,
-    size_t queue_num, std::mutex& mutex, bool log)
+void* Conveyor::do_parallel_work3(void *_args)
 {
+    par_args *args = (par_args*) _args;
     size_t start = get_time();
     
-    obj.sum(2 * obj.size / 3, obj.size);
+    args->obj.sum(2 * args->obj.size / 3, args->obj.size);
     
-    mutex.lock();
-    queue.push(obj);
-    mutex.unlock();
+    args->mutex.lock();
+    args->queue.push(args->obj);
+    args->mutex.unlock();
     
     size_t end = get_time();
-    if (log)
-        log_print_time(obj, queue_num, end - start);
-    time_stay_at_queue[queue_num + 1].push_back(-end);
+    if (args->log)
+        log_print_time(args->obj, args->queue_num, end - start);
+    time_stay_at_queue[args->queue_num + 1].push_back(-end);
+    return NULL;
 }
     
 void Conveyor::execute_parallel()
@@ -203,19 +206,28 @@ void Conveyor::execute_parallel()
                 size_t start = get_time();
                 size_t last = time_stay_at_queue[i].size() - 1;
                 time_stay_at_queue[i][last] += start;
+
+                par_args args1 = {
+                    obj, std::ref(queues[i + 1]), i,
+                    std::ref(mutexes[i + 1]), false
+                };
+
+                par_args args2 = {
+                    obj, std::ref(queues[i + 1]), i,
+                    std::ref(mutexes[i + 1]), false
+                };
                 
                 if (i == 0)
+                {
                     threads[i] = std::thread(&Conveyor::do_parallel_work1,
-                        this, obj, std::ref(queues[i + 1]), i,
-                        std::ref(mutexes[i + 1]), false);
+                        this, (void *) &args1);
+                }
                 else if (i == 1)
                     threads[i] = std::thread(&Conveyor::do_parallel_work2,
-                        this, obj, std::ref(queues[i + 1]), i,
-                        std::ref(mutexes[i + 1]), false);
+                        this, (void *) &args1);
                 else if (i == queue_count - 1)
                     threads[i] = std::thread(&Conveyor::do_parallel_work3,
-                        this, obj, std::ref(obj_pool), i,
-                        std::ref(mutexes[i + 1]), false);
+                        this, (void *) &args2);
             }
         }
     }

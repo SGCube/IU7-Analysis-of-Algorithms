@@ -8,8 +8,6 @@
 
 #include "matrix_set.hpp"
 
-std::vector<std::vector<int>> time_stay_at_queue(4);
-
 class Conveyor
 {
 private:
@@ -38,12 +36,7 @@ private:
     void do_linear_work2(MatrixSet& obj, size_t queue, bool log=true);
     void do_linear_work3(MatrixSet& obj, size_t queue, bool log=true);
 
-    void do_parallel_work1(MatrixSet obj, std::queue<MatrixSet>& queue,
-        size_t queue_num, std::mutex& mutex, bool log=true);
-    
-    void do_parallel_work2(MatrixSet obj, std::queue<MatrixSet>& queue,
-        size_t queue_num, std::mutex& mutex, bool log=true);
-    
-    void do_parallel_work3(MatrixSet obj, std::queue<MatrixSet>& queue,
-        size_t queue_num, std::mutex& mutex, bool log=true);
+    void* do_parallel_work1(void *_args);
+    void* do_parallel_work2(void *_args);
+    void* do_parallel_work3(void *_args);
 };

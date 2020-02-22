@@ -28,15 +28,17 @@ int main(int argc, const char * argv[])
     conveyor.execute_parallel();
     auto end = std::chrono::steady_clock::now();
 
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
-    cout << "Parallel: " << duration.count() << " msec" <<  endl;
+    auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(
+        end - start);
+    std::cout << "Parallel: " << duration1.count() << " msec" << std::endl;
     
     start = std::chrono::steady_clock::now();
     conveyor.execute_linear();
     end = std::chrono::steady_clock::now();
     
-    duration = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
-    cout << "Linear: " << duration.count() << " msec" <<  endl;
+    auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(
+        end - start);
+    std::cout << "Linear: " << duration2.count() << " msec" << std::endl;
     
     return 0;
 }
