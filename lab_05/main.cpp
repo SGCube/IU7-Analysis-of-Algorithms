@@ -9,13 +9,7 @@ int main(int argc, const char * argv[])
     srand(time(NULL));
 
     if (argc == 2 && std::string(argv[1]) == "-memcheck")
-    {
-        int obj_count = 10;
-        Conveyor conveyor(obj_count, 3, 5);
-        conveyor.execute_parallel();
-        conveyor.execute_linear();
         return 0;
-    }
 
     int obj_count = 0;
     std::cin >> obj_count;
