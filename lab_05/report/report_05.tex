@@ -1,0 +1,397 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepackage{url}
+\usepackage{flowchart}
+\usepackage{tikz}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.svg}
+\usetikzlibrary{shapes, arrows}
+
+\usepackage{pgfplotstable}
+
+\renewcommand\contentsname{Содержание}
+
+\usepackage{geometry}
+\geometry{left=3cm}
+\geometry{right=1cm}
+\geometry{top=2cm}
+\geometry{bottom=2cm}
+
+\lstset{ %
+language=C++,                 % выбор языка для подсветки (здесь это С)
+basicstyle=\small\sffamily, % размер и начертание шрифта для подсветки кода
+numbers=left,               % где поставить нумерацию строк (слева\справа)
+numberstyle=\tiny,           % размер шрифта для номеров строк
+stepnumber=1,                   % размер шага между двумя номерами строк
+numbersep=-5pt,                % как далеко отстоят номера строк от         подсвечиваемого кода
+backgroundcolor=\color{white}, % цвет фона подсветки - используем         \usepackage{color}
+showspaces=false,            % показывать или нет пробелы специальными     отступами
+showstringspaces=false,      % показывать или нет пробелы в строках
+showtabs=false,             % показывать или нет табуляцию в строках
+frame=single,              % рисовать рамку вокруг кода
+tabsize=2,                 % размер табуляции по умолчанию равен 2 пробелам
+captionpos=t,              % позиция заголовка вверху [t] или внизу [b] 
+breaklines=true,           % автоматически переносить строки (да\нет)
+breakatwhitespace=false, % переносить строки только если есть пробел
+escapeinside={\%*}{*)},   % если нужно добавить комментарии в коде
+keywordstyle=\color{blue}\ttfamily,
+stringstyle=\color{red}\ttfamily,
+commentstyle=\color{green}\ttfamily,
+morecomment=[l][\color{magenta}]{\#},
+columns=fullflexible }
+
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\LARGE\bfseries}{\thechapter{.} }{0pt}{\LARGE\bfseries}
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\large\bfseries}
+
+\begin{document}
+
+    \begin{titlepage}
+    	
+    	\begin{center}
+    		\Large
+    		{\sl Государственное образовательное учреждение высшего профессионального образования\\
+    			{\bf«Московский государственный технический университет имени Н.Э. Баумана»\\
+    				(МГТУ им. Н.Э. Баумана)}}
+    		\noindent\rule{\textwidth}{2pt}
+    		\vspace{3cm}
+    		
+    		{\scshape\LARGE Лабораторная работа №5 \par}
+    		\vspace{0.5cm}	
+    		{\scshape\LARGE по курсу «Анализ алгоритмов» \par}
+    		\vspace{1.5cm}
+    		{\huge\bfseries Конвейерная обработка \par}
+    		\vspace{2cm}
+    		\Large Выполнил: Сорокин А.П., гр. ИУ7-52Б\\
+    		\vspace{0.5cm}
+    		{\Large Преподаватели: Волкова Л.Л., Строганов Ю.В.}
+    		
+    		\vfill
+    		\Large \textit {Москва, 2019 г.}
+    		
+    	\end{center}
+    	
+    \end{titlepage}
+	
+	\tableofcontents
+
+	\chapter*{Введение}
+	\addcontentsline{toc}{chapter}{Введение}
+	\hspace{0.5cm}Сам термин «конвейер» пришёл из промышленности, где используется аналогичный принцип работы — материал автоматически подтягивается по ленте конвейера к рабочему, который осуществляет с ним необходимые действия, следующий за ним рабочий выполняет свои функции над получившейся заготовкой, следующий делает еще что-то, таким образом, к концу конвейера цепочка рабочих полностью выполняет все поставленные задачи, не срывая, однако, темпов производства. Например, если на самую медлительную операцию затрачивается одна минута, то каждая деталь будет сходить с конвейера через одну минуту.
+	
+	Идея заключается в разделении обработки компьютерной инструкции на последовательность независимых стадий с сохранением результатов в конце каждой стадии. Это позволяет управляющим цепям процессора получать инструкции со скоростью самой медленной стадии обработки, однако при этом намного быстрее, чем при выполнении эксклюзивной полной обработки каждой инструкции от начала до конца.
+
+    \chapter{Аналитический раздел}
+   	\vspace{-0.5cm}В данном разделе будет описан принцип конвейерной обработки.
+   	\section{Цель и задачи}
+   	\hspace{0.5cm}Цель лабораторной работы: изучений конвейрной обработки.
+   	Для достижения этой цели были поставлены следующие задачи:
+   	\begin{enumerate}
+   		\item разработка и реализация алгоритмов
+   		\item исследование работы конвейерной обработки с использование многопоточности и без
+   		\item описание и обоснование полученных результатов
+   	\end{enumerate}
+   
+	\section{Конвейерная обработка данных}
+	\hspace{0.5cm}Если задача заключается в применении одной последовательности операций ко многим независимым элементам данных, то можно организовать
+	распараллеленный конвейер. Здесь можно провести аналогию с физическим
+	конвейером: данные поступают с одного конца, подвергаются ряду операций и выходят с другого конца.
+	Для того, чтобы распределить работу по принципу конвейерной обработки данных, следует создать отдельный поток для каждого участка конвейера, то есть для каждой операции. По завершении операции элемент
+	данных помещается в очередь, откуда его забирает следующий поток. В
+	результате поток, выполняющий первую операцию, сможет приступить к
+	обработке следующего элемента, пока второй поток трудится над первым
+	элементом. Конвейеры хороши также тогда, когда каждая операция занимает много времени; распределяя между потоками задачи, а не данные, мы
+	изменяем качественные показатели производительности ~\cite{devcpp}.
+
+	\section{Вывод}
+	\hspace{0.5cm}В данном разделе был описан принцип конвейерной обработки.
+	
+	\chapter{Технологический раздел}
+	\hspace{0.5cm}В данном разделе будет предъявлены требования к разрабатываемому программному обеспечению, средства, использованные в процессе разработки для реализации поставленных задач, а также представлен листинг кода рпограммы. 
+	
+	\section{Требования к программному обеспечению}
+	\hspace{0.5cm}Программное обеспечение должно реализовывать линейную, конвейерную обработку данных. Пользователь должен иметь возможность вводить количество объектов, которые будут обрабатываться.
+	\section{Средства реализации}
+	\hspace{0.5cm}Для реализации программы был использован язык C++ ~\cite{CPP}. Для замера процессорного времени была использована функция rdtsc() из библиотеки stdrin.h.
+	
+	
+	\section{Листинг кода}
+	\hspace{0.5cm}В листинге \ref{code:conveyor} представлена реализация линейной и конвейерной обработки матриц.
+
+	\begin{lstlisting}[label=code:conveyor,caption=Реализация линейной и конвейерной обработки матрицы]
+	class Conveyor {
+	private:
+	size_t elementsCount;
+	size_t queuesCount;
+	size_t averegeTime;
+	const size_t delayTime = 3;
+	
+	size_t getCurTime() {
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+	}
+	
+	void doObjectLinearWork(matrixObject& curObject, size_t queueNum) {
+	size_t start = getCurTime();
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": START - " << start << endl;
+	
+	curObject.addUpMatrix(0, curObject.sizeMatrix/3);
+	
+	size_t end = getCurTime();
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": STOP -  " << end << endl;
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": TIME -  " << end - start << endl;
+	}
+	
+	void doObjectLinearWork2(matrixObject& curObject, size_t queueNum) {
+	size_t start = getCurTime();
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": START - " << start << endl;
+	
+	curObject.addUpMatrix(curObject.sizeMatrix / 3, 2 * curObject.sizeMatrix / 3);
+	
+	size_t end = getCurTime();
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": STOP -  " << end << endl;
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": TIME -  " << end - start << endl;
+	}
+	
+	void doObjectLinearWork3(matrixObject& curObject, size_t queueNum) {
+	size_t start = getCurTime();
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": START - " << start << endl;
+	
+	curObject.addUpMatrix(2 * curObject.sizeMatrix / 3, curObject.sizeMatrix);
+	
+	size_t end = getCurTime();
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": STOP -  " << end << endl;
+	//        cout << "Object #" << curObject.number <<  " from Queue #" << queueNum << ": TIME -  " << end - start << endl;
+	//resTimeFile
+	}
+	
+	public:
+	Conveyor(size_t elementsCount, size_t queuesCount, size_t milliseconds) : elementsCount(elementsCount), queuesCount(queuesCount), averegeTime(milliseconds) {}
+	
+	void executeLinear() {
+	
+	queue <matrixObject> objectsGenerator;
+	
+	for (size_t i = 0; i < elementsCount; ++i) {
+	objectsGenerator.push(matrixObject(1038, -20, 200, i + 1));
+	}
+	
+	vector <matrixObject> objectsPool;
+	
+	while (objectsPool.size() != elementsCount) {
+	matrixObject curObject = objectsGenerator.front();
+	objectsGenerator.pop();
+	
+	for (size_t i = 0; i < queuesCount; ++i) {
+	if (i == 0) {
+	doObjectLinearWork(curObject, i);
+	} else if (i == 1) {
+	doObjectLinearWork2(curObject, i);
+	} else if (i >= 2) {
+	doObjectLinearWork3(curObject, i);
+	}
+	
+	}
+	
+	objectsPool.push_back(curObject);
+	}
+	}
+	
+	private:
+	void doObjectParallelWork(matrixObject curObject, queue <matrixObject>& queue, size_t queueNum, mutex& mutex) {
+	size_t start = getCurTime();
+	
+	curObject.addUpMatrix(0, curObject.sizeMatrix/3);
+	
+	mutex.lock();
+	queue.push(curObject);
+	mutex.unlock();
+	
+	size_t end = getCurTime();
+	//        cout << "Object" << curObject.number <<  "; Queue " << queueNum << "; Time  " << end - start << endl;
+	objectTimeStayingAtQueue[queueNum + 1].push_back(-end);
+	}
+	
+	void doObjectParallelWork1(matrixObject curObject, queue <matrixObject>& queue, size_t queueNum, mutex& mutex) {
+	size_t start = getCurTime();
+	curObject.addUpMatrix(curObject.sizeMatrix / 3, 2 * curObject.sizeMatrix / 3);
+	
+	mutex.lock();
+	queue.push(curObject);
+	mutex.unlock();
+	
+	size_t end = getCurTime();
+	//        cout << "Object" << curObject.number <<  "; Queue " << queueNum << "; Time  " << end - start << endl;
+	objectTimeStayingAtQueue[queueNum + 1].push_back(-end);
+	}
+	
+	void doObjectParallelWork2(matrixObject curObject, queue <matrixObject>& queue, size_t queueNum, mutex& mutex) {
+	size_t start = getCurTime();
+	
+	curObject.addUpMatrix(2 * curObject.sizeMatrix / 3, curObject.sizeMatrix);
+	
+	mutex.lock();
+	queue.push(curObject);
+	mutex.unlock();
+	
+	size_t end = getCurTime();
+	//        cout << "Object" << curObject.number <<  "; Queue " << queueNum << "; Time  " << end - start << endl;
+	objectTimeStayingAtQueue[queueNum + 1].push_back(-end);
+	}
+	
+	public:
+	void executeParallel() {
+	
+	queue <matrixObject> objectsGenerator;
+	
+	for (size_t i = 0; i < elementsCount; ++i) {
+	objectsGenerator.push(matrixObject(1038, -20, 200, i + 1));
+	}
+	
+	vector <thread> threads(3);
+	vector <queue <matrixObject> > queues(3);
+	queue <matrixObject> objectsPool;
+	vector <mutex> mutexes(4);
+	size_t prevTime = getCurTime() - delayTime;
+	
+	while (objectsPool.size() != elementsCount) {
+	size_t curTime = getCurTime();
+	
+	if (!objectsGenerator.empty() && prevTime + delayTime < curTime) {
+	matrixObject curObject = objectsGenerator.front();
+	objectsGenerator.pop();
+	queues[0].push(curObject);
+	
+	prevTime = getCurTime();
+	
+	objectTimeStayingAtQueue[0].push_back(-prevTime);
+	}
+	
+	for (int i = 0; i < queuesCount; ++i) {
+	if (threads[i].joinable()) {
+	threads[i].join();
+	}
+	if (!queues[i].empty() && !threads[i].joinable()) {
+	mutexes[i].lock();
+	matrixObject curObject = queues[i].front();
+	queues[i].pop();
+	mutexes[i].unlock();
+	
+	size_t start = getCurTime();
+	objectTimeStayingAtQueue[i][objectTimeStayingAtQueue[i].size() - 1] += start;
+	
+	if (i == 0) {
+	threads[i] = thread(&Conveyor::doObjectParallelWork, this, curObject, ref(queues[i + 1]), i, ref(mutexes[i + 1]));
+	} else if (i == 1) {
+	threads[i] = thread(&Conveyor::doObjectParallelWork1, this, curObject, ref(queues[i + 1]), i, ref(mutexes[i + 1]));
+	} else if (i == queuesCount - 1) {
+	threads[i] = thread(&Conveyor::doObjectParallelWork2, this, curObject, ref(objectsPool), i, ref(mutexes[i + 1]));
+	
+	}
+	}
+	}
+	}
+	
+	for (int i = 0; i < queuesCount; ++i) {
+	if (threads[i].joinable()) {
+	threads[i].join();
+	}
+	}
+	}
+	
+	};
+	
+	int main(int argc, const char * argv[]) { // 1038
+	
+	int elementsCount = 100;
+	
+	Conveyor conveyor(elementsCount, 3, 5);
+	
+	auto start = std::chrono::steady_clock::now();
+	
+	conveyor.executeParallel();
+	//    conveyor.executeLinear();
+	
+	auto end = std::chrono::steady_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
+	cout << "\nPROGRAMM ENDED!\n";
+	
+	return 0;
+	}
+	\end{lstlisting}
+	
+	\section{Вывод}
+	\hspace{0.5cm}В данном разделе была рассмотрена конкретные реализации линейной и конвейерной обработки сложения матриц, необходимые для сравнительного анализа данных реализаций.
+			
+	\chapter{Экспериментальный раздел}
+	\hspace{0.5cm}В данном разделе приведены результаты работы двух различных реализаций обработки сложения матриц.
+	
+	\section{Сравнительный анализ}
+	\hspace{0.5cm}Все замеры проводились на процессоре 2.3 GHz Intel Core i5 с памятью 12 ГБ. В таблице \ref{fig:table} и на графике \ref{fig:graph}
+	представлены результаты измерения времени работы линейной и конвейерной реализации обработки сложения матриц.
+
+	
+
+	\begin{table}[ht!]
+		\label{fig:table}
+		\caption{Время работы различных методов обработки в миллисекундах}
+		\begin{center}
+			\pgfplotstabletypeset[
+			col sep=semicolon,
+			string type,
+			columns/Obj/.style={column name=Количество объектов, column type={|c}},
+			columns/Lin/.style={column name=Линейная обработка, column type={|c}},
+			columns/Conv/.style={column name=Конвейерная обработка, column type={|c|}},
+			every head row/.style={before row=\hline,after row=\hline},
+			every last row/.style={after row=\hline},
+			]{time.csv}
+		\end{center}
+	\end{table}
+
+	\begin{figure}[ht!]
+		\begin{tikzpicture}
+		\begin{axis}
+		[%title = График времени работы различных методов обработки в миллисекундах,
+		table/col sep = semicolon,
+		xlabel={Количество объектов},
+		ylabel={Время в мс},
+		legend pos=outer north east,
+		ymajorgrids=true,
+		grid style=dashed]
+		\addplot[color=red, mark=*] table[x={Obj}, y={Lin}] {time.csv};
+		\addplot[color=blue, mark=*] table[x={Obj}, y={Conv}] {time.csv};
+		\legend{Линейная обработка, Конвейерная обработка}
+		\end{axis}
+		\end{tikzpicture}
+		\label{fig:graph}
+		\caption{График времени работы различных методов обработки в миллисекундаха}
+	\end{figure}
+
+	Сравнение времени работы приведены для сложения квадратных матриц размера 1038х1038. Такая размерность матрицы была выбрана, из-за того, что реализация линейной и конвейерной обработки основывается на трех очередях, и чтобы загрузить каждую очередь одинаково, нужно выбрать размерность матрицы кратную трем. В нашем случае каждому этапу обработки достается сложение 346 элементов.
+	
+	
+	\section{Вывод}
+	\hspace{0.5cm}По данным эксперимента можно сделать вывод о том, что линейная обработка оказалась менеее эффективной, чем конвейерная. На небольшом количестве объектов эффективность конвейерной обработки не заметна. Это связано с тем, что значительную часть времени работы программы конвейерной обработки занимает инициализация потоков. Но на больших объемах входных данных(1000 обрабатываемых объектов) линейная обработка работает в 1.37 раза дольше. 
+
+	\chapter*{Заключение}
+	\addcontentsline{toc}{chapter}{Заключение}
+	\hspace{0.5cm}В ходе выполнения данной лабораторной работы были изучены принципы конвейерной обработки. Было проведено исследование работы алгоритма при различных параметрах, показавшее, что конвейерная обработка работает значительно быстрее, чем линейная обработка (в 1.37 раза быстрее
+	при количестве объектов, равном 1000).
+	
+	\newpage
+	
+	\begin{thebibliography}{}
+	\bibitem{devcpp} ISO/IEC JTC1 SC22 WG21 N 3690 «Programming Languages — C++»
+	[Электронный ресурс]. https://devdocs.io/cpp/
+	\bibitem{CPP} https://cppreference.com/ [Электронный ресурс]
+	\end{thebibliography}
+	\addcontentsline{toc}{chapter}{Литература}
+
+\end{document}
