@@ -14,6 +14,10 @@
 \DeclareGraphicsExtensions{.pdf,.png,.jpg,.svg}
 \usetikzlibrary{shapes, arrows}
 
+\usepackage{pgfplotstable}
+
+\renewcommand\contentsname{Содержание}
+
 \usepackage{geometry} 
 \geometry{left=3cm} 
 \geometry{right=1cm} 
@@ -216,7 +220,7 @@ columns=fullflexible }
 	На рисунке \ref{ris:aco} представлена обобщённая схема муравьиного алгоритма.
 	
 	\begin{figure}[ht!]
-		\center
+		\centering
 		\includegraphics[scale=0.5]{img/aco.jpg}
 		\caption{Схема муравьиного алгоритма}
 		\label{ris:aco}
@@ -238,8 +242,9 @@ columns=fullflexible }
    
     \section{Реализация алгоритмов}
     
-    В листингах \ref{code:ant_class}, \ref{code:ant_meth} \ref{code:aсo_class}, \ref{code:aco_init} и \ref{code:aco_alg} описана реализация муравьиного алгоритма.
-    \begin{lstlisting}[label=code:ant_class,caption=Класс муравья Ant]
+    В листингах \ref{code_ant_class}, \ref{code_ant_meth}, \ref{code_aco_class}, \ref{code_aco_init} и \ref{code_aco_meth} описана реализация муравьиного алгоритма.
+    
+    \begin{lstlisting}[label=code_ant_class,caption=Класс муравья Ant]
     class Ant
     {
     public:
@@ -257,29 +262,29 @@ columns=fullflexible }
     };
     \end{lstlisting}
     
-    \begin{lstlisting}[label=code:ant_meth,caption=Методы класса Ant]
+    \begin{lstlisting}[label=code_ant_meth,caption=Методы класса Ant]
     Ant::Ant(const size_t graph_size) : path_len(0)
     {
-	    for (size_t i = 0; i < graph_size; i++)
-	    {
-		    path.push_back(0);
-		    visited.push_back(false);
-	    }
+    	for (size_t i = 0; i < graph_size; i++)
+    	{
+    		path.push_back(0);
+    		visited.push_back(false);
+    	}
     }
     
     void Ant::visit_city(const size_t city, const size_t cur_path_len,
     	const size_t cur_path_dist)
     {
-	    path_len += cur_path_dist;
-	    path[cur_path_len] = city;
-	    visited[city] = true;
+    	path_len += cur_path_dist;
+    	path[cur_path_len] = city;
+    	visited[city] = true;
     }
     
     void Ant::clear_visits()
     {
-	    for (size_t i = 0; i < visited.size(); i++)
-	    	visited[i] = false;
-	    path_len = 0;
+    	for (size_t i = 0; i < visited.size(); i++)
+    		visited[i] = false;
+    	path_len = 0;
     }
     
     void Ant::make_default_path()
@@ -294,29 +299,29 @@ columns=fullflexible }
     }
     \end{lstlisting}
     
-    \begin{lstlisting}[label=code:aco_class,caption=Класс алгоритма ACO]
+    \begin{lstlisting}[label=code_aco_class,caption=Класс алгоритма ACO]
     class ACO
     {
     private:
-	    const std::vector<std::vector<int>> dist_graph;
-	    const size_t cities_count;
-	    
-	    std::vector<std::vector<double>> pher_graph;
-	    std::vector<std::vector<double>> desire_graph;
-	    
-	    std::vector <Ant> ants;
-	    size_t ants_count;
-	    
-	    std::vector<double> paths_probs;
-	    
-	    double alpha = 0.5;
-	    double rho = 0.5;
-	    size_t tMax = 100;
-	    double beta = 1 - alpha;
-	    
-	    const double Q = 5;
-	    const double ants_factor = 1;
-	    const double init_pher_value = 1;
+    	const std::vector<std::vector<int>> dist_graph;
+    	const size_t cities_count;
+    
+    	std::vector<std::vector<double>> pher_graph;
+    	std::vector<std::vector<double>> desire_graph;
+    
+    	std::vector <Ant> ants;
+    	size_t ants_count;
+    
+    	std::vector<double> paths_probs;
+    
+    	double alpha = 0.5;
+    	double rho = 0.5;
+    	size_t tMax = 100;
+    	double beta = 1 - alpha;
+    
+   	 	const double Q = 5;
+    	const double ants_factor = 1;
+    	const double init_pher_value = 1;
     
     public:
     	size_t min_len = 0;
@@ -328,7 +333,7 @@ columns=fullflexible }
     	void change_params(double alpha, double rho, size_t tMax);
     
     private:
-	    void make_default_state();
+    	void make_default_state();
 	    void init_ants();
 	    void init_pher_graph();
 	    void pave_ants_paths();
@@ -341,7 +346,7 @@ columns=fullflexible }
     };
     \end{lstlisting}
     
-    \begin{lstlisting}[label=code:aco_init,caption=Методы инициализации и запуск алгоритма]
+    \begin{lstlisting}[label=code_aco_init,caption=Методы инициализации и запуск алгоритма]
     ACO::ACO(const Graph<int>& graph) :
     	dist_graph(graph.graph), cities_count(graph.size)
     {
@@ -360,21 +365,21 @@ columns=fullflexible }
 	    	std::vector<double> line;
 	    	for (size_t j = 0; j < cities_count; j++)
 	    		line.push_back(dist_graph[i][j] == 0 ? 0 : 
-	    			1.0 / dist_graph[i][j]);
-	   		desire_graph.push_back(line);
+	   				1.0 / dist_graph[i][j]);
+	    	desire_graph.push_back(line);
 	    }
 	    
 	    // init ants_count
-	    ants_count = cities_count * ants_factor;
+		ants_count = cities_count * ants_factor;
 	    for (size_t i = 0; i < ants_count; i++)
 	    {
 	    	Ant ant(cities_count);
 	    	ants.push_back(ant);
 	    }
-	    
-	    // init paths_probs
-	    for (size_t i = 0; i < cities_count; i++)
-	    	paths_probs.push_back(0);
+    
+    	// init paths_probs
+    	for (size_t i = 0; i < cities_count; i++)
+    		paths_probs.push_back(0);
     }
     
     void ACO::execute()
@@ -385,25 +390,25 @@ columns=fullflexible }
 	    
 	    for (size_t i = 0; i < tMax; i++)
 	    {
-	    	pave_ants_paths();
-	    	update_min_path();
-	    	update_pheromones();
-	    	make_default_ants();
+		    pave_ants_paths();
+		    update_min_path();
+		    update_pheromones();
+		    make_default_ants();
 	    }
     }
     
     void ACO::change_params(double alpha, double rho, size_t tMax)
     {
-    	this->alpha = alpha;
-    	this->beta = 1 - alpha;
-    	this->rho = rho;
-    	this->tMax = tMax;
+	    this->alpha = alpha;
+	    this->beta = 1 - alpha;
+	    this->rho = rho;
+	    this->tMax = tMax;
     }
     
     void ACO::make_default_state()
     {
-    	min_len = 0;
-    	min_path.clear();
+	    min_len = 0;
+	    min_path.clear();
     }
     
     void ACO::init_ants()
@@ -417,13 +422,13 @@ columns=fullflexible }
     
     void ACO::init_pher_graph()
     {
-    for (size_t i = 0; i < cities_count; i++)
-	    for (size_t j = 0; j < cities_count; j++)
-	    	pher_graph[i][j] = init_pher_value;
+	    for (size_t i = 0; i < cities_count; i++)
+	    	for (size_t j = 0; j < cities_count; j++)
+	    		pher_graph[i][j] = init_pher_value;
     }
     \end{lstlisting}
     
-    \begin{lstlisting}[label=code:aсo_alg,caption=Основные функции муравьиного алгоритма]
+    \begin{lstlisting}[label=code_aco_meth,caption=Основные функции муравьиного алгоритма]
     void ACO::pave_ants_paths()
     {
 	    for (size_t i = 0; i < cities_count - 1; i++)
@@ -456,33 +461,33 @@ columns=fullflexible }
 	    	double pher_factor = pow(pher_graph[cur_city][i], alpha);
 	    	double desire_factor = pow(desire_graph[cur_city][i], beta);
 	    	sumP += pher_factor * desire_factor;
-	    }
-	    
-	    for (size_t i = 0; i < cities_count; i++)
-	    {
-	    	if (i == cur_city || ant.is_visited(i))
-	    		paths_probs[i] = 0;
-	    	else
-	    	{
-	    		double pher_factor = pow(pher_graph[cur_city][i], alpha);
-	    		double desire_factor = pow(desire_graph[cur_city][i], beta);
-	    		paths_probs[i] = pher_factor * desire_factor / sumP;
-	    	}
-	    }
-	    
-	    return select_next_city();
+    	}
+    
+    	for (size_t i = 0; i < cities_count; i++)
+    	{
+    		if (i == cur_city || ant.is_visited(i))
+    			paths_probs[i] = 0;
+    		else
+		    {
+		    	double pher_factor = pow(pher_graph[cur_city][i], alpha);
+		    	double desire_factor = pow(desire_graph[cur_city][i], beta);
+		    	paths_probs[i] = pher_factor * desire_factor / sumP;
+		    }
+    	}
+    
+    	return select_next_city();
     }
     
     void ACO::update_min_path()
     {
 	    for (size_t i = 0; i < ants_count; i++)
 	    {
-		    const size_t cur_len = ants[i].path_len;
-		    if (cur_len < min_len || min_len == 0)
-		    {
-		    	min_len = cur_len;
-		    	min_path = ants[i].path;
-		    }
+	    	const size_t cur_len = ants[i].path_len;
+	    	if (cur_len < min_len || min_len == 0)
+	    	{
+	    		min_len = cur_len;
+	    		min_path = ants[i].path;
+	    	}
 	    }
     }
     
@@ -494,12 +499,12 @@ columns=fullflexible }
 	    
 	    for (size_t i = 0; i < ants_count; i++)
 	    {
-	    	Ant& ant = ants[i];
-	    
-	    	double dt = Q / ant.path_len;
-	    	for (size_t j = 0; j < cities_count - 1; j++)
-	    		pher_graph[ant.path[j]][ant.path[j + 1]] += dt;
-	    	pher_graph[ant.path[cities_count - 1]][ant.path[0]] += dt;
+		    Ant& ant = ants[i];
+		    
+		    double dt = Q / ant.path_len;
+		    for (size_t j = 0; j < cities_count - 1; j++)
+		    	pher_graph[ant.path[j]][ant.path[j + 1]] += dt;
+		    pher_graph[ant.path[cities_count - 1]][ant.path[0]] += dt;
 	    }
     }
     
@@ -539,793 +544,46 @@ columns=fullflexible }
     \end{lstlisting}
     
     \section{Вывод}
-    \hspace{0.5cm}В данном разделе была рассмотрена конкретная реализация на языке C++ муравьиного алгоритма.
+    
+    В данном разделе была рассмотрена конкретная реализация на языке C++ муравьиного алгоритма.
     
     \chapter{Экспериментальная часть}
-    \hspace{0.5cm}В данном разделе будет сравнительный анализ муравьиного алгоритма в зависимости от выбранных параметров на основе экспериментальных данных.
+    
+    В данном разделе будет проведен сравнительный анализ работы реализованного муравьинного алгоритма при различных параметрах.
+    
     \section {Сравненительный анализ}
-    \hspace{0.5cm}Для экспериментов использовалась матрица расстояний 10x10, изображенная в таблице \ref{tab:matr_dist}. Количество повторов каждого эксперимента = 50. Результат одного эксперимента рассчитывается как средний из результатов проведенных испытаний с одинаковыми входными данными.
     
-    \begin{table}[ht!]
-    \centering
-    	\begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | }
-    		\hline 0 & 4 & 5 & 7 & 8 & 9 & 2 & 3 & 4 & 10 \\
-    		\hline 4 & 0 & 3 & 2 & 6 & 7 & 2 & 5 & 9 & 3 \\
-    		\hline 5 & 3 & 0 & 9 & 8 & 7 & 6 & 7 & 8 & 9 \\
-    		\hline 7 & 2 & 9 & 0 & 4 & 1 & 8 & 5 & 6 & 6 \\
-    		\hline 8 & 6 & 8 & 4 & 0 & 7 & 4 & 2 & 1 & 8 \\
-    		\hline 9 & 7 & 7 & 1 & 7 & 0 & 8 & 3 & 2 & 1 \\
-    		\hline 2 & 2 & 6 & 8 & 4 & 8 & 0 & 9 & 9 & 9 \\
-    		\hline 3 & 5 & 7 & 5 & 2 & 3 & 9 & 0 & 9 & 9 \\
-    		\hline 4 & 9 & 8 & 6 & 1 & 2 & 9 & 9 & 0 & 9 \\
-    		\hline 10 & 3 & 9 & 6 & 8 & 1 & 9 & 9 & 9 & 0 \\
-    		\hline
-    	\end{tabular}
-    	\label{tab:matr_dist}
-    		\caption{Матрица расстояний между 10 городами.}
-    \end{table} 
-    
-    Было проведено несколько опытов. Первый проводился с 50 муравьями, коэффициентом распыления 0.1, без элитных муравьев и в 200 поколений. Замерялось, как влияют коэффициенты "жадности"($\alpha$) и "стадности"($\beta$)). По умолчанию $\alpha$ = 0, а $\beta$ = 1. Затем $\alpha$ увеличивается на 0.05 до 1, а $\beta$ понижается до 0 с тем же шагом 0.05. Результаты занесены в таблицу \ref{tab:alpha_beta}. Она состоит из 4-ёх столбцов: корректность(не при всех коэффициентах получался правильный ответ), $\alpha$ \text{,} $\beta$ \text{и скорость работы}. Как видно из рисунков \ref{grf:alpha_beta} и \ref{grf:alpha_right} наиболее быстрым и в то же время правильным решением является использование коэффициентов $\alpha$ = 0.7, $\beta$ = 0.3, хотя разница по сравнению с другими значениями не столь велика и  при других значениях прочих коэффициентов - количества обычных и элитных муравьев или поколений, а также коэффициента испарения - можно получить другие результаты.
+    Для сравнения работы муравьиного алгоритма при различных параметрах замеры выполнялись на графе из 10 узлов. Параметры $\alpha$ и $\eta$ варьируются от 0 до 1 с шагом 0.25, а количество итераций tMax - от 100 до 200 с шагом 100. Результаты эксперимента представлены в таблице \ref{tab:res}. Результат работы алгоритма перебором - 12.
+
+	\begin{table}[ht!]
+		\caption{Сравнение работы муравьиного алгоритма при различных параметрах}
+		\label{tab:res}
+		\begin{center}
+			\pgfplotstabletypeset[
+			col sep=semicolon,
+			string type,
+			columns/Alpha/.style={column name=$\alpha$, column type={|c}},
+			columns/Rho/.style={column name=$\rho$, column type={|c}},
+			columns/tMax/.style={column name=$T_{max}$, column type={|c}},
+			columns/MinPath/.style={column name=Мин. путь, column type={|c|}},
+			every head row/.style={before row=\hline,after row=\hline},
+			every last row/.style={after row=\hline},
+			]{result.csv}
+		\end{center}
+	\end{table}
     
     \newpage
-    
-    \begin{table}[ht!]
-    	\centering
-    	\begin{tabular}{ | c | c | c | c | }
-    		\hline
-    		Корректность   &  $\alpha$   &  $\beta$  &  время работы \\
-    		(от 0 до 1) & (от 0 до 1) & (от 0 до 1) & (в тиках) \\ \hline  
-    		0.93 & 0.00 & 1.00 &  552793632 \\
-    		0.90 & 0.05 & 0.95 &  671431366 \\
-    		0.93 & 0.10 & 0.90 &  677701845 \\
-    		1.00 & 0.15 & 0.85 &  688931058 \\
-    		1.00 & 0.20 & 0.80 &  672681069 \\
-    		1.00 & 0.25 & 0.75 &  665585706 \\
-    		0.93 & 0.30 & 0.70 &  678160444 \\
-    		1.00 & 0.35 & 0.65 &  685878101 \\
-    		1.00 & 0.40 & 0.60 &  772171866 \\
-    		0.97 & 0.45 & 0.55 &  650128055 \\
-    		0.97 & 0.50 & 0.50 &  641031277 \\
-    		1.00 & 0.55 & 0.45 &  664468673 \\
-    		1.00 & 0.60 & 0.40 &  643548411 \\
-    		1.00 & 0.65 & 0.35 &  645030182 \\
-    		1.00 & 0.70 & 0.30 &  641664003 \\
-    		1.00 & 0.75 & 0.25 &  647894697 \\
-    		1.00 & 0.80 & 0.20 &  654792064 \\
-    		1.00 & 0.85 & 0.15 &  670107572 \\
-    		0.93 & 0.90 & 0.10 &  675516409 \\
-    		1.00 & 0.95 & 0.05 &  663381617 \\
-    		1.00 & 1.00 & 0.00 &  718245238 \\
-    		\hline
-    	\end{tabular}
-    	\label{tab:alpha_beta}
-    	\caption{Зависимость времени и корректности решения от коэффициентов $\alpha$ и $\beta$.}
-    \end{table} 
-    
-    \newpage  
-    
-    \begin{figure}[ht!]
-    	\centering
-    	\begin{tikzpicture}
-    	\begin{axis}[
-    	xlabel={$\alpha$},
-    	ylabel={Время в тиках},
-    	ymin = 630000000, ymax = 830000000,
-    	legend pos=north west,
-    	ymajorgrids=true,
-    	grid style=dashed,
-    	]
-    	\legend{ 
-    		Зависимость времени работы от $\alpha$
-    	}
-    	\addplot[
-    	color=red,
-    	mark=square,
-    	]
-    	coordinates {
-    		(0.05,671431366)
-    		(0.10,677701845)
-    		(0.15,688931058)
-    		(0.20,672681069)
-    		(0.25,665585706)
-    		(0.3,678160444)
-    		(0.35,685878101)
-    		(0.4,772171866)
-    		(0.45,650128055)
-    		(0.5,641031277)
-    		(0.55,664468673)
-    		(0.60,643548411)
-    		(0.65,645030182)
-    		(0.70,641664003)
-    		(0.75,647894697)
-    		(0.8,654792064)
-    		(0.85,670107572)
-    		(0.9,675516409)
-    		(0.95,663381617)
-    		(1,718245238)
-    	};
-    	\end{axis}
-    	\end{tikzpicture}
-    	
-    	\begin{tikzpicture}
-    	\begin{axis}[
-    	xlabel={$\beta$},
-    	ylabel={Время в тиках},
-    	ymin = 630000000, ymax = 830000000,
-    	legend pos=north west,
-    	ymajorgrids=true,
-    	grid style=dashed,
-    	]
-    	\legend{ 
-    		Зависимость времени работы от $\beta$
-    	}
-    	\addplot[
-    	color=blue,
-    	mark=square,
-    	]
-    	coordinates {
-    		(0.95,671431366)
-    		(0.90,677701845)
-    		(0.85,688931058)
-    		(0.80,672681069)
-    		(0.75,665585706)
-    		(0.7,678160444)
-    		(0.65,685878101)
-    		(0.6,772171866)
-    		(0.55,650128055)
-    		(0.5,641031277)
-    		(0.45,664468673)
-    		(0.40,643548411)
-    		(0.35,645030182)
-    		(0.30,641664003)
-    		(0.25,647894697)
-    		(0.2,654792064)
-    		(0.15,670107572)
-    		(0.1,675516409)
-    		(0.05,663381617)
-    		(0,718245238)
-    	};
-    	\end{axis}
-    	\end{tikzpicture}
-    	\caption{График зависимости времени работы от $\alpha$}
-    	\label{grf:alpha_beta}
-    	\end{figure}
-    	
-    	\newpage  
-    	\begin{figure}[ht!]
-    		\centering
-    		\begin{tikzpicture}
-    		\begin{axis}[
-    		xlabel={$\alpha$},
-    		ylabel={Корректность},
-    		ymin = 0.8, ymax = 1.1,
-    		legend pos=north west,
-    		ymajorgrids=true,
-    		grid style=dashed,
-    		]
-    		\legend{ 
-    			Зависимость корректности от $\alpha$
-    		}
-    		\addplot[
-    		color=red,
-    		mark=square,
-    		]
-    		coordinates {
-    			(0.05, 0.90)
-    			(0.10, 0.93)
-    			(0.15, 1)
-    			(0.20, 1)
-    			(0.25, 1)
-    			(0.3, 0.93)
-    			(0.35, 1)
-    			(0.4, 1)
-    			(0.45, 0.97)
-    			(0.5, 0.97)
-    			(0.55, 1)
-    			(0.60, 1)
-    			(0.65, 1)
-    			(0.70, 1)
-    			(0.75, 1)
-    			(0.8, 1)
-    			(0.85, 1)
-    			(0.9, 0.93)
-    			(0.95, 1)
-    			(1, 1)
-    		};
-    		\end{axis}
-    		\end{tikzpicture}
-    		
-    		\caption{График зависимости корректности ответа от $\alpha$.}
-    		\label{grf:alpha_right}
-    		\end{figure}
-    	
-    	\begin{figure}[ht!]
-    		\centering
-    		\begin{tikzpicture}
-    		\begin{axis}[
-    		xlabel={$\beta$},
-    		ylabel={Корректность},
-    		ymin = 0.8, ymax = 1.1,
-    		legend pos=north west,
-    		ymajorgrids=true,
-    		grid style=dashed,
-    		]
-    		\legend{ 
-    			Зависимость корректности от $\beta$
-    		}
-    		\addplot[
-    		color=blue,
-    		mark=square,
-    		]
-    		coordinates {
-    			(0.95, 0.90)
-    			(0.90, 0.93)
-    			(0.85, 1)
-    			(0.80, 1)
-    			(0.75, 1)
-    			(0.7, 0.93)
-    			(0.65, 1)
-    			(0.6, 1)
-    			(0.55, 0.97)
-    			(0.5, 0.97)
-    			(0.45, 1)
-    			(0.4, 1)
-    			(0.35, 1)
-    			(0.3, 1)
-    			(0.25, 1)
-    			(0.2, 1)
-    			(0.15, 1)
-    			(0.1, 0.93)
-    			(0.05, 1)
-    			(0, 1)
-    		};
-    		\end{axis}
-    		\end{tikzpicture}
-    		
-    		\caption{График зависимости корректности ответа от $\beta$.}
-    		\label{grf:beta_right}
-    	\end{figure}
-    		
-    		
-    		\newpage 
-    		
-    		Теперь необходимо проанализировать зависимость от количества муравьев и количества поколений. $\alpha$ и $\beta$ теперь будут константами. Количество муравьев варьируется от 10 до 80 с шагом сначала 10, потом 20, 40 и т.д., количество поколений от 20 до 650 с шагом сначала 10, потом 20, 40 и т.д. Результаты замеров сведены в таблицу \ref{tab:ants_time}. Она также состоит из 4 столбцов. Первый столбец вновь означает корректность, а четвертый - время работы. А второй и третий - 'количество муравьев' и 'количество замеров' соответственно. Рисунок \ref{grf:ants_time} подтверждает формулу \ref{form:complex}  расчёта трудоёмкости муравьиного алгоритма. Более интересен рисунок \ref{grf:ants_right}, который показывает, что при 20-и поколениях нет ни одного правильного ответа, при поколениях от 30 до 50 правильные ответы появляются только если взять более 40 муравьев. От 90 до 330 правильный ответ выводится уже при 20 муравьях, а если поколений 650, то и при 10 муравьях ответ будет правильный. Напомню, что обход происходит по 10 городам.
-    		\newpage
-    		\begin{table}[ht!]
-    			\centering
-    			\begin{tabular}{ | c | c | c | c | }
-    				\hline
-    				Корректность   &  Количество муравьев   &  Количество поколений  &  время работы \\
-    				(от 0 до 1) & (в штуках) & (в штуках) & (в тиках) \\ \hline  
-    				0.93 &  10 &  20 &   11123431 \\
-    				0.93 & 20 &  20 &   23200249 \\
-    				0.93 & 40 &  20 &   45064059 \\
-    				0.93 & 80 &  20 &   89106562 \\
-    				0.93 & 10 &  30 &   15277990 \\
-    				0.93 & 20 &  30 &   30652063 \\
-    				1.00 & 40 &  30 &   62648153 \\
-    				1.00 & 80 &  30 &  132719349 \\
-    				0.93 & 10 &  50 &   27005527 \\
-    				0.93 & 20 &  50 &   52959829 \\
-    				1.00 & 40 &  50 &  109892963 \\
-    				1.00 & 80 &  50 &  211573758 \\
-    				0.93 & 10 &  90 &   47740420 \\
-    				1.00 & 20 &  90 &   94700006 \\
-    				1.00 & 40 &  90 &  199694544 \\
-    				1.00 & 80 &  90 &  387066569 \\
-    				0.93 & 10 & 170 &   90954856 \\
-    				1.00 & 20 & 170 &  181294108 \\
-    				1.00 & 40 & 170 &  363646870 \\
-    				1.00 & 80 & 170 &  729324525 \\
-    				0.93 & 10 & 330 &  174772204 \\
-    				1.00 & 20 & 330 &  344393887 \\
-    				1.00 & 40 & 330 &  712391169 \\
-    				1.00 & 80 & 330 & 1457121092 \\
-    				1.00 & 10 & 650 &  348804549 \\
-    				1.00 & 20 & 650 &  719097981 \\
-    				1.00 & 40 & 650 & 1431310052 \\
-    				1.00 & 80 & 650 & 2878805475 \\
-    				\hline
-    			\end{tabular}
-    			\label{tab:ants_time}
-    			\caption{Зависимость времени и корректности решения от количества муравьев и поколений.}
-    		\end{table} 
-    		
-    		\newpage  
-    		\begin{figure}[ht!]
-    			\centering
-    		\begin{tikzpicture}
-    			\begin{axis}[
-    			xlabel={Количество поколений},
-    			ylabel={Время в тиках},
-    			ymin = 0, ymax = 278805475,
-    			legend pos=north west,
-    			ymajorgrids=true,
-    			grid style=dashed,
-    			]
-    			\legend{ 
-    				Количество муравьев:10,
-    				Количество муравьев:20,
-    				Количество муравьев:40,
-    				Количество муравьев:80
-    			}
-    			\addplot[
-    			color=blue,
-    			mark=square,
-    			]
-    			coordinates {
-    				(20, 11123431)
-    				(30, 15277990)
-    				(50, 27005527)
-    			};
-    			\addplot[
-    			color=green,
-    			mark=square,
-    			]
-    			coordinates {
-    				(20, 23200249)
-    				(30, 30652063)
-    				(50, 52959829)
-    			};
-    			\addplot[
-    			color=orange,
-    			mark=square,
-    			]
-    			coordinates {
-    				(20, 45064059)
-    				(30, 62648153)
-    				(50, 109892963)
-    			};
-    			\addplot[
-    			color=red,
-    			mark=square,
-    			]
-    			coordinates {
-    				(20, 89106562)
-    				(30, 132719349)
-    				(50, 211573758)
-    			};
-    			\end{axis}
-    		\end{tikzpicture}
-    		
-    		
-    		\begin{tikzpicture}
-    		\begin{axis}[
-    		xlabel={Количество поколений},
-    		ylabel={Время в тиках},
-    		ymin = 0, ymax = 3078805475,
-    		legend pos=north west,
-    		ymajorgrids=true,
-    		grid style=dashed,
-    		]
-    		\legend{ 
-    			Количество муравьев:10,
-    			Количество муравьев:20,
-    			Количество муравьев:40,
-    			Количество муравьев:80
-    		}
-    		\addplot[
-    		color=blue,
-    		mark=square,
-    		]
-    		coordinates {
-    			(90, 47740420)
-    			(170, 90954856)
-    			(330, 174772204)
-    			(650, 348804549)
-    		};
-    		\addplot[
-    		color=green,
-    		mark=square,
-    		]
-    		coordinates {
-    			(90, 94700006)
-    			(170, 181294108)
-    			(330, 344393887)
-    			(650, 719097981)
-    		};
-    		\addplot[
-    		color=orange,
-    		mark=square,
-    		]
-    		coordinates {
-    			(90, 199694544)
-    			(170, 363646870)
-    			(330, 712391169)
-    			(650, 1431310052)
-    		};
-    		\addplot[
-    		color=red,
-    		mark=square,
-    		]
-    		coordinates {
-    			(90, 387066569)
-    			(170, 729324525)
-    			(330, 1457121092)
-    			(650, 2878805475)
-    		};
-    		\end{axis}
-    		\end{tikzpicture}
-    		
-    		\caption{График зависимости времени работы алгоритма от количества муравьев и поколений.}
-    		\label{grf:ants_time}
-    	\end{figure}
-    			
-    	\begin{figure}[ht!]
-    		\centering
-    		\begin{tikzpicture}
-    		\begin{axis}[
-    		xlabel={Количество муравьев},
-    		ylabel={Корректность ответа},
-    		ymin = 0.8, ymax = 1.6,
-    		legend pos=north west,
-    		ymajorgrids=true,
-    		grid style=dashed,
-    		]
-    		\legend{ 
-    			Количество поколений:20,
-    			Количество поколений:30,
-    			Количество поколений:50,
-    			Количество поколений:90,
-    			Количество поколений:170,
-    			Количество поколений:330,
-    			Количество поколений:650
-    		}
-    		\addplot[
-    		color=blue,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 0.93)
-    			(20, 0.93)
-    			(40, 0.93)
-    			(80, 0.93)
-    		};
-    		\addplot[
-    		color=green,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 0.93)
-    			(20, 0.93)
-    			(40, 1)
-    			(80, 1)
-    		};
-    		\addplot[
-    		color=brown,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 0.93)
-    			(20, 0.93)
-    			(40, 1)
-    			(80, 1)
-    		};
-    		\addplot[
-    		color=black,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 0.93)
-    			(20, 1)
-    			(40, 1)
-    			(80, 1)
-    		};
-    		\addplot[
-    		color=orange,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 0.93)
-    			(20, 1)
-    			(40, 1)
-    			(80, 1)
-    		};
-    		\addplot[
-    		color=red,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 0.93)
-    			(20, 1)
-    			(40, 1)
-    			(80, 1)
-    		};
-    		\addplot[
-    		color=yellow,
-    		mark=square,
-    		]
-    		coordinates {
-    			(10, 1)
-    			(20, 1)
-    			(40, 1)
-    			(80, 1)
-    		};
-    		\end{axis}
-    		\end{tikzpicture}
-    		\caption{График зависимости корректности работы алгоритма от количества муравьев и поколений.}
-    		\label{grf:ants_right}
-    	\end{figure}
-    	
-    		Теперь необходимо проверить, как сильно изменится скорость и корректность, если начать менять выделяемое муравьем количество феромонов и добавить элитных с повышенным количеством. Количество выделяемого феромона у обычного муравья будет варьироваться от 1 до 5 с шагом 2. У элитного всегда 10. Количество элитных изменяется от 50 до 1. Суммарное количество муравьев всегда равно 50. Процент испарения 0.1. Результаты работы приведены в таблице \ref{tab:ants_elite}, где колчиество феромонов и количество элитных муравьев это 2 и 3 столбец. 1 и 4 как всегда корректность и затраченное время.  Если посмотреть на рисунок \ref{grf:elite_time}, то можно заметить, что лучшие результаты достигаются, когда обычный муравей выделяет мало феромона(по сравнению с элитными) и при этом среди 50 муравьев 3 или 7 являются элитными(примерно 7 и 14 процентов от общего количества). Когда элитных муравьев слишком много или обычные муравьи выделяют феромона почти как элитные, то все преимущество наличия элитных муравьев исчезает, поскольку все муравьи примерно одинаковы. На рисунке \ref{grf:elite_right} продемонстрирована зависимость корректности ответа от количества элитных муравьев и феромонов.
-    		
-    		\newpage
-    		\begin{table}[ht!]
-    			\center
-    			\begin{tabular}{ | c | c | c | c | }
-    				\hline
-    				Корректность   &  Количество феромона, выделяемое   &  Количество элитных  &  скорость работы \\
-    				(от 0 до 1) & обычным муравьем(в штуках) & муравьев(в штуках) & (в тиках) \\ \hline  
-    				1.00 &   1 &   1 &  559773514 \\
-    				1.00 &   3 &   1 &  549665664 \\
-    				1.00 &   5 &   1 &  599716769 \\
-    				1.00 &   1 &   3 &  544924989 \\
-    				1.00 &   3 &   3 &  573101663 \\
-    				0.93 &   5 &   3 &  579858919 \\
-    				1.00 &   1 &   7 &  539835456 \\
-    				1.00 &   3 &   7 &  579842625 \\
-    				0.90 &   5 &   7 &  574067559 \\
-    				0.93 &   1 &  16 &  579406567 \\
-    				0.93 &   3 &  16 &  576663013 \\
-    				0.90 &   5 &  16 &  574714519 \\
-    				0.90 &   1 &  50 &  572369419 \\
-    				0.90 &   3 &  50 &  572640859 \\
-    				1.00 &   5 &  50 &  576265339 \\
-    				\hline
-    			\end{tabular}
-    			\label{tab:ants_elite}
-    			\caption{Зависимость скорости и корректности решения от количества элитных муравьев и выделяемого феромона обычным муравьем.}
-    		\end{table} 
-    		
-    		\newpage  
-    		\begin{figure}[ht!]
-    			\centering
-    			\begin{tikzpicture}
-    			\begin{axis}[
-    			xlabel={Количество феромонов},
-    			ylabel={Время в тиках},
-    			ymin = 535003514, ymax = 629773514,
-    			legend pos=north west,
-    			ymajorgrids=true,
-    			grid style=dashed,
-    			]
-    			\legend{ 
-    				количество элитных:1,
-    				количество элитных:3,
-    				количество элитных:7,
-    				количество элитных:16,
-    				количество элитных:50
-    			}
-    			\addplot[
-    			color=blue,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 559773514)
-    				(3, 549665664)
-    				(5, 599716769)
-    			};
-    			\addplot[
-    			color=green,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 544924989)
-    				(3, 573101663)
-    				(5, 573101663)
-    			};
-    			\addplot[
-    			color=brown,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 539835456)
-    				(3, 579842625)
-    				(5, 574067559)
-    			};
-    			\addplot[
-    			color=red,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 579406567)
-    				(3, 576663013)
-    				(5, 574714519)
-    			};
-    			\addplot[
-    			color=orange,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 572369419)
-    				(3, 572640859)
-    				(5, 576265339)
-    			};
-    			\end{axis}
-    			\end{tikzpicture}
-    		\caption{График зависимости времени работы алгоритма от количества элитынх муравьев и феромонов.}
-    		\label{grf:elite_time}
-    		\end{figure}
-    		
-    		\begin{figure}[ht!]
-    			\centering
-    			\begin{tikzpicture}
-    			\begin{axis}[
-    			xlabel={Количество феромонов},
-    			ylabel={Корректность ответа},
-    			ymin = 0.8, ymax = 1.2,
-    			legend pos=north west,
-    			ymajorgrids=true,
-    			grid style=dashed,
-    			]
-    			\legend{ 
-    				количество элитных:1,
-    				количество элитных:3,
-    				количество элитных:7,
-    				количество элитных:16,
-    				количество элитных:50
-    			}
-    			\addplot[
-    			color=blue,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 1)
-    				(3, 1)
-    				(5, 1)
-    			};
-    			\addplot[
-    			color=green,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 1)
-    				(3, 1)
-    				(5, 0.93)
-    			};
-    			\addplot[
-    			color=brown,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 1)
-    				(3, 1)
-    				(5, 0.9)
-    			};
-    			\addplot[
-    			color=red,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 0.93)
-    				(3, 0.93)
-    				(5, 0.9)
-    			};
-    			\addplot[
-    			color=orange,
-    			mark=square,
-    			]
-    			coordinates {
-    				(1, 0.9)
-    				(3, 0.9)
-    				(5, 1)
-    			};
-    			\end{axis}
-    			\end{tikzpicture}
-    			\caption{График зависимости корректности работы от количества элитных муравьев и феромонов обычного муравья.}
-    			\label{grf:elite_right}
-    		\end{figure}
-    	
-    		
-    		Теперь необходимо измерить влияние процента испарения феромона. Поскольку оно привязано к количеству феромона, надо варьировать $\beta$ от 2 до 6, при этом $\alpha$ = 1. Процент испарения изменяется от 0 до 0.9 с шагом 0.1. Элитных муравьев необходимо исключить, количество феромонов, переносимое одним муравьем, установить в единицу. Чтобы увеличить количесво некорректных ответов, надо задать малое количество муравьев и поколений - 30 и 20 соответственно. Полученные результаты занесены в таблицу \ref{tab:eva}, которая состоит из следующих стобцов: корректность, $\beta$ (можно рассматривать как отношение $\beta$ к $\alpha$), коэффициент испарения, время работы. Из рисунка \ref{grf:eva_time} видно, что наиболее хорошим значением коэффициента испарения является 0.1, но при нем алгоритм работает неправильно, когда $\beta$=2. Наиболее общий результат наблюдается при коэффициенте испарения, равным 0.4, все три замера дают почти идентичную скорость работы, причем для $\beta$=2 и $\beta$=6 наибольшую.
-    		
-    		\newpage
-    		\begin{table}[ht!]
-    			\centering
-    			\begin{tabular}{ | c | c | c | c | }
-    				\hline
-    				корректность   &  {$\beta$}  &  коэффициент испарения  &  скорость работы \\
-    				(от 0 до 1) &   & (от 0 до 1) & (в тиках) \\ \hline  
-    				0.93 &  2 & 0.00 &   32618353 \\
-    				1.00 &  4 & 0.00 &   33330212 \\
-    				1.00 &  6 & 0.00 &   32412299 \\
-    				0.93 &  2 & 0.10 &   32272986 \\
-    				1.00 &  4 & 0.10 &   31939012 \\
-    				0.93 &  6 & 0.10 &   32491167 \\
-    				1.00 &  2 & 0.20 &   32825864 \\
-    				1.00 &  4 & 0.20 &   32374316 \\
-    				0.90 &  6 & 0.20 &   31968868 \\
-    				0.93 &  2 & 0.30 &   31947558 \\
-    				1.00 &  4 & 0.30 &   32982935 \\
-    				0.90 &  6 & 0.30 &   32648815 \\
-    				1.00 &  2 & 0.40 &   32345549 \\
-    				1.00 &  4 & 0.40 &   32227624 \\
-    				1.00 &  6 & 0.40 &   32410232 \\
-    				1.00 &  2 & 0.50 &   32434753 \\
-    				0.93 &  4 & 0.50 &   33008954 \\
-    				1.00 &  6 & 0.50 &   32432297 \\
-    				0.93 &  2 & 0.60 &   33403780 \\
-    				0.93 &  4 & 0.60 &   32512934 \\
-    				1.00 &  6 & 0.60 &   32638150 \\
-    				0.93 &  2 & 0.70 &   32806587 \\
-    				1.00 &  4 & 0.70 &   33044899 \\
-    				0.93 &  6 & 0.70 &   33249484 \\
-    				1.00 &  2 & 0.80 &   33009915 \\
-    				0.93 &  4 & 0.80 &   33375704 \\
-    				0.93 &  6 & 0.80 &   33231976 \\
-    				1.00 &  2 & 0.90 &   33298340 \\
-    				0.93 &  4 & 0.90 &   33041315 \\
-    				1.00 &  6 & 0.90 &   33014037 \\
-    				\hline
-    			\end{tabular}
-    			\label{tab:eva}
-    			\caption{Зависимость скорости и корректности решения от испарения и влияния количества феромонов}
-    			\end{table}
-    			\newpage
-    				
-  				\begin{figure}[ht!]
-  					\centering
-  					\begin{tikzpicture}
-  					\begin{axis}[
-  					xlabel={Коэффициент испарения},
-  					ylabel={Время работы в тиках},
-  					ymin = 31530814, ymax = 35230814,
-  					legend pos=north west,
-  					ymajorgrids=true,
-  					grid style=dashed,
-  					]
-  					\legend{ 
-  						$\beta$ = 2,
-  						$\beta$ = 4,
-  						$\beta$ = 6,
-  						$\beta$ = 8
-  					}
-  					\addplot[
-  					color=blue,
-  					mark=square,
-  					]
-  					coordinates {
-  						(0.2, 32825864)
-  						(0.4, 32345549)
-  						(0.5 32434753)
-  						(0.8, 33009915)
-  						(0.9, 33298340)
-  					};
-  					\addplot[
-  					color=green,
-  					mark=square,
-  					]
-  					coordinates {
-  						(0, 33330212)
-  						(0.1, 31939012)
-  						(0.2, 32374316)
-  						(0.3, 32982935)
-  						(0.4, 32227624)
-  						(0.7, 33044899)
-  					};
-  					\addplot[
-  					color=brown,
-  					mark=square,
-  					]
-  					coordinates {
-  						(0, 32412299)
-  						(0.4, 32410232)
-  						(0.5 32432297)
-  						(0.6, 32638150)
-  						(0.9, 33014037)
-  					};
-  					\end{axis}
-  					\end{tikzpicture}
-  					\caption{График зависимости скорости работы от коэффициента испарения с учетом, что ответ верен.}
-  					\label{grf:eva_time}
-  				\end{figure}
     				
     \section{Вывод}
-    \hspace{0.5cm}Скорость муравьиного алгоритма колеблется в зависимости от выбранных параметров. Наиболее быстрое решение удалось достичь при $\alpha$ = 0.7, $\beta$ = 0.3. Оптимальное количество поколений для 10 городоа составляет 30, количество муравьев - 40. Введение элитных муравьев ускоряет процесс, однако лишь в том случае когда процент элитных составляет 7-14 процентов от общего числа. Опытным путем было определено, что оптимальным соотношением количества феромонов обычного муравья к количеству феромонов элитного муравья является 0.1. Так, у обычного например 1, а у элитного 10. Коэффициент испарения - 0.4.
+    
+    Из данной таблицы можно увидеть, что для данного набора параметров при $\alpha$ = 1, $\eta$ = 0.5 и tMax = 100 муравьиный алгоритм выдает наихудший результат. При параметрах $\alpha$ = 0.25, $\eta$ = 1 и tMax = 200 муравьинный алгоритм наиболее приближен к результату, полученному полным перебором. При правильном подборе параметров муравьиный алгоритм выдает результат, близкий к наилучшему, при этом работая намного быстрее полного перебора (на 99.6\% быстрее на графе из 10 узлов).
+    
 
     \chapter*{Заключение}
     \addcontentsline{toc}{section}{Заключение}
-    \hspace{0.5cm}Таким образом, в ходе работы был изучен и реализован муравьиный алгоритм. Были введены элитные муравьи для достижения более хороших результатов. Таким образом, были определены наиболее оптимальные параметры для быстрого и правильного решения задачи о коммивояжера на матрице из 10 городов.
+    
+    В данном разделе был проведен сравнительный анализ работы реализованного муравьиного алгоритма при различных параметрах, из которого можно сделать вывод, что при правильном подборе параметров муравьиный алгоритм находит оптимальный ответ за приемлимое время, намного отличающееся (на 99.6\% быстрее на графе из 10 узлов) от времени нахождения пути полным перебором.
+    
     \newpage
     
     \addcontentsline{toc}{section}{Список используемой литературы}
@@ -1336,6 +594,5 @@ columns=fullflexible }
     	11.
     	\bibitem{C} https://cppreference.com/ [Электронный ресурс]
     	\bibitem{time_b}[Электронный ресурс] Документация по функции замера времени. https://proginfo.ru/time/
-    	\bibitem{lom}И.В. Ломовской. Курс лекций по языку программирования C, 2017.
     \end{thebibliography}
 \end{document}

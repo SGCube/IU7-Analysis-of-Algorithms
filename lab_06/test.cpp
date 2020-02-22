@@ -50,9 +50,9 @@ int main()
     //size_t start = 0, end = 0;
     size_t repeats = 1;
     
-    for (double alpha = 0; alpha <= 1; alpha += 0.1)
-        for (double rho = 0; rho <= 1; rho += 0.1)
-            for (size_t t = 100; t < 400; t += 100)
+    for (double alpha = 0; alpha <= 1; alpha += 0.25)
+        for (double rho = 0; rho <= 1; rho += 0.25)
+            for (size_t t = 100; t < 300; t += 100)
             {
                 
                 ACO alg_ACO(graph);
