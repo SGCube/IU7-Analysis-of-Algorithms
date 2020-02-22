@@ -171,7 +171,7 @@ bool Matrix::operator!=(const Matrix &other)
     return !((*this) == other);
 }
 
-unsigned Matrix::get_rows()
+/*unsigned Matrix::get_rows()
 {
     return _rows;
 }
@@ -179,7 +179,7 @@ unsigned Matrix::get_rows()
 unsigned Matrix::get_cols()
 {
     return _cols;
-}
+}*/
 
 Array& Matrix::operator[](unsigned i)
 {
