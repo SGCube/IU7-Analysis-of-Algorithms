@@ -2,6 +2,7 @@
 #define BF_HPP
 
 #include <vector>
+#include <cstddef>
 #include "graph.hpp"
 
 class BruteForce

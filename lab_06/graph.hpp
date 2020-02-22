@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include <iostream>
+#include <cstddef>
 
 template <typename T>
 class Graph

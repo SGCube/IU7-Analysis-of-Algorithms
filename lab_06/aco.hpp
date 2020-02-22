@@ -2,6 +2,7 @@
 #define ACO_HPP
 
 #include <vector>
+#include <cstddef>
 #include "graph.hpp"
 
 class Ant
@@ -11,7 +12,7 @@ public:
     std::vector<bool> visited;
     std::vector<size_t> path;
     
-    Ant(const size_t graph_size);
+    Ant(size_t graph_size);
     
     void visit_city(const size_t city, const size_t cur_path_len,
         const size_t cur_path_dist);

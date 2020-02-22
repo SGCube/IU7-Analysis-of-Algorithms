@@ -3,7 +3,7 @@
 
 /// Ant
     
-Ant::Ant(const size_t graph_size) : path_len(0)
+Ant::Ant(size_t graph_size) : path_len(0)
 {
     for (size_t i = 0; i < graph_size; i++)
     {
