@@ -295,9 +295,29 @@ columns=fullflexible }
 		\label{fig:example}
 	\end{figure}
 
+	\section{Сравнительный анализ}
+	В таблице \ref{tab:res} представлены результаты 20 измерений времени в секундах.
+	\begin{table}[ht!]
+		\caption{Сравнение работы поиска с помощью конченых автоматов и регулярных выражений}
+		\label{tab:res}
+		\begin{center}
+			\pgfplotstabletypeset[
+			col sep=semicolon,
+			string type,
+			columns/KA/.style={column name=Конечный автомат, column type={|c}},
+			columns/RegExp/.style={column name=Регулярные выражения, column type={|c|}},
+			every head row/.style={before row=\hline,after row=\hline},
+			every last row/.style={after row=\hline},
+			]{time.csv}
+		\end{center}
+	\end{table}
+
+	\section{Вывод}
+	В среднем поиск с помощью регулярных выражений выполняется в 5 раз дольше, чем поиск с помощью конечного автомата.
+
 	\chapter*{Заключение}
 	\addcontentsline{toc}{chapter}{Заключение}
-	\hspace{0.5cm}В ходе выполнения рубежного контроля были реализованы программы поиска критических секций в коде с помощью конечного автомата и регулярного выражения.
+	\hspace{0.5cm}В ходе выполнения рубежного контроля были реализованы программы поиска критических секций в коде с помощью конечного автомата и регулярного выражения. В результате сравнения было выяснено, что алгоритм поиска с помощью регулярных выражений работает дольше, чем алгоритм поиска с помощью конечного автомата.
 	
 	\newpage
 	
