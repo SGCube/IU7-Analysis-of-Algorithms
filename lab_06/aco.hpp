@@ -49,7 +49,7 @@ public:
     size_t min_len = 0;
     std::vector<size_t> min_path;
     
-    ACO(const Graph<int>& graph);
+    explicit ACO(const Graph<int>& graph);
     
     void execute();
     void change_params(double alpha, double rho, size_t tMax);
