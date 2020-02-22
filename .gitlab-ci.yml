@@ -26,6 +26,7 @@ codestyle:
     - master
     - graph
     - rk_01
+    - rk_02
   before_script:
     - apt-get update --yes
     - apt-get install --yes cppcheck
@@ -52,6 +53,7 @@ build:
     - master
     - graph
     - rk_01
+    - rk_02
   before_script:
     - *before_build
   script:
@@ -68,6 +70,7 @@ memcheck:
     - master
     - graph
     - rk_01
+    - rk_02
     - lab_02
   before_script:
     - apt-get update --yes
@@ -95,6 +98,7 @@ tests:
     - master
     - graph
     - rk_01
+    - rk_02
   before_script:
     - apt-get update --yes
     - apt-get install --yes cmake
